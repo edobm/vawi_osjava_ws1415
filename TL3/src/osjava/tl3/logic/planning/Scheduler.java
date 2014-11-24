@@ -1,13 +1,15 @@
 package osjava.tl3.logic.planning;
 
+import java.util.HashMap;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.Strategy;
+import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.controller.DataController;
 
 /**
  * Diese Klasse erzeugt auf Basis der gegebenen Kurse und verfügbaren Räume den
- * Gesamtplan.
+ * Gesamtplan mithilfe einer Planungsstrategie.
  *
  * Der Raumplan und die Stundenpläne für Studiengang+Fachsemester und Dozent
  * werden dabei lediglich als verschiedene Sichten auf den Gesamtplan
@@ -31,27 +33,35 @@ public class Scheduler {
     private Schedule schedule;
     
     /**
-     * Strategie für die Erstellung des Gesamtplans
+     * Typ der Strategie für die Erstellung des Gesamtplans
      */
-    private Strategy.Type strategyType = Strategy.Type.COST_OPTIMIZED;
+    private StrategyType strategyType = StrategyType.COST_OPTIMIZED;
+    
+    /**
+     * Instanz der Strategie für die Planung
+     */
+    private Strategy strategy;
+    
     
     /**
      * Den Gesamtplan auf Basis der gewählten Strategie erstellen.
+     * 
+     * @param parameters Laufzeitparameter für die Planungsstrategie
      */
-    public void executeStrategy() {
+    public void executeStrategy(HashMap<String, Object> parameters) {
         
-        Strategy strategy;
-        
+        // Die Strategie wählen
         switch(strategyType) {
             
+            // Kostenoptimierte Strategie (zugleich der Default)
             case COST_OPTIMIZED:
             default:
                 strategy = new CostOptimizedStrategy();
-                
-           
+          
         }
         
-        schedule = strategy.schedule(dataController);
+        // Führt die Strategie aus und erzeugt dabei den Gesamtplan
+        schedule = strategy.execute(dataController, parameters);
     }
     
     /**
@@ -71,7 +81,7 @@ public class Scheduler {
     /**
      * @param strategyType the strategyType to set
      */
-    public void setStrategyType(Strategy.Type strategyType) {
+    public void setStrategyType(StrategyType strategyType) {
         this.strategyType = strategyType;
     }
     
