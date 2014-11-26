@@ -1,6 +1,5 @@
 package osjava.tl3.logic.planning.strategies;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
