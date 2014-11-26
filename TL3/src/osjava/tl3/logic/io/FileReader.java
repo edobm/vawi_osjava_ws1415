@@ -14,6 +14,8 @@ import java.util.List;
  */
 public abstract class FileReader
 {  
+    private int test;
+    
     public List<String> readFile(String fileName) {
         return new ArrayList<String>();
     }
