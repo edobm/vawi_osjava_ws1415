@@ -20,8 +20,72 @@ public class Course
     private String name;
     private Academic academic;
     private List<Equipment> requiredEquipments;
+    private int students;
     
     public CourseType getType() {
         return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(CourseType type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the academic
+     */
+    public Academic getAcademic() {
+        return academic;
+    }
+
+    /**
+     * @param academic the academic to set
+     */
+    public void setAcademic(Academic academic) {
+        this.academic = academic;
+    }
+
+    /**
+     * @return the requiredEquipments
+     */
+    public List<Equipment> getRequiredEquipments() {
+        return requiredEquipments;
+    }
+
+    /**
+     * @param requiredEquipments the requiredEquipments to set
+     */
+    public void setRequiredEquipments(List<Equipment> requiredEquipments) {
+        this.requiredEquipments = requiredEquipments;
+    }
+
+    /**
+     * @return the students
+     */
+    public int getStudents() {
+        return students;
+    }
+
+    /**
+     * @param students the students to set
+     */
+    public void setStudents(int students) {
+        this.students = students;
     }
 }

@@ -12,13 +12,26 @@ import osjava.tl3.model.controller.DataController;
  */
 public abstract class Strategy {
     
+    /**
+     * Der durch die Strategie erstellte Gesamtplan
+     */
+    protected Schedule schedule;
    
-    
+    /**
+     * Der Data Controller
+     */
+    protected DataController dataController;
+       
     /**
      * Speichert potentielle Laufzeitparameter für die Planungsstrategie
      */
     protected HashMap<String, Object> parameters;
+
+    public Strategy() {
+       schedule = new Schedule();
+    }
    
+    
    
     /**
      * Implementiert den Algorithmus zur Erstellung des Gesamtplans

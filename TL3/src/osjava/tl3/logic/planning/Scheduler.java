@@ -42,14 +42,25 @@ public class Scheduler {
      */
     private Strategy strategy;
     
-    
     /**
      * Den Gesamtplan auf Basis der gewählten Strategie erstellen.
      * 
      * @param parameters Laufzeitparameter für die Planungsstrategie
      */
     public void executeStrategy(HashMap<String, Object> parameters) {
+     
+        // Eine Instanz der Planungsstrategie erzeugen
+        initStrategy();
         
+        // Führt die Strategie aus und erzeugt dabei den Gesamtplan
+        schedule = strategy.execute(dataController, parameters);
+    }
+    
+    /**
+     * Erzeugt eine Instanz der vorgegebenen Planungsstrategie
+     */
+    private void initStrategy() {
+           
         // Die Strategie wählen
         switch(strategyType) {
             
@@ -59,12 +70,10 @@ public class Scheduler {
                 strategy = new CostOptimizedStrategy();
           
         }
-        
-        // Führt die Strategie aus und erzeugt dabei den Gesamtplan
-        schedule = strategy.execute(dataController, parameters);
     }
     
     /**
+     * Setzt den Data Controller der die Eingabedaten hält
      * @param dataController the dataController to set
      */
     public void setDataController(DataController dataController) {
@@ -72,6 +81,7 @@ public class Scheduler {
     }
 
     /**
+     * Liefert den Gesamtplan zurück
      * @return the schedule
      */
     public Schedule getSchedule() {
@@ -79,6 +89,7 @@ public class Scheduler {
     }
 
     /**
+     * Setzt die Planungsstrategie
      * @param strategyType the strategyType to set
      */
     public void setStrategyType(StrategyType strategyType) {

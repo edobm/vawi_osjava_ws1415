@@ -30,4 +30,47 @@ public class DataController
      */
     public void load() {
     }
+
+    /**
+     * @return the rooms
+     */
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    /**
+     * @param rooms the rooms to set
+     */
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    /**
+     * @return the studyPrograms
+     */
+    public List<StudyProgram> getStudyPrograms() {
+        return studyPrograms;
+    }
+
+    /**
+     * @param studyPrograms the studyPrograms to set
+     */
+    public void setStudyPrograms(List<StudyProgram> studyPrograms) {
+        this.studyPrograms = studyPrograms;
+    }
+
+    /**
+     * @return the courses
+     */
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    /**
+     * @param courses the courses to set
+     */
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
 }

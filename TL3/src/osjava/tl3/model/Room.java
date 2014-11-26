@@ -21,7 +21,21 @@ import java.util.List;
  */
 public class Room
 {
-   public static final int COST_PER_SEAT = 10; 
+   private static int COST_PER_SEAT = 10; 
+
+    /**
+     * @return the COST_PER_SEAT
+     */
+    public static int getCOST_PER_SEAT() {
+        return COST_PER_SEAT;
+    }
+
+    /**
+     * @param aCOST_PER_SEAT the COST_PER_SEAT to set
+     */
+    public static void setCOST_PER_SEAT(int aCOST_PER_SEAT) {
+        COST_PER_SEAT = aCOST_PER_SEAT;
+    }
    
    private RoomType type;
    private String name;
@@ -34,7 +48,64 @@ public class Room
     * unter der Annahme, dass die Kosten von der Anzahl verfügbarer Sitzeplätze abhängt.
     */
    public int getCosts() {
-       return type == RoomType.EXTERNAL ? seats * Room.COST_PER_SEAT : 0;
+       return getType() == RoomType.EXTERNAL ? getSeats() * Room.getCOST_PER_SEAT() : 0;
     }
+
+    /**
+     * @return the type
+     */
+    public RoomType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(RoomType type) {
+        this.type = type;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the availableEquipments
+     */
+    public List<Equipment> getAvailableEquipments() {
+        return availableEquipments;
+    }
+
+    /**
+     * @param availableEquipments the availableEquipments to set
+     */
+    public void setAvailableEquipments(List<Equipment> availableEquipments) {
+        this.availableEquipments = availableEquipments;
+    }
+
+    /**
+     * @return the seats
+     */
+    public int getSeats() {
+        return seats;
+    }
+
+    /**
+     * @param seats the seats to set
+     */
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+   
    
 }
