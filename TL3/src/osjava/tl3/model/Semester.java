@@ -15,4 +15,32 @@ public class Semester
 {
     private String name;
     private List<Course> courses;
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the courses
+     */
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    /**
+     * @param courses the courses to set
+     */
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
 }
