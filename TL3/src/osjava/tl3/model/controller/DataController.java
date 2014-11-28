@@ -1,5 +1,6 @@
 package osjava.tl3.model.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.RoomReader;
@@ -17,9 +18,9 @@ import osjava.tl3.model.StudyProgram;
  */
 public class DataController
 {
-    private List<Room> rooms;
-    private List<StudyProgram> studyPrograms;
-    private List<Course> courses;
+    private List<Room> rooms = new ArrayList<>();;
+    private List<StudyProgram> studyPrograms = new ArrayList<>();
+    private List<Course> courses = new ArrayList<>();;
     
     private RoomReader roomReader;
     private StudyProgramReader studyProgrammReader;

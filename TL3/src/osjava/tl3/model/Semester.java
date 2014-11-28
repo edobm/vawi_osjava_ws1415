@@ -1,5 +1,6 @@
 package osjava.tl3.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
 public class Semester
 {
     private String name;
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();;
 
     /**
      * @return the name

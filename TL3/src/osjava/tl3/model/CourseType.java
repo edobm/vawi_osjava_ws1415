@@ -10,6 +10,18 @@ package osjava.tl3.model;
  */
 public enum CourseType
 {
-    READING, // Vorlesung
-    TUTORIAL // Übung
+    /**
+     * Vorlesung
+     */
+    READING,  
+    
+    /**
+     * Übung
+     */
+    TUTORIAL, 
+    
+    /**
+     * Unbekannter Typ
+     */
+    UNKNOWN_TYPE 
 }

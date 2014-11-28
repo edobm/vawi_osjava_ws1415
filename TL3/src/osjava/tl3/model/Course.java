@@ -1,5 +1,6 @@
 package osjava.tl3.model;
   
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,9 +18,10 @@ import java.util.List;
 public class Course
 {
     private CourseType type;
+    private String number;
     private String name;
     private Academic academic;
-    private List<Equipment> requiredEquipments;
+    private List<Equipment> requiredEquipments = new ArrayList<>();;
     private int students;
     
     public CourseType getType() {
@@ -87,5 +89,19 @@ public class Course
      */
     public void setStudents(int students) {
         this.students = students;
+    }
+
+    /**
+     * @return the number
+     */
+    public String getNumber() {
+        return number;
+    }
+
+    /**
+     * @param number the number to set
+     */
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

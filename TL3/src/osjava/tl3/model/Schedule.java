@@ -1,5 +1,6 @@
 package osjava.tl3.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,5 +24,5 @@ import java.util.List;
  */
 public class Schedule
 {
-    private List<ScheduleElement> scheduleElements;
+    private List<ScheduleElement> scheduleElements =  new ArrayList<>();;
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.model.Course;
+import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.controller.DataController;
@@ -119,10 +120,26 @@ public class CostOptimizedStrategy extends Strategy {
         }
     }
     
+    private void printFittings() {
+        
+        for (Room r : dataController.getRooms()) {
+            
+            System.out.print("Raum [" + r.getName() + "]: ");
+            
+            for (Equipment c : r.getAvailableEquipments()) {
+                System.out.print(c + ", ");
+            }
+            
+            for (Course c : roomsFittingCourse.get(r)) {
+                System.out.print(c.getName() + "; ");
+            }
+            System.out.println();
+        }
+    }
     
     private void createSchedule() {
     
-        
+        printFittings();
         
     }
 

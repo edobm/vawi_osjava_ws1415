@@ -1,5 +1,6 @@
 package osjava.tl3.model;
   
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class Room
    
    private RoomType type;
    private String name;
-   private List<Equipment> availableEquipments;
+   private List<Equipment> availableEquipments = new ArrayList<>();
    private int seats;
    
    
