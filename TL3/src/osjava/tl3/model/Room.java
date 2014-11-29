@@ -42,14 +42,20 @@ public class Room
    private String name;
    private List<Equipment> availableEquipments = new ArrayList<>();
    private int seats;
+
+    @Override
+    public String toString() {
+       return name + " (" + seats+ ")";
+    }
    
-   
+  
    /**
     * Berechnet die Kosten eines Raumes, wenn dieser Extern angemietet werden muss
     * unter der Annahme, dass die Kosten von der Anzahl verfügbarer Sitzeplätze abhängt.
+     * @return Die Kosten eines externen Raumes
     */
    public int getCosts() {
-       return getType() == RoomType.EXTERNAL ? getSeats() * Room.getCOST_PER_SEAT() : 0;
+       return type == RoomType.EXTERNAL ? seats * Room.COST_PER_SEAT : 0;
     }
 
     /**

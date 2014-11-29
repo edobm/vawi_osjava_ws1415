@@ -24,5 +24,101 @@ import java.util.List;
  */
 public class Schedule
 {
-    private List<ScheduleElement> scheduleElements =  new ArrayList<>();;
+
+    /**
+     * @return the type
+     */
+    public ScheduleType getType() {
+        return type;
+    }
+    
+    
+    private ScheduleType type;
+    
+    private List<ScheduleElement> scheduleElements =  new ArrayList<>();
+
+    /**
+     * Erzeugt einen neuen Plan
+     * @param type Der Typ des Plans
+     */
+    public Schedule(ScheduleType type) {
+        this.type = type;
+        initSchedule();
+    }
+    
+    /**
+     * Initialisiert den Plan
+     */
+    private void initSchedule() {
+        
+        for (int i = 0; i < 5; i++) {
+            for(int y = 0; y < 5; y++) {
+                ScheduleElement scheduleElement = new ScheduleElement();
+                scheduleElement.setCoordiate(new ScheduleCoordinate(Day.valueOf(i), TimeSlot.valueOf(y)));
+                scheduleElements.add(scheduleElement);
+            }
+        }
+        
+    }
+    
+    /**
+     * Liefert alle freien Koordinaten des Plans
+     * @return Die Liste der freien Koordinaten
+     */
+    public List<ScheduleCoordinate> getFreeCoordinates() {
+        List<ScheduleCoordinate> coordinates = new ArrayList<>();
+        
+        for (ScheduleElement scheduleElement : scheduleElements) {
+            if (!scheduleElement.isBlocked()) {
+                coordinates.add(scheduleElement.getCoordiate());
+            }
+        }
+        
+        return coordinates;
+    }
+    
+    /**
+     * Liefert alle belegten Koordinaten des Plans
+     * @return Die Liste der belegten Koordinaten
+     */
+    public List<ScheduleCoordinate> getBlockedCoordinates() {
+        List<ScheduleCoordinate> coordinates = new ArrayList<>();
+        
+        for (ScheduleElement scheduleElement : scheduleElements) {
+            if (scheduleElement.isBlocked()) {
+                coordinates.add(scheduleElement.getCoordiate());
+            }
+        }
+        
+        return coordinates;
+    }
+    
+    /**
+     * Liefert das Planelement der gegebenen Koordinate
+     * @param coordinate Die Koordinate des zu liefernden Planelements
+     * @return Das zur Koordinate passende Planelement oder null, wenn zur gegebenen Kordinate kein Element gefunden wurde
+     */
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
+        for (ScheduleElement scheduleElement : scheduleElements) {
+            if (scheduleElement.getCoordiate().equals(coordinate)) {
+                return scheduleElement;
+            }
+        }
+        return null;
+    }    
+    
+    /**
+     * @return the scheduleElements
+     */
+    public List<ScheduleElement> getScheduleElements() {
+        return scheduleElements;
+    }
+
+    /**
+     * @param scheduleElements the scheduleElements to set
+     */
+    public void setScheduleElements(List<ScheduleElement> scheduleElements) {
+        this.scheduleElements = scheduleElements;
+    }
+    
 }

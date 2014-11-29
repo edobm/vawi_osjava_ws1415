@@ -2,6 +2,7 @@ package osjava.tl3.model;
   
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Diese Klasse repräsentiert die Entität Lehrveranstaltung.
@@ -23,6 +24,24 @@ public class Course
     private Academic academic;
     private List<Equipment> requiredEquipments = new ArrayList<>();;
     private int students;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Course) {
+            Course other = (Course)obj;
+            return this.getNumber().equals(other.getNumber());
+        }
+        else {
+            return false;
+        }
+    }
+    
+    
+    @Override
+    public String toString() {
+         return name + "(" + number + ";" + academic.getName() + ";"+ students + ")";
+    }
+    
     
     public CourseType getType() {
         return type;

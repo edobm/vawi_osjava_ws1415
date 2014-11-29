@@ -4,7 +4,7 @@ import java.util.HashMap;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyType;
-import osjava.tl3.model.Schedule;
+import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -30,7 +30,7 @@ public class Scheduler {
     /**
      * Instanz des Gesamtplans
      */
-    private Schedule schedule;
+    private MasterSchedule masterSchedule;
     
     /**
      * Typ der Strategie für die Erstellung des Gesamtplans
@@ -53,7 +53,7 @@ public class Scheduler {
         initStrategy();
         
         // Führt die Strategie aus und erzeugt dabei den Gesamtplan
-        schedule = strategy.execute(dataController, parameters);
+        masterSchedule = strategy.execute(dataController, parameters);
     }
     
     /**
@@ -82,10 +82,10 @@ public class Scheduler {
 
     /**
      * Liefert den Gesamtplan zurück
-     * @return the schedule
+     * @return Der Gesamtplan
      */
-    public Schedule getSchedule() {
-        return schedule;
+    public MasterSchedule getMasterSchedule() {
+        return masterSchedule;
     }
 
     /**

@@ -1,6 +1,7 @@
 package osjava.tl3.logic.planning.strategies;
 
 import java.util.HashMap;
+import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.controller.DataController;
 
@@ -15,7 +16,7 @@ public abstract class Strategy {
     /**
      * Der durch die Strategie erstellte Gesamtplan
      */
-    protected Schedule schedule;
+    protected MasterSchedule masterSchedule;
    
     /**
      * Der Data Controller
@@ -28,7 +29,7 @@ public abstract class Strategy {
     protected HashMap<String, Object> parameters;
 
     public Strategy() {
-       schedule = new Schedule();
+       masterSchedule = new MasterSchedule();
     }
    
     
@@ -39,6 +40,6 @@ public abstract class Strategy {
      * @param parameters Mögliche Parameter für die Planungsstrategie
      * @return 
      */
-    public abstract Schedule execute(DataController dataController, HashMap<String, Object> parameters);
+    public abstract MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters);
     
 }
