@@ -69,7 +69,7 @@ public class InputFileHelper {
 
             course.setNumber(columns[0]);
             course.setName(InputFileHelper.removeQuotationMarks(columns[1]));
-            course.setType(new CourseType(columns[2]));
+            course.setType(new CourseType(InputFileHelper.removeQuotationMarks(columns[2])));
             
             Academic academic = new Academic();
             academic.setName(InputFileHelper.removeQuotationMarks(columns[3]));

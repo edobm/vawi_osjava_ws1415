@@ -231,7 +231,7 @@ public class MasterSchedule {
          */
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);
-        if (course.getType().equals(new CourseType("Uebung"))) {
+        if (course.getType().getName().equals("Uebung")) {
             room.setName("Externer Seminarraum");
         } else {
             room.setName("Externer Hörsal");
