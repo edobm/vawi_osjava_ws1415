@@ -61,6 +61,7 @@ public class CostOptimizedStrategy extends Strategy {
         Queue<Course> courseQueue = new PriorityQueue<>(new CourseStudentsComparator(CourseStudentsComparator.SortOrder.DESCENDING));
 
         courseQueue.addAll(dataController.getCourses());
+        System.out.println("Kurse zu planen: " + courseQueue.size());
 
         Course course = null;
         List<Room> matchingRooms = null;
@@ -84,40 +85,6 @@ public class CostOptimizedStrategy extends Strategy {
 
             } else {
 
-//                int currentRoom = 0;
-//                for (Room room : matchingRooms) {
-//                    currentRoom++;
-//
-//                    freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
-//                    freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
-//
-//                    /**
-//                     * Wenn der aktuelle Raum keinen weitere freie Koordinate
-//                     * hat zum nächsten Raum wechseln
-//                     */
-//                    if (freeCoordinatesRoom.isEmpty()) {
-//                        System.out.println("\tRaum voll: " + room);
-//                        if (currentRoom < matchingRooms.size()) {
-//                            continue;
-//                        } else {
-//                            masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);
-//                            continue;
-//                        }
-//                    }
-//
-//                    freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
-//
-//                    freeIntersection = new ArrayList<>(freeCoordinatesRoom);
-//                    freeIntersection.retainAll(freeCoordinatesStudyPrograms);
-//                    freeIntersection.retainAll(freeCoordinatesAcademic);
-//
-//                    ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
-//
-//                    masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
-//                    System.out.println("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room);
-//                    break;
-//
-//                }
                 for (int i = 0; i < matchingRooms.size(); i++) {
                     Room room = matchingRooms.get(i);
 
@@ -130,7 +97,7 @@ public class CostOptimizedStrategy extends Strategy {
                      */
                     if (freeCoordinatesRoom.isEmpty()) {
                         System.out.println("\tRaum voll: " + room);
-                        if (i < matchingRooms.size()) {
+                        if (i < matchingRooms.size() - 1) {
                             continue;
                         } else {
                             masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);

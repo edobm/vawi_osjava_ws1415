@@ -345,7 +345,7 @@ public class MasterSchedule {
     }
 
     private void printSeparator() {
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
     private void printCoreStats() {
@@ -362,9 +362,9 @@ public class MasterSchedule {
             Room r = rooms.next();
             if (r.getType() == roomType) {
                 printSeparator();
-                System.out.println("Raumplan: " + r.getName());
+                System.out.println("Raumplan: " + r +"; Termine: " + roomSchedules.get(r).getBlockedCoordinates().size());
 
-                printSchedule(roomSchedules.get(r));
+                printSchedule(roomSchedules.get(r), false);
 
             }
         }
@@ -376,15 +376,15 @@ public class MasterSchedule {
         while (academics.hasNext()) {
             Academic r = academics.next();
             printSeparator();
-            System.out.println("Dozentenplan: " + r.getName());
+            System.out.println("Dozentenplan: " + r.getName() + "; Termine: " + acadademicSchedules.get(r).getBlockedCoordinates().size());
 
-            printSchedule(acadademicSchedules.get(r));
+            printSchedule(acadademicSchedules.get(r), true);
 
         }
     }
 
-    public void printSchedule(Schedule schedule) {
-        final String formatPattern = "%-11s|%-55s|%-55s|%-55s|%-55s|%-55s|%n";
+    public void printSchedule(Schedule schedule, boolean withRoom) {
+        final String formatPattern = "%-11s|%-70s|%-70s|%-70s|%-70s|%-70s|%n";
 
         System.out.printf(formatPattern, "Zeitrahmen", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag");
         printSeparator();
@@ -395,7 +395,11 @@ public class MasterSchedule {
             for (int y = 0; y < 5; y++) {
                 ScheduleElement scheduleElement = schedule.getScheduleElement(new ScheduleCoordinate(Day.valueOf(y), TimeSlot.valueOf(i)));
                 if (scheduleElement.isBlocked()) {
-                    line[y + 1] = scheduleElement.getCourse().getName() + " (" + scheduleElement.getCourse().getNumber() + ";" + scheduleElement.getCourse().getAcademic().getName() + ")";
+                    line[y + 1] = scheduleElement.getCourse().getName() + " (" + scheduleElement.getCourse().getNumber() + "; " + scheduleElement.getCourse().getAcademic().getName() + "; " + scheduleElement.getCourse().getStudents();
+                    if (withRoom) {
+                        line[y + 1 ] += "; " + scheduleElement.getRoom().getName();
+                    }
+                    line[y + 1 ] += ")";
                 } else {
                     line[y + 1] = "";
                 }
