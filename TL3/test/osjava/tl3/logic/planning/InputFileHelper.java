@@ -18,8 +18,9 @@ import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 
 /**
- *
- * @author meikelbode
+ * Liest Testdateien aus einen Package ein und erzeugt die korrespondierenden
+ * Modellobjektinstanzen
+ * @author Meikel Bode
  */
 public class InputFileHelper {
 
@@ -68,7 +69,8 @@ public class InputFileHelper {
 
             course.setNumber(columns[0]);
             course.setName(InputFileHelper.removeQuotationMarks(columns[1]));
-            course.setType(InputFileHelper.mapCourseType(columns[2]));
+            course.setType(new CourseType(columns[2]));
+            
             Academic academic = new Academic();
             academic.setName(InputFileHelper.removeQuotationMarks(columns[3]));
             course.setAcademic(academic);
@@ -133,88 +135,6 @@ public class InputFileHelper {
 
     }
 
-    public static Equipment mapEquipment(String externalName) {
-
-        switch (removeQuotationMarks(externalName).trim()) {
-            case "Tafel":
-                return Equipment.BLACKBOARD;
-            case "Mikrofonanlage":
-                return Equipment.MICROPHONE_SYSTEM;
-            case "Beamer":
-                return Equipment.BEAMER;
-            case "DozentenPC":
-                return Equipment.COMPUTER_ACADEMIC;
-            case "StudentenPCs":
-                return Equipment.COMPUTER_STUDENT;
-            case "Projektor":
-                return Equipment.PROJECTOR;
-            case "Fotokamera":
-                return Equipment.PHOTO_CAMERA;
-            case "Kartenstaender":
-                return Equipment.CARDS_STAND;
-            case "Staffelei":
-                return Equipment.EASEL_ACADEMIC;
-            case "Studentenstaffeleien":
-                return Equipment.EASEL_STUDENT;
-            case "Betaeubungsgewehr":
-                return Equipment.STUN_GUN;
-            case "Mechanikbaukasten":
-                return Equipment.MECHANICS_KIT;
-            case "Elektrotechnikbaukasten":
-                return Equipment.ELECTRICAL_CONSTRUCTION_KIT;
-            case "Videotelefoniesystem":
-                return Equipment.VIDEO_TELEPHONY_SYSTEM;
-            case "Zuckerbrot":
-                return Equipment.SUGAR_BREAD;
-            case "Peitsche":
-                return Equipment.LASH;
-            case "Lautsprecher":
-                return Equipment.SPEAKER;
-            case "Abspielgeraet":
-                return Equipment.PLAYER;
-            case "Ohrenstoepsel":
-                return Equipment.EAR_PLUGS;
-            case "Laermschutzwand":
-                return Equipment.NOISE_BARRIER;
-            case "Bongotrommelsatz":
-                return Equipment.BONGO_DRUM_SET;
-            case "Taktstock":
-                return Equipment.BATON;
-            case "Uranbrennstaebe":
-                return Equipment.URANIUM_FUEL_RODS;
-            case "Bleiwesten":
-                return Equipment.LEAD_VEST;
-            case "Experimentierkoffer":
-                return Equipment.EXPERIMENTAL_KIT;
-            case "Dunstabzugshaube":
-                return Equipment.RANGE_HOOD;
-            case "Chemikaliensortiment":
-                return Equipment.CHEMICALS;
-            case "Fluegel":
-                return Equipment.GRAND_PIANO;
-            case "Periodensystem":
-                return Equipment.PERIODIC_SYSTEM;
-
-            default:
-                System.out.println("Unknown Equipment: " + externalName);
-                return Equipment.UNKNOWN_EQUIPMENT;
-        }
-    }
-
-    public static CourseType mapCourseType(String externalName) {
-
-        switch (removeQuotationMarks(externalName).trim()) {
-            case "Uebung":
-                return CourseType.TUTORIAL;
-            case "Vorlesung":
-                return CourseType.READING;
-
-            default:
-                System.out.println("Unknown CourseType: " + externalName);
-                return CourseType.UNKNOWN_TYPE;
-        }
-    }
-
     public static String removeQuotationMarks(String inString) {
         if (inString != null) {
 
@@ -227,13 +147,17 @@ public class InputFileHelper {
     public static List<Equipment> parseEquipments(String record) {
         final String delimiter = ",";
 
+        record = removeQuotationMarks(record);
+        record = record.trim();
+        
         List<Equipment> equipments = new ArrayList<>();
 
         if (record != null) {
-
+            
             String[] columns = record.split(delimiter);
             for (String equipmentExternal : columns) {
-                equipments.add(InputFileHelper.mapEquipment(equipmentExternal.trim()));
+                
+                equipments.add(new Equipment(equipmentExternal.trim()));
             }
 
         }

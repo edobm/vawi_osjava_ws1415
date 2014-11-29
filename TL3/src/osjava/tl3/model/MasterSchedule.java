@@ -64,7 +64,6 @@ public class MasterSchedule {
         }
         System.out.println("Dozentenpläne erzeugt: " + acadademicSchedules.size());
 
-
         /**
          * Studiengangspläne initialisieren
          */
@@ -79,7 +78,6 @@ public class MasterSchedule {
             studyProgrammScheduleCount += semesterPlans.size();
         }
         System.out.println("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
-
 
         System.out.println("Gesamtplan initialisiert");
     }
@@ -233,7 +231,7 @@ public class MasterSchedule {
          */
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);
-        if (course.getType() == CourseType.TUTORIAL) {
+        if (course.getType().equals(new CourseType("Uebung"))) {
             room.setName("Externer Seminarraum");
         } else {
             room.setName("Externer Hörsal");
@@ -275,10 +273,10 @@ public class MasterSchedule {
     }
 
     /**
-     * Ermittelt die Anzahl der Räume des gegeben Raumtyps
+     * Ermittelt die Anzahl der Räume des gegebenen Raumtyps
      *
      * @param roomType
-     * @return
+     * @return Die Anzahl der Räume des gegebenen Typs
      */
     private int getRoomCount(RoomType roomType) {
         int count = 0;
@@ -293,6 +291,12 @@ public class MasterSchedule {
         return count;
     }
 
+    /**
+     * Die Gesamtzahl aller Termine
+     *
+     * @param roomType
+     * @return
+     */
     public int getTotalBlocks(RoomType roomType) {
 
         int blocks = 0;
@@ -310,7 +314,7 @@ public class MasterSchedule {
     public void printRoomScheduleOverview(RoomType roomType) {
         final String formatPattern = "|%-22s|%-10s|%6s|%6s|%7s|%s%n";
         System.out.printf(formatPattern, "Raum", "Typ", "Plätze", "Kosten", "Termine", "Ausstattung");
-        printSeparator();
+        printSeparator(true);
         Iterator<Room> rooms = roomSchedules.keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
@@ -326,26 +330,33 @@ public class MasterSchedule {
     public void printStatistics() {
         printHeader();
         printCoreStats();
-        printSeparator();
+        printSeparator(true);
         printRoomScheduleOverview(RoomType.INTERNAL);
-        printSeparator();
+        printSeparator(false);
         printRoomScheduleOverview(RoomType.EXTERNAL);
-        printSeparator();
+        printSeparator(false);
         printRoomSchedules(RoomType.INTERNAL);
-        printSeparator();
+        printSeparator(false);
+        printRoomSchedules(RoomType.EXTERNAL);
+        printSeparator(false);
         printAcademicSchedules();
-        
 
     }
 
     private void printHeader() {
-        System.out.println("=================================================================================================================================================================================================================================");
+        printSeparator(false);
         System.out.println(" GESAMTPLAN ");
-        System.out.println("=================================================================================================================================================================================================================================");
+        printSeparator(false);
     }
 
-    private void printSeparator() {
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    private void printSeparator(boolean single) {
+
+        if (single) {
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        } else {
+            System.out.println("===============================================================================================================================================================================================================================================================================================================================================================================");
+        }
+
     }
 
     private void printCoreStats() {
@@ -361,8 +372,8 @@ public class MasterSchedule {
         while (rooms.hasNext()) {
             Room r = rooms.next();
             if (r.getType() == roomType) {
-                printSeparator();
-                System.out.println("Raumplan: " + r +"; Termine: " + roomSchedules.get(r).getBlockedCoordinates().size());
+                printSeparator(false);
+                System.out.println("Raumplan: " + r + "; Termine: " + roomSchedules.get(r).getBlockedCoordinates().size());
 
                 printSchedule(roomSchedules.get(r), false);
 
@@ -375,7 +386,7 @@ public class MasterSchedule {
         Iterator<Academic> academics = acadademicSchedules.keySet().iterator();
         while (academics.hasNext()) {
             Academic r = academics.next();
-            printSeparator();
+            printSeparator(false);
             System.out.println("Dozentenplan: " + r.getName() + "; Termine: " + acadademicSchedules.get(r).getBlockedCoordinates().size());
 
             printSchedule(acadademicSchedules.get(r), true);
@@ -387,7 +398,7 @@ public class MasterSchedule {
         final String formatPattern = "%-11s|%-70s|%-70s|%-70s|%-70s|%-70s|%n";
 
         System.out.printf(formatPattern, "Zeitrahmen", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag");
-        printSeparator();
+        printSeparator(true);
 
         String[] line = new String[6];
 
@@ -397,9 +408,9 @@ public class MasterSchedule {
                 if (scheduleElement.isBlocked()) {
                     line[y + 1] = scheduleElement.getCourse().getName() + " (" + scheduleElement.getCourse().getNumber() + "; " + scheduleElement.getCourse().getAcademic().getName() + "; " + scheduleElement.getCourse().getStudents();
                     if (withRoom) {
-                        line[y + 1 ] += "; " + scheduleElement.getRoom().getName();
+                        line[y + 1] += "; " + scheduleElement.getRoom().getName();
                     }
-                    line[y + 1 ] += ")";
+                    line[y + 1] += ")";
                 } else {
                     line[y + 1] = "";
                 }

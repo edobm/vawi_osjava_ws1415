@@ -6,6 +6,7 @@ import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.RoomReader;
 import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.model.Course;
+import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.StudyProgram;
 
@@ -20,10 +21,10 @@ import osjava.tl3.model.StudyProgram;
 public class DataController {
 
     private List<Room> rooms = new ArrayList<>();
-    ;
+    
     private List<StudyProgram> studyPrograms = new ArrayList<>();
     private List<Course> courses = new ArrayList<>();
-    ;
+    private List<Equipment> equipments = new ArrayList<>();
     
     private RoomReader roomReader;
     private StudyProgramReader studyProgrammReader;
@@ -117,6 +118,20 @@ public class DataController {
      */
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    /**
+     * @return the equipments
+     */
+    public List<Equipment> getEquipments() {
+        return equipments;
+    }
+
+    /**
+     * @param equipments the equipments to set
+     */
+    public void setEquipments(List<Equipment> equipments) {
+        this.equipments = equipments;
     }
 
 }

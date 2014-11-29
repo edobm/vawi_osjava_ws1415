@@ -1,27 +1,49 @@
 package osjava.tl3.model;
-  
+
+import java.util.Objects;
+
 /**
- * Dieser Enum Typ repräsentiert die verschieden Arten von Lehrveranstaltungen.
- * 
- * Zu diesem Zeitpunkt sind die Typen Vorlesung und Übung bekannt.
- * 
- * @author Christian Müller
- * @version 1.0
+ *
+ * @author Meikel Bode
  */
-public enum CourseType
-{
+public class CourseType {
+
+    private String name;
+
+    public CourseType(String name) {
+        this.name = name;
+    }
+
     /**
-     * Vorlesung
+     * @return the name
      */
-    READING,  
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
     
-    /**
-     * Übung
-     */
-    TUTORIAL, 
-    
-    /**
-     * Unbekannter Typ
-     */
-    UNKNOWN_TYPE 
+    @Override
+    public boolean equals(Object obj) {
+       return this.name.equals(((CourseType)obj).getName());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+   
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

@@ -41,7 +41,7 @@ public class CostOptimizedStrategy extends Strategy {
     public CostOptimizedStrategy() {
         super();
     }
-
+    
     @Override
     public MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters) {
         super.dataController = dataController;
@@ -50,44 +50,44 @@ public class CostOptimizedStrategy extends Strategy {
 
         // Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
         createSchedule();
-
+        
         masterSchedule.printStatistics();
-
+        
         return masterSchedule;
     }
-
+    
     private void createSchedule() {
-
+        
         Queue<Course> courseQueue = new PriorityQueue<>(new CourseStudentsComparator(CourseStudentsComparator.SortOrder.DESCENDING));
-
+        
         courseQueue.addAll(dataController.getCourses());
         System.out.println("Kurse zu planen: " + courseQueue.size());
-
+        
         Course course = null;
         List<Room> matchingRooms = null;
         List<ScheduleCoordinate> freeCoordinatesAcademic = null;
         List<ScheduleCoordinate> freeCoordinatesRoom = null;
         List<ScheduleCoordinate> freeCoordinatesStudyPrograms = null;
-
+        
         List<ScheduleCoordinate> freeIntersection = null;
-
+        
         while ((course = courseQueue.poll()) != null) {
-
+            
             System.out.println("Plane Kurs: " + course);
-
+            
             matchingRooms = getMatchingRooms(course);
-
+            
             if (matchingRooms.isEmpty()) {
-
+                
                 freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
                 masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);
                 System.out.println("\tExtern eingeplant: " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0));
-
+                
             } else {
-
+                
                 for (int i = 0; i < matchingRooms.size(); i++) {
                     Room room = matchingRooms.get(i);
-
+                    
                     freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                     freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
 
@@ -102,23 +102,23 @@ public class CostOptimizedStrategy extends Strategy {
                         } else {
                             masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);
                             System.out.println("\tExtern eingeplant: " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0));
-
+                            
                             continue;
                         }
                     }
-
+                    
                     freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
-
+                    
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                     freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                     freeIntersection.retainAll(freeCoordinatesAcademic);
-
+                    
                     ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
-
+                    
                     masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
                     System.out.println("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room);
                     break;
-
+                    
                 }
             }
         }
@@ -128,25 +128,21 @@ public class CostOptimizedStrategy extends Strategy {
      * Ermittele alle für den gegeben Kurs potentiell geeigneten Räume. Ein Raum
      * ist geeignet wenn das geforderte Equipment vorhanden ist und die Anzahl
      * der Sitzeplätze <= der Anzahl der Kursteilnehmer ist @param course Der
-     * Kurs für d
-     *
-     * en passende Räume gesucht werden @return Die Liste der geeigneten Räume
+     * Kurs für den passende Räume gesucht werden @return Die Liste der geeigneten Räume
      */
     private List<Room> getMatchingRooms(Course course) {
-
+        
         List<Room> matchingRooms = new ArrayList<>();
 
         for (Room room : dataController.getRooms()) {
-
-            if (room.getAvailableEquipments().containsAll(course.getRequiredEquipments())
+            if (room.getAvailableEquipments().containsAll(course.getRequiredEquipments()) 
                     && room.getSeats() >= course.getStudents()) {
-
+                
                 matchingRooms.add(room);
             }
-
         }
-
+        
         return matchingRooms;
     }
-
+    
 }

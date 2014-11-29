@@ -2,7 +2,6 @@ package osjava.tl3.model;
   
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Diese Klasse repräsentiert die Entität Lehrveranstaltung.
@@ -35,7 +34,6 @@ public class Course
             return false;
         }
     }
-    
     
     @Override
     public String toString() {
