@@ -1,11 +1,14 @@
 package examples.jtable;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JScrollPane;
 import osjava.tl3.logic.planning.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.MasterSchedule;
+import osjava.tl3.model.Room;
+import osjava.tl3.model.Schedule;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -13,49 +16,50 @@ import osjava.tl3.model.controller.DataController;
  * @author Meikel Bode
  */
 public class ScheduleTableExample extends javax.swing.JFrame {
-    
+
     DataController dataController;
     Scheduler scheduler;
     MasterSchedule masterSchedule;
-    
+
     ScheduleTable scheduleTable;
     ScheduleTableModel scheduleTableModel;
-    
-    
-    
+
+    DefaultComboBoxModel<Room> roomCbModel;
+    DefaultComboBoxModel<Room> academicCbModel;
+    DefaultComboBoxModel<Room> studyProgramCbModel;
+
     /**
      * Creates new form NewJFrame
      */
     public ScheduleTableExample() {
-        
+
         initComponents();
-        
+
         dataController = new DataController();
         InputFileHelper.loadCourses(dataController);
         InputFileHelper.loadRooms(dataController);
         InputFileHelper.loadStudyPrograms(dataController);
-        
+
         scheduler = new Scheduler();
         scheduler.setDataController(dataController);
         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
         scheduler.executeStrategy(null);
-        
+
         masterSchedule = scheduler.getMasterSchedule();
-        
+
         scheduleTable = new ScheduleTable();
         scheduleTableModel = new ScheduleTableModel();
         scheduleTable.setModel(scheduleTableModel);
-        
-        Academic academic = dataController.getAcademicByName("Hamann");
-        
-        scheduleTableModel.setSchedule(masterSchedule.getSchedule(academic));
+
+        roomCbModel = new DefaultComboBoxModel<>(dataController.getRooms().toArray(new Room[dataController.getRooms().size()]));
+      //  academicCbModel = new DefaultComboBoxModel<>(dataController.get().toArray(new Room[dataController.getRooms().size()]));
+        cbSchedule.setModel(roomCbModel);
         
         JScrollPane sp = new JScrollPane();
         sp.setViewportView(scheduleTable);
-        
+
         getContentPane().add(sp);
-        
-        
+
         setSize(1024, 768);
         setLocationByPlatform(true);
     }
@@ -69,11 +73,108 @@ public class ScheduleTableExample extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        rbRooms = new javax.swing.JRadioButton();
+        rbAcademics = new javax.swing.JRadioButton();
+        rbStudyPrograms = new javax.swing.JRadioButton();
+        btnShow = new javax.swing.JButton();
+        cbSchedule = new javax.swing.JComboBox();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        buttonGroup1.add(rbRooms);
+        rbRooms.setSelected(true);
+        rbRooms.setText("Räume");
+        rbRooms.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rbRoomsItemStateChanged(evt);
+            }
+        });
+
+        buttonGroup1.add(rbAcademics);
+        rbAcademics.setText("Dozenten");
+
+        buttonGroup1.add(rbStudyPrograms);
+        rbStudyPrograms.setText("Studiengänge");
+        rbStudyPrograms.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbStudyProgramsActionPerformed(evt);
+            }
+        });
+
+        btnShow.setText("Zeigen");
+        btnShow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowActionPerformed(evt);
+            }
+        });
+
+        cbSchedule.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(rbRooms)
+                .addGap(5, 5, 5)
+                .addComponent(rbAcademics)
+                .addGap(5, 5, 5)
+                .addComponent(rbStudyPrograms)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnShow)
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(rbRooms))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(rbAcademics))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbStudyPrograms)
+                            .addComponent(cbSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnShow))
+                .addGap(0, 4, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void rbStudyProgramsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbStudyProgramsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbStudyProgramsActionPerformed
+
+    private void btnShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowActionPerformed
+
+        if (rbRooms.isSelected()) {
+            Room room = (Room)cbSchedule.getSelectedItem();
+
+            if (room != null) {
+                Schedule schedule = masterSchedule.getSchedule(room);
+                scheduleTableModel.setSchedule(schedule);
+                scheduleTable.updateUI();
+            }
+
+        }
+
+    }//GEN-LAST:event_btnShowActionPerformed
+
+    private void rbRoomsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbRoomsItemStateChanged
+
+    }//GEN-LAST:event_rbRoomsItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -112,5 +213,12 @@ public class ScheduleTableExample extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnShow;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox cbSchedule;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton rbAcademics;
+    private javax.swing.JRadioButton rbRooms;
+    private javax.swing.JRadioButton rbStudyPrograms;
     // End of variables declaration//GEN-END:variables
 }
