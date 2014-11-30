@@ -16,21 +16,21 @@ import osjava.tl3.model.controller.DataController;
  * @author Meikel Bode
  */
 public class MasterSchedule {
-
+    
     /**
      * Die Raumpläne
      */
-    private HashMap<Room, Schedule> roomSchedules = new HashMap<>();
+    private final HashMap<Room, Schedule> roomSchedules = new HashMap<>();
 
     /**
      * Die Dozentenpläne
      */
-    private HashMap<Academic, Schedule> acadademicSchedules = new HashMap<>();
+    private final HashMap<Academic, Schedule> acadademicSchedules = new HashMap<>();
 
     /**
      * Die Studienganspläne pro Fachsemester
      */
-    private HashMap<StudyProgram, HashMap<Semester, Schedule>> studyProgramSchedules = new HashMap<>();
+    private final HashMap<StudyProgram, HashMap<Semester, Schedule>> studyProgramSchedules = new HashMap<>();
 
     /**
      * Default Construtor
@@ -167,7 +167,7 @@ public class MasterSchedule {
      *
      * @return Der Maximalplan
      */
-    private List<ScheduleCoordinate> generateMaximumCoordinates() {
+    public List<ScheduleCoordinate> generateMaximumCoordinates() {
         List<ScheduleCoordinate> coordinates = new ArrayList<>(25);
 
         for (int i = 0; i < 5; i++) {
@@ -234,11 +234,12 @@ public class MasterSchedule {
         if (course.getType().getName().equals("Uebung")) {
             room.setName("Externer Seminarraum");
         } else {
-            room.setName("Externer Hörsal");
+            room.setName("Externer Hörsaal");
         }
         room.setSeats(course.getStudents());
         room.setAvailableEquipments(course.getRequiredEquipments());
-
+        
+        
         /**
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
          */
@@ -278,7 +279,7 @@ public class MasterSchedule {
      * @param roomType
      * @return Die Anzahl der Räume des gegebenen Typs
      */
-    private int getRoomCount(RoomType roomType) {
+    public int getRoomCount(RoomType roomType) {
         int count = 0;
 
         Iterator<Room> rooms = roomSchedules.keySet().iterator();
@@ -309,6 +310,35 @@ public class MasterSchedule {
         }
 
         return blocks;
+    }
+    
+    /**
+     * Liefert den Plan für den gegebenen Raum
+     * @param room Der Raum
+     * @return Der Raumplan
+     */
+    public Schedule getSchedule(Room room) {
+        return roomSchedules.get(room);
+    }
+    
+    /**
+     * Liefert den Plan für den gegebenen Dozeten
+     * @param academic Der Dozent
+     * @return Der Dozentenplan
+     */
+    public Schedule getSchedule(Academic academic) {
+        return acadademicSchedules.get(academic);
+    }
+    
+    /**
+     * Liefert den Plan für das Fachsemesters des gegebenen Studienganges
+     * @param studyProgram Der Studiengang
+     * @param semester Das Fachsemesters des Studienganges
+     * @return Der Semesterplan
+     */
+    public Schedule getSchedule(StudyProgram studyProgram, Semester semester) {
+       
+        return studyProgramSchedules.get(studyProgram).get(semester);
     }
 
     public void printRoomScheduleOverview(RoomType roomType) {

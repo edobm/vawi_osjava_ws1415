@@ -5,6 +5,7 @@ import java.util.List;
 import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.RoomReader;
 import osjava.tl3.logic.io.StudyProgramReader;
+import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
@@ -43,7 +44,7 @@ public class DataController {
      */
     public Room getRoomByName(String name) {
         for (Room room : rooms) {
-            if (room.getName().equalsIgnoreCase(name)) {
+            if (room.getName().equals(name)) {
                 return room;
             }
         }
@@ -57,8 +58,36 @@ public class DataController {
      */
     public Course getCourseByName(String name) {
         for (Course course : courses) {
-            if (course.getName().equalsIgnoreCase(name)) {
+            if (course.getName().equals(name)) {
                 return course;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Liefert den Kurs mit der gegebenen ID
+     * @param id Die ID des Kurses
+     * @return Der Kurs oder null, wenn unbekannt
+     */
+    public Course getCourseByID(String id) {
+        for (Course course : courses) {
+            if (course.getNumber().equals(id)) {
+                return course;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Liefert den Dozenten mit dem gegebenen Namen
+     * @param name Der Name des Dozenten
+     * @return Der Dozent oder null, wenn unbekannt
+     */
+    public Academic getAcademicByName(String name) {
+        for (Course course : courses) {
+            if (course.getAcademic().getName().equals(name)) {
+                return course.getAcademic();
             }
         }
         return null;
@@ -71,11 +100,30 @@ public class DataController {
      */
     public StudyProgram getStudyProgramByName(String name) {
         for (StudyProgram studyProgram : studyPrograms) {
-            if (studyProgram.getName().equalsIgnoreCase(name)) {
+            if (studyProgram.getName().equals(name)) {
                 return studyProgram;
             }
         }
         return null;
+    }
+    
+    /**
+     * Liefert die Studiengänge in denen der gegebene Kurs Bestandteil des
+     * Curriculums ist
+     * @param course Der Kurs für den Studiengänge gesucht werden
+     * @return Die Liste der passenden Studiengänge
+     */
+    public List<StudyProgram> getStudyProgramsByCourse(Course course) {
+        
+        List<StudyProgram> studyProgrammsWithCourse = new ArrayList<>();
+        
+        for (StudyProgram studyProgramm : studyPrograms) {
+            if(studyProgramm.containsCourse(course)) {
+                studyProgrammsWithCourse.add(studyProgramm);
+            }
+        }
+        
+        return studyProgrammsWithCourse;
     }
 
     /**
