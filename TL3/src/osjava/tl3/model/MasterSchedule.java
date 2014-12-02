@@ -77,9 +77,10 @@ public class MasterSchedule {
             studyProgramSchedules.put(studyProgram, semesterPlans);
             studyProgrammScheduleCount += semesterPlans.size();
         }
-        System.out.println("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
 
+        System.out.println("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
         System.out.println("Gesamtplan initialisiert");
+
     }
 
     /**
@@ -110,15 +111,16 @@ public class MasterSchedule {
     public List<ScheduleCoordinate> getFreeCoordiates(Room room) {
         return getFreeCoordinates(roomSchedules.get(room));
     }
-    
+
     /**
      * Liefert die Räume die dem Gesamtplan bekannt sind vom gegebenen Typen.
-     * @param roomType Der Typ 
+     *
+     * @param roomType Der Typ
      * @return Die Liste der Räume
      */
     public List<Room> getRooms(RoomType roomType) {
         List<Room> roomList = new ArrayList<>();
-        
+
         Iterator<Room> rooms = roomSchedules.keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
@@ -126,22 +128,23 @@ public class MasterSchedule {
                 roomList.add(r);
             }
         }
-        
+
         return roomList;
     }
 
-     /**
+    /**
      * Liefert die Räume die dem Gesamtplan bekannt sind.
+     *
      * @return Die Liste der Räume
      */
     public List<Room> getRooms() {
         List<Room> roomList = new ArrayList<>();
-        
+
         Iterator<Room> rooms = roomSchedules.keySet().iterator();
         while (rooms.hasNext()) {
-           roomList.add(rooms.next());
+            roomList.add(rooms.next());
         }
-        
+
         return roomList;
     }
 
@@ -272,7 +275,7 @@ public class MasterSchedule {
         }
         room.setSeats(course.getStudents());
         room.setAvailableEquipments(course.getRequiredEquipments());
-        
+
         /**
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
          */
@@ -289,9 +292,9 @@ public class MasterSchedule {
         blockCoordinate(coordinate, room, course);
 
     }
-    
+
     public Room createExternalRoom(Course course, List<Equipment> allEquipments) {
-        
+
         /**
          * Einen Raum erzeugen, der genau auf den Kurs passt
          */
@@ -304,8 +307,8 @@ public class MasterSchedule {
         }
         room.setSeats(10000);
         room.setAvailableEquipments(allEquipments);
-        
-          /**
+
+        /**
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
          */
         Schedule schedule = new Schedule(ScheduleType.ROOM_EXTERNAL);
@@ -314,7 +317,7 @@ public class MasterSchedule {
          * Den externen Raum und seinen Plan zur liste der Raumpläne hinzufügen
          */
         roomSchedules.put(room, schedule);
-        
+
         return room;
     }
 
@@ -333,8 +336,8 @@ public class MasterSchedule {
                     seats += scheduleElement.getCourse().getStudents();
                 }
             }
-         }
-        
+        }
+
         return seats;
     }
 
@@ -415,16 +418,14 @@ public class MasterSchedule {
         Iterator<StudyProgram> studyPrograms = studyProgramSchedules.keySet().iterator();
         while (studyPrograms.hasNext()) {
             StudyProgram studyProgram = studyPrograms.next();
-         //  if (studyProgram.containsCourse(course)) {
-                for (Semester semester : studyProgram.getSemesters()) {
-                    Schedule schedule = studyProgramSchedules.get(studyProgram).get(semester);
-                    for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
-                        if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
-                            schedules.add(schedule);
-                        }
+            for (Semester semester : studyProgram.getSemesters()) {
+                Schedule schedule = studyProgramSchedules.get(studyProgram).get(semester);
+                for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
+                    if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
+                        schedules.add(schedule);
                     }
                 }
-         //   }
+            }
         }
 
         return schedules;
@@ -448,7 +449,6 @@ public class MasterSchedule {
      * @return Der Semesterplan
      */
     public Schedule getSchedule(StudyProgram studyProgram, Semester semester) {
-
         return studyProgramSchedules.get(studyProgram).get(semester);
     }
 
@@ -564,7 +564,5 @@ public class MasterSchedule {
                 }
             }
         }
-
     }
-
 }

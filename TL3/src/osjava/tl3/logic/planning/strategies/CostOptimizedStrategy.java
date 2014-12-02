@@ -3,7 +3,6 @@ package osjava.tl3.logic.planning.strategies;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
@@ -28,16 +27,6 @@ import osjava.tl3.model.controller.DataController;
 public class CostOptimizedStrategy extends Strategy {
 
     /**
-     * Hält alle für einen Raum potentiell möglichen Kurse
-     */
-    private HashMap<Room, List<Course>> roomsFittingCourse;
-
-    /**
-     * Hält alle Kurse, für die kein interner Raum verfügbar ist
-     */
-    private List<Course> coursesNotFitting;
-
-    /**
      * Erzeugt eine Instanz der Planungsstrategie CostOptimizedStrategy
      */
     public CostOptimizedStrategy() {
@@ -52,13 +41,16 @@ public class CostOptimizedStrategy extends Strategy {
 
         // Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
         createSchedule();
-        
+
         masterSchedule.printCoreStats();
         
         // masterSchedule.printStatistics();
         return masterSchedule;
     }
 
+    /**
+     * Planungsstrategie ausführen
+     */
     private void createSchedule() {
 
         Queue<Course> courseQueue = new PriorityQueue<>(new CourseStudentsComparator(CourseStudentsComparator.SortOrder.DESCENDING));
@@ -68,13 +60,12 @@ public class CostOptimizedStrategy extends Strategy {
 
         Course course = null;
         List<Room> matchingRooms = null;
+        List<Course> coursesNotPlanned = new ArrayList<>();
+
         List<ScheduleCoordinate> freeCoordinatesAcademic = null;
         List<ScheduleCoordinate> freeCoordinatesRoom = null;
         List<ScheduleCoordinate> freeCoordinatesStudyPrograms = null;
-
         List<ScheduleCoordinate> freeIntersection = null;
-
-        List<Course> notPlanned = new ArrayList<Course>();
 
         while ((course = courseQueue.poll()) != null) {
 
@@ -83,14 +74,14 @@ public class CostOptimizedStrategy extends Strategy {
             freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
             if (freeCoordinatesAcademic.isEmpty()) {
                 System.out.println("\tFehler: Kurs nicht einplanbar. Dozent hat keine Slots mehr frei: " + course);
-                notPlanned.add(course);
+                coursesNotPlanned.add(course);
                 continue;
             }
 
             freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
             if (freeCoordinatesAcademic.isEmpty()) {
                 System.out.println("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
-                notPlanned.add(course);
+                coursesNotPlanned.add(course);
                 continue;
             }
 
@@ -156,7 +147,7 @@ public class CostOptimizedStrategy extends Strategy {
             }
         }
 
-        System.out.println("Nicht einplanbare Kurse: " + notPlanned);
+        System.out.println("Nicht einplanbare Kurse: " + coursesNotPlanned);
     }
 
     /**
@@ -181,7 +172,7 @@ public class CostOptimizedStrategy extends Strategy {
                 }
             }
         }
-
+        
         return matchingRooms;
     }
 
