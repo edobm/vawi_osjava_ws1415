@@ -51,10 +51,12 @@ public class CostOptimizedStrategy extends Strategy {
         // Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
         createSchedule();
         
-        masterSchedule.printStatistics();
+       // masterSchedule.printStatistics();
         
         return masterSchedule;
     }
+    
+   
     
     private void createSchedule() {
         

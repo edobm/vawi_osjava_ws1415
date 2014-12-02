@@ -3,6 +3,7 @@ package examples.jtable;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import osjava.tl3.model.ScheduleElement;
@@ -14,10 +15,15 @@ import osjava.tl3.model.TimeSlot;
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
     
+    Color colorTutorial = new Color(143, 188, 143);
+    Color colorHearing = new Color(240, 255, 240);
+    Color colorFree = Color.WHITE;
+    Color colorTimeSlot = new Color(212, 212, 212);
+    
     public ScheduleTableCellRenderer() {
         super();
-        setBorder(new LineBorder(Color.GRAY, 1));
-        setBackground(Color.WHITE);
+        setBorder(new LineBorder(Color.DARK_GRAY, 1));
+        
     }
     
     @Override
@@ -29,20 +35,29 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
             
             if (!scheduleElement.isBlocked()) {
                 setText("");
+                setToolTipText("Nicht belegt.");
+                 setBackground(Color.WHITE);
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
-                sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
+                sb.append("[").append(scheduleElement.getCourse().getNumber()).append(",").append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Ü" : "V").append("] ").append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
                 sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
-                sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName());
+                sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
+                sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
                 sb.append("</body></html>");
                 setText(sb.toString());
-                setBackground(Color.LIGHT_GRAY);
+                setBackground(colorHearing);
+                setToolTipText("Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments());
             }
         } else if (value instanceof TimeSlot) {
             setText(value.toString());
+            setToolTipText("");
+            setBackground(colorTimeSlot);
+            
         } else {
+            setToolTipText("Nicht belegt.");
             setText("");
+            setBackground(Color.WHITE);
         }
         return this;
     }

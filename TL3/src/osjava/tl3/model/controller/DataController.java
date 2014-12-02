@@ -7,6 +7,7 @@ import osjava.tl3.logic.io.RoomReader;
 import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
+import osjava.tl3.model.CourseType;
 import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.StudyProgram;
@@ -43,7 +44,7 @@ public class DataController {
      * @return Der Raum oder null, wenn unbekannt
      */
     public Room getRoomByName(String name) {
-        for (Room room : rooms) {
+        for (Room room : getRooms()) {
             if (room.getName().equals(name)) {
                 return room;
             }
@@ -91,6 +92,22 @@ public class DataController {
             }
         }
         return null;
+    }
+
+     /**
+     * Liefert alle Dozenten
+     * @return Die Liste aller bekannten Dozenten
+     */
+    public List<Academic> getAcademics() {
+        List<Academic> academics = new ArrayList<>();
+                
+        for (Course course : courses) {
+            if (!academics.contains(course.getAcademic())) {
+                academics.add(course.getAcademic());
+            }         
+        }
+ 
+        return academics;
     }
 
     /**

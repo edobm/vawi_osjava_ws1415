@@ -1,6 +1,7 @@
 package osjava.tl3.model;
 
-import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -9,6 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import osjava.tl3.logic.planning.InputFileHelper;
+import osjava.tl3.logic.planning.Scheduler;
+import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -233,5 +236,76 @@ public class MasterScheduleTest {
         assertEquals(1, instance.getTotalBlocks(RoomType.EXTERNAL));
        
     }
+    
+    @Test
+    public void testPlanValidity() {
+         System.out.println("testPlanValidity");
+         
+         Scheduler scheduler = new Scheduler();
+         scheduler.setDataController(dataController);
+         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
+         scheduler.executeStrategy(null);
+         
+         instance = scheduler.getMasterSchedule();
+         
+         for (Course course : dataController.getCourses()) {
+             assertEquals(1, countScheduleCordinatesOfCourse(course));
+         }
+    }
+    
+        @Test
+    public void testAssignedToAllScheduleTypes() {
+         System.out.println("testAssignedToAllScheduleTypes");
+         
+         Scheduler scheduler = new Scheduler();
+         scheduler.setDataController(dataController);
+         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
+         scheduler.executeStrategy(null);
+         
+         instance = scheduler.getMasterSchedule();
+         
+         for (Course course : dataController.getCourses()) {
+             assertTrue("Course not assigned to all schedule types: " + course,isAssignedToAllScheduleTypes(course));
+         }
+    }
 
+    private int countScheduleCordinatesOfCourse(Course course) {
+        Hashtable<String, String> hmCoordinates = new Hashtable<>();
+        
+        List<Schedule> schedules = instance.getSchedules(course);
+        System.out.println("Course: [" + course.getNumber() + "] '" + course.getName() + "' is assined to Schedules: " + schedules.size());
+        for (Schedule schedule : schedules) {
+            for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
+                if(scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
+                    hmCoordinates.put(scheduleElement.getCoordiate().toString(), "");
+                    System.out.println(" ScheduleType: " + schedule.getType().name() + ", Room: '" + scheduleElement.getRoom().getName() + "', Coordinate: " + scheduleElement.getCoordiate());
+                }
+            }
+        }
+        
+        return hmCoordinates.size();
+    }
+    
+    private boolean isAssignedToAllScheduleTypes(Course course) {
+        List<Schedule> schedules = instance.getSchedules(course);
+        boolean assignedToRoomSchedule = false;
+        boolean assignedToAcademicSchedule = false;
+        boolean assignedToStudyProgramSchedule = false;
+        
+        for (Schedule schedule : schedules) {
+            if (schedule.getType() == ScheduleType.ACADAMIC) {
+                assignedToAcademicSchedule = true;
+            }
+            if (schedule.getType() == ScheduleType.ROOM_EXTERNAL || schedule.getType() == ScheduleType.ROOM_INTERNAL) {
+                assignedToRoomSchedule = true;
+            }
+             if (schedule.getType() == ScheduleType.STUDY_PROGRAM) {
+                assignedToStudyProgramSchedule = true;
+            }
+        }
+        
+        System.out.println("Course: [" + course.getNumber() + "] '" + course.getName() + "' is assined to room, academic and study programms schedules: " + (assignedToAcademicSchedule && assignedToRoomSchedule && assignedToStudyProgramSchedule));
+      
+        return assignedToAcademicSchedule && assignedToRoomSchedule && assignedToStudyProgramSchedule;
+    }
 }

@@ -95,10 +95,15 @@ public class InputFileHelper {
         final String delimiter = ";";
 
         final String[] fileNames = new String[]{
-            "studiengang_bwlba.csv", "studiengang_drachenba.csv",
-            "studiengang_mumama.csv", "studiengang_physikba.csv",
-            "studiengang_seba.csv", "studiengang_wiba.csv",
-            "studiengang_wiingba.csv", "studiengang_wiwila.csv"};
+           // "studiengang_bwlba.csv", 
+           // "studiengang_drachenba.csv",
+           // "studiengang_mumama.csv", 
+           // "studiengang_physikba.csv",
+            "studiengang_seba.csv", 
+            "studiengang_wiba.csv",
+            //"studiengang_wiingba.csv", 
+            //"studiengang_wiwila.csv"
+        };
 
         // "BWL Bachelor";;;;
         // 1;"Mathematik 1";"Recht 1";"Einführung in BWL und VWL";
@@ -121,7 +126,11 @@ public class InputFileHelper {
                     semester.setName("Semester " + columns[0]);
 
                     for (int i = 1; i < columns.length; i++) {
-                        semester.getCourses().add(dataController.getCourseByName(columns[i]));
+                         for (Course course : dataController.getCourses()) {
+                            if (course.getName().equals(removeQuotationMarks(columns[i]).trim())) {
+                                semester.getCourses().add(course);
+                            }
+                        }                       
                     }
 
                     studyProgram.getSemesters().add(semester);

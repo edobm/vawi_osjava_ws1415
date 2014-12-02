@@ -9,6 +9,7 @@ import osjava.tl3.model.Academic;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.Schedule;
+import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -25,8 +26,8 @@ public class ScheduleTableExample extends javax.swing.JFrame {
     ScheduleTableModel scheduleTableModel;
 
     DefaultComboBoxModel<Room> roomCbModel;
-    DefaultComboBoxModel<Room> academicCbModel;
-    DefaultComboBoxModel<Room> studyProgramCbModel;
+    DefaultComboBoxModel<Academic> academicCbModel;
+    DefaultComboBoxModel<StudyProgram> studyProgramCbModel;
 
     /**
      * Creates new form NewJFrame
@@ -45,15 +46,18 @@ public class ScheduleTableExample extends javax.swing.JFrame {
         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
         scheduler.executeStrategy(null);
 
-        masterSchedule = scheduler.getMasterSchedule();
+        masterSchedule = scheduler.getMasterSchedule(); 
 
         scheduleTable = new ScheduleTable();
         scheduleTableModel = new ScheduleTableModel();
         scheduleTable.setModel(scheduleTableModel);
 
         roomCbModel = new DefaultComboBoxModel<>(dataController.getRooms().toArray(new Room[dataController.getRooms().size()]));
-      //  academicCbModel = new DefaultComboBoxModel<>(dataController.get().toArray(new Room[dataController.getRooms().size()]));
+        academicCbModel = new DefaultComboBoxModel<>(dataController.getAcademics().toArray(new Academic[dataController.getAcademics().size()]));
+        
         cbSchedule.setModel(roomCbModel);
+        cbSchedule.setSelectedIndex(0);
+        updateSelection();
         
         JScrollPane sp = new JScrollPane();
         sp.setViewportView(scheduleTable);
@@ -62,6 +66,30 @@ public class ScheduleTableExample extends javax.swing.JFrame {
 
         setSize(1024, 768);
         setLocationByPlatform(true);
+    }
+    
+    private void updateSelection () {
+          if (rbRooms.isSelected()) {
+            Room room = (Room)cbSchedule.getSelectedItem();
+
+            if (room != null) {
+                Schedule schedule = masterSchedule.getSchedule(room);
+                scheduleTableModel.setSchedule(schedule);
+                scheduleTable.updateUI();
+            }
+            
+        }
+        
+         if (rbAcademics.isSelected()) {
+            Academic academic = (Academic)cbSchedule.getSelectedItem();
+
+            if (academic != null) {
+                Schedule schedule = masterSchedule.getSchedule(academic);
+                scheduleTableModel.setSchedule(schedule);
+                scheduleTable.updateUI();
+            }
+
+        }
     }
 
     /**
@@ -91,9 +119,24 @@ public class ScheduleTableExample extends javax.swing.JFrame {
                 rbRoomsItemStateChanged(evt);
             }
         });
+        rbRooms.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbRoomsActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbAcademics);
         rbAcademics.setText("Dozenten");
+        rbAcademics.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rbAcademicsItemStateChanged(evt);
+            }
+        });
+        rbAcademics.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbAcademicsActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbStudyPrograms);
         rbStudyPrograms.setText("Studiengänge");
@@ -111,6 +154,11 @@ public class ScheduleTableExample extends javax.swing.JFrame {
         });
 
         cbSchedule.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbSchedule.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbScheduleItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -133,18 +181,15 @@ public class ScheduleTableExample extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnShow)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
-                        .addComponent(rbRooms))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(rbAcademics))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rbStudyPrograms)
-                            .addComponent(cbSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnShow))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rbRooms)
+                            .addComponent(rbAcademics)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(rbStudyPrograms)
+                                .addComponent(cbSchedule, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(0, 4, Short.MAX_VALUE))
         );
 
@@ -159,22 +204,38 @@ public class ScheduleTableExample extends javax.swing.JFrame {
 
     private void btnShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowActionPerformed
 
-        if (rbRooms.isSelected()) {
-            Room room = (Room)cbSchedule.getSelectedItem();
+      
 
-            if (room != null) {
-                Schedule schedule = masterSchedule.getSchedule(room);
-                scheduleTableModel.setSchedule(schedule);
-                scheduleTable.updateUI();
-            }
-
-        }
 
     }//GEN-LAST:event_btnShowActionPerformed
 
     private void rbRoomsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbRoomsItemStateChanged
-
+        if (rbRooms.isSelected()) {
+            cbSchedule.setModel(roomCbModel);
+            cbSchedule.setSelectedIndex(0);
+            updateSelection();
+        }
     }//GEN-LAST:event_rbRoomsItemStateChanged
+
+    private void rbRoomsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbRoomsActionPerformed
+        
+    }//GEN-LAST:event_rbRoomsActionPerformed
+
+    private void rbAcademicsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbAcademicsItemStateChanged
+        if (rbAcademics.isSelected()) {
+            cbSchedule.setModel(academicCbModel);
+            cbSchedule.setSelectedIndex(0);
+            updateSelection();
+        }
+    }//GEN-LAST:event_rbAcademicsItemStateChanged
+
+    private void rbAcademicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbAcademicsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbAcademicsActionPerformed
+
+    private void cbScheduleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbScheduleItemStateChanged
+        updateSelection();
+    }//GEN-LAST:event_cbScheduleItemStateChanged
 
     /**
      * @param args the command line arguments

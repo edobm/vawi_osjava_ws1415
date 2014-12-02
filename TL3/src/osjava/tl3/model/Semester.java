@@ -17,7 +17,12 @@ public class Semester
 {
     private StudyProgram studyProgram;
     private String name;
-    private List<Course> courses = new ArrayList<>();;
+    private List<Course> courses = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object obj) {

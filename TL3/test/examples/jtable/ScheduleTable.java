@@ -14,7 +14,7 @@ public class ScheduleTable extends JTable {
 
     public ScheduleTable() {
         super();
-        setRowHeight(50);
+        setRowHeight(90);
         setDefaultRenderer(ScheduleElement.class, new ScheduleTableCellRenderer());
         setDefaultRenderer(TimeSlot.class, new ScheduleTableCellRenderer());
         setGridColor(Color.LIGHT_GRAY);

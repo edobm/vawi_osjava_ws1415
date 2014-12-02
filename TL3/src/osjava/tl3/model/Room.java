@@ -1,29 +1,34 @@
 package osjava.tl3.model;
-  
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Diese Klasse repräsentiert die Entität Raum.
- * 
- * Ein Raum hat eine Bezeichnung, ist von einem bestimmten Typ (intern oder extern) 
- * und zeichnet sich durch verfügbares Equipment und eine maximale Anzahl von Sitzplätzen aus.
- * 
- * Anhand des Raumtyps kann ermittelt werden, ob der Raum angemietet werden muss und welche
- * Kosten dadurch entstehen.
- * 
- * Unklar ist zu diesem Zeitpunkt, ob externe Räume über die Eingabedateien geliefert werden
- * oder ob externe Räume "unbegrenzt" zur Verfügung stehen. Zudem ist unklar, ob die Kosten eines
- * externen Raumes von der tatsächlichen Anzahl der Teilnehmer oder von der verfügbaren
- * Anzahl der Plätze abhängnt (letztes ist die Annahme).
- * 
+ *
+ * Ein Raum hat eine Bezeichnung, ist von einem bestimmten Typ (intern oder
+ * extern) und zeichnet sich durch verfügbares Equipment und eine maximale
+ * Anzahl von Sitzplätzen aus.
+ *
+ * Anhand des Raumtyps kann ermittelt werden, ob der Raum angemietet werden muss
+ * und welche Kosten dadurch entstehen.
+ *
+ * Unklar ist zu diesem Zeitpunkt, ob externe Räume über die Eingabedateien
+ * geliefert werden oder ob externe Räume "unbegrenzt" zur Verfügung stehen.
+ * Zudem ist unklar, ob die Kosten eines externen Raumes von der tatsächlichen
+ * Anzahl der Teilnehmer oder von der verfügbaren Anzahl der Plätze abhängnt
+ * (letztes ist die Annahme).
+ *
  * @author Christoph Lurz
  * @version 1.0
  */
-public class Room
-{
-   private static int COST_PER_SEAT = 10; 
+public class Room {
 
+    private static int COST_PER_SEAT = 10;
+
+    
     /**
      * @return the COST_PER_SEAT
      */
@@ -37,25 +42,55 @@ public class Room
     public static void setCOST_PER_SEAT(int aCOST_PER_SEAT) {
         COST_PER_SEAT = aCOST_PER_SEAT;
     }
-   
-   private RoomType type;
-   private String name;
-   private List<Equipment> availableEquipments = new ArrayList<>();
-   private int seats;
+    
+    private String roomId;
+
+    private RoomType type;
+    private String name;
+    private List<Equipment> availableEquipments = new ArrayList<>();
+    private int seats;
+
+    public Room() {
+        roomId = UUID.randomUUID().toString().toUpperCase();
+    }
 
     @Override
-    public String toString() {
-       return name + " (" + seats+ ")";
+    public boolean equals(Object other) {
+       if (other == null) {
+           return false;
+       }
+       if (other instanceof Room) {
+           return this.roomId.equals(((Room)other).roomId);
+       }
+       else {
+           return false;
+       }
+        
     }
-   
-  
-   /**
-    * Berechnet die Kosten eines Raumes, wenn dieser Extern angemietet werden muss
-    * unter der Annahme, dass die Kosten von der Anzahl verfügbarer Sitzeplätze abhängt.
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.roomId);
+        return hash;
+    }
+
+    
+    
+    @Override
+    public String toString() {
+        return name + " (" + seats + ")";
+    }
+
+    /**
+     * Berechnet die Kosten eines Raumes, wenn dieser Extern angemietet werden
+     * muss unter der Annahme, dass die Kosten von der Anzahl verfügbarer
+     * Sitzeplätze abhängt.
+     *
      * @return Die Kosten eines externen Raumes
-    */
-   public int getCosts() {
-       return type == RoomType.EXTERNAL ? seats * Room.COST_PER_SEAT : 0;
+     */
+    public int getCosts() {
+        return type == RoomType.EXTERNAL ? seats * Room.COST_PER_SEAT : 0;
     }
 
     /**
@@ -113,6 +148,12 @@ public class Room
     public void setSeats(int seats) {
         this.seats = seats;
     }
-   
-   
+
+    /**
+     * @return the roomId
+     */
+    public String getRoomId() {
+        return roomId;
+    }
+
 }
