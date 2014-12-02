@@ -203,15 +203,15 @@ public class MasterScheduleTest {
      * Test of getCosts method, of class MasterSchedule.
      */
     @Test
-    public void testGetCosts() {
-        System.out.println("getCosts");
+    public void testGetExternalScheduledSeats() {
+        System.out.println("getExternalScheduledSeats");
        
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
         Course course = dataController.getCourseByID("1");
 
-        assertEquals(0, instance.getCosts());
+        assertEquals(0, instance.getExternalScheduledSeats());
         instance.scheduleExternal(coordinate, course);
-        assertEquals(10 * course.getStudents(), instance.getCosts());
+        assertEquals(course.getStudents(), instance.getExternalScheduledSeats());
     }
 
     /**

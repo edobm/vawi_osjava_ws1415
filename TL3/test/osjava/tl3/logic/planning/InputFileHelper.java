@@ -20,6 +20,7 @@ import osjava.tl3.model.controller.DataController;
 /**
  * Liest Testdateien aus einen Package ein und erzeugt die korrespondierenden
  * Modellobjektinstanzen
+ *
  * @author Meikel Bode
  */
 public class InputFileHelper {
@@ -42,7 +43,13 @@ public class InputFileHelper {
 
             // Verfügbares Equipment setzen
             if (columns.length == 3) {
-                room.setAvailableEquipments(InputFileHelper.parseEquipments(columns[2]));
+                List<Equipment> equipments = InputFileHelper.parseEquipments(columns[2]);
+                room.setAvailableEquipments(equipments);
+                for (Equipment e : equipments) {
+                    if (!dataController.getEquipments().contains(e)) {
+                        dataController.getEquipments().add(e);
+                    }
+                }
             }
 
             // Typ setzen
@@ -70,14 +77,21 @@ public class InputFileHelper {
             course.setNumber(columns[0]);
             course.setName(InputFileHelper.removeQuotationMarks(columns[1]));
             course.setType(new CourseType(InputFileHelper.removeQuotationMarks(columns[2])));
-            
+
             Academic academic = new Academic();
             academic.setName(InputFileHelper.removeQuotationMarks(columns[3]));
             course.setAcademic(academic);
             course.setStudents(Integer.parseInt(columns[4]));
             try {
                 if (columns.length == 6) {
-                    course.setRequiredEquipments(InputFileHelper.parseEquipments(columns[5]));
+                    List<Equipment> equipments = InputFileHelper.parseEquipments(columns[5]);
+                    course.setRequiredEquipments(equipments);
+                    for (Equipment e : equipments) {
+                        if (!dataController.getEquipments().contains(e)) {
+                            dataController.getEquipments().add(e);
+                        }
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -95,14 +109,14 @@ public class InputFileHelper {
         final String delimiter = ";";
 
         final String[] fileNames = new String[]{
-           // "studiengang_bwlba.csv", 
-           // "studiengang_drachenba.csv",
-           // "studiengang_mumama.csv", 
-           // "studiengang_physikba.csv",
-            "studiengang_seba.csv", 
+            "studiengang_bwlba.csv",
+            "studiengang_drachenba.csv",
+            "studiengang_mumama.csv",
+            "studiengang_physikba.csv",
+            "studiengang_seba.csv",
             "studiengang_wiba.csv",
-            //"studiengang_wiingba.csv", 
-            //"studiengang_wiwila.csv"
+            "studiengang_wiingba.csv",
+            "studiengang_wiwila.csv"
         };
 
         // "BWL Bachelor";;;;
@@ -126,11 +140,11 @@ public class InputFileHelper {
                     semester.setName("Semester " + columns[0]);
 
                     for (int i = 1; i < columns.length; i++) {
-                         for (Course course : dataController.getCourses()) {
+                        for (Course course : dataController.getCourses()) {
                             if (course.getName().equals(removeQuotationMarks(columns[i]).trim())) {
                                 semester.getCourses().add(course);
                             }
-                        }                       
+                        }
                     }
 
                     studyProgram.getSemesters().add(semester);
@@ -158,14 +172,14 @@ public class InputFileHelper {
 
         record = removeQuotationMarks(record);
         record = record.trim();
-        
+
         List<Equipment> equipments = new ArrayList<>();
 
         if (record != null) {
-            
+
             String[] columns = record.split(delimiter);
             for (String equipmentExternal : columns) {
-                
+
                 equipments.add(new Equipment(equipmentExternal.trim()));
             }
 

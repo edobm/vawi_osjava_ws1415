@@ -3,7 +3,6 @@ package examples.jtable;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import osjava.tl3.model.ScheduleElement;
@@ -47,7 +46,7 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 sb.append("</body></html>");
                 setText(sb.toString());
                 setBackground(colorHearing);
-                setToolTipText("Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments());
+                setToolTipText("ID: " + scheduleElement.getRoom().getRoomId() + ", Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments());
             }
         } else if (value instanceof TimeSlot) {
             setText(value.toString());

@@ -1,5 +1,6 @@
 package examples.jtable;
 
+import java.util.Collections;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;

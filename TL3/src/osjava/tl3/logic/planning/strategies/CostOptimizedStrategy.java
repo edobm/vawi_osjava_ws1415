@@ -3,12 +3,14 @@ package osjava.tl3.logic.planning.strategies;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
+import osjava.tl3.model.RoomType;
 import osjava.tl3.model.ScheduleCoordinate;
 import osjava.tl3.model.controller.DataController;
 
@@ -41,7 +43,7 @@ public class CostOptimizedStrategy extends Strategy {
     public CostOptimizedStrategy() {
         super();
     }
-    
+
     @Override
     public MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters) {
         super.dataController = dataController;
@@ -51,100 +53,136 @@ public class CostOptimizedStrategy extends Strategy {
         // Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
         createSchedule();
         
-       // masterSchedule.printStatistics();
+        masterSchedule.printCoreStats();
         
+        // masterSchedule.printStatistics();
         return masterSchedule;
     }
-    
-   
-    
+
     private void createSchedule() {
-        
+
         Queue<Course> courseQueue = new PriorityQueue<>(new CourseStudentsComparator(CourseStudentsComparator.SortOrder.DESCENDING));
-        
+
         courseQueue.addAll(dataController.getCourses());
         System.out.println("Kurse zu planen: " + courseQueue.size());
-        
+
         Course course = null;
         List<Room> matchingRooms = null;
         List<ScheduleCoordinate> freeCoordinatesAcademic = null;
         List<ScheduleCoordinate> freeCoordinatesRoom = null;
         List<ScheduleCoordinate> freeCoordinatesStudyPrograms = null;
-        
-        List<ScheduleCoordinate> freeIntersection = null;
-        
-        while ((course = courseQueue.poll()) != null) {
-            
-            System.out.println("Plane Kurs: " + course);
-            
-            matchingRooms = getMatchingRooms(course);
-            
-            if (matchingRooms.isEmpty()) {
-                
-                freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
-                masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);
-                System.out.println("\tExtern eingeplant: " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0));
-                
-            } else {
-                
-                for (int i = 0; i < matchingRooms.size(); i++) {
-                    Room room = matchingRooms.get(i);
-                    
-                    freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
-                    freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
 
-                    /**
-                     * Wenn der aktuelle Raum keinen weitere freie Koordinate
-                     * hat zum nächsten Raum wechseln
-                     */
-                    if (freeCoordinatesRoom.isEmpty()) {
-                        System.out.println("\tRaum voll: " + room);
-                        if (i < matchingRooms.size() - 1) {
-                            continue;
-                        } else {
-                            masterSchedule.scheduleExternal(freeCoordinatesAcademic.get(0), course);
-                            System.out.println("\tExtern eingeplant: " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0));
-                            
-                            continue;
-                        }
-                    }
-                    
-                    freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
-                    
+        List<ScheduleCoordinate> freeIntersection = null;
+
+        List<Course> notPlanned = new ArrayList<Course>();
+
+        while ((course = courseQueue.poll()) != null) {
+
+            System.out.println("Plane Kurs: " + course);
+
+            freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
+            if (freeCoordinatesAcademic.isEmpty()) {
+                System.out.println("\tFehler: Kurs nicht einplanbar. Dozent hat keine Slots mehr frei: " + course);
+                notPlanned.add(course);
+                continue;
+            }
+
+            freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
+            if (freeCoordinatesAcademic.isEmpty()) {
+                System.out.println("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
+                notPlanned.add(course);
+                continue;
+            }
+
+            boolean coursePlanned = false;
+            matchingRooms = getMatchingRooms(course, RoomType.INTERNAL);
+
+            for (Room room : matchingRooms) {
+
+                freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
+                freeIntersection = new ArrayList<>(freeCoordinatesRoom);
+                freeIntersection.retainAll(freeCoordinatesStudyPrograms);
+                freeIntersection.retainAll(freeCoordinatesAcademic);
+
+                if (freeIntersection.isEmpty()) {
+
+                    System.out.println("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
+                    continue;
+                }
+
+                ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
+
+                masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
+                System.out.println("\tEingeplant (interner Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                coursePlanned = true;
+                break;
+            }
+
+            if (!coursePlanned) {
+                
+                matchingRooms = getMatchingRooms(course, RoomType.EXTERNAL);
+                
+                for (Room room : matchingRooms) {
+
+                    freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                     freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                     freeIntersection.retainAll(freeCoordinatesAcademic);
-                    
+
+                    if (freeIntersection.isEmpty()) {
+
+                        System.out.println("\tKeine Koordiate frei: " + room + " [" + room.getRoomId() + "]");
+                        continue;
+                    }
+
                     ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
-                    
+
                     masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
-                    System.out.println("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room);
+                    System.out.println("\tExtern Eingeplant (bestehender Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                    coursePlanned = true;
                     break;
-                    
                 }
             }
+
+            if (!coursePlanned) {
+
+                // Wurde kein passender Raum gefunden, erzeugen wir einen externen
+                Room externalRoom = masterSchedule.createExternalRoom(course, dataController.getEquipments());
+                dataController.getRooms().add(externalRoom);
+
+                masterSchedule.blockCoordinate(freeCoordinatesAcademic.get(0), externalRoom, course);
+                System.out.println("\tExtern Eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+
+            }
         }
+
+        System.out.println("Nicht einplanbare Kurse: " + notPlanned);
     }
 
     /**
      * Ermittele alle für den gegeben Kurs potentiell geeigneten Räume. Ein Raum
      * ist geeignet wenn das geforderte Equipment vorhanden ist und die Anzahl
      * der Sitzeplätze <= der Anzahl der Kursteilnehmer ist @param course Der
-     * Kurs für den passende Räume gesucht werden @return Die Liste der geeigneten Räume
+     * Kurs für den passende Räume gesucht werden @return Die Liste der
+     * geeigneten Räume
      */
-    private List<Room> getMatchingRooms(Course course) {
-        
+    private List<Room> getMatchingRooms(Course course, RoomType roomType) {
+
         List<Room> matchingRooms = new ArrayList<>();
 
-        for (Room room : dataController.getRooms()) {
-            if (room.getAvailableEquipments().containsAll(course.getRequiredEquipments()) 
-                    && room.getSeats() >= course.getStudents()) {
-                
-                matchingRooms.add(room);
+        for (Room room : masterSchedule.getRooms()) {
+            if (room.getType() == roomType) {
+                if (room.getAvailableEquipments().containsAll(course.getRequiredEquipments())
+                        && room.getSeats() >= course.getStudents()) {
+
+                    //  if (!masterSchedule.getFreeCoordiates(room).isEmpty()){
+                    matchingRooms.add(room);
+                    //  }
+                }
             }
         }
-        
+
         return matchingRooms;
     }
-    
+
 }

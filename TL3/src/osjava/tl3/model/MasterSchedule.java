@@ -130,6 +130,21 @@ public class MasterSchedule {
         return roomList;
     }
 
+     /**
+     * Liefert die Räume die dem Gesamtplan bekannt sind.
+     * @return Die Liste der Räume
+     */
+    public List<Room> getRooms() {
+        List<Room> roomList = new ArrayList<>();
+        
+        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        while (rooms.hasNext()) {
+           roomList.add(rooms.next());
+        }
+        
+        return roomList;
+    }
+
     /**
      * Convenience Methode zur Ermittlung der freien Koordinaten eines
      * Dozentenplanes
@@ -275,7 +290,7 @@ public class MasterSchedule {
 
     }
     
-    public Room createExternalRoom(Course course) {
+    public Room createExternalRoom(Course course, List<Equipment> allEquipments) {
         
         /**
          * Einen Raum erzeugen, der genau auf den Kurs passt
@@ -287,8 +302,8 @@ public class MasterSchedule {
         } else {
             room.setName("Externer Hörsaal");
         }
-        room.setSeats(course.getStudents());
-        room.setAvailableEquipments(course.getRequiredEquipments());
+        room.setSeats(10000);
+        room.setAvailableEquipments(allEquipments);
         
           /**
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
@@ -304,19 +319,23 @@ public class MasterSchedule {
     }
 
     /**
-     * Liefert die Gesamtkosten für die Anmietung externer Räume
+     * Liefert die Gesamtzahl extern eingeplanter Sitzplätze
      *
      * @return Die anfallenden Kosten
      */
-    public int getCosts() {
-        int costs = 0;
+    public int getExternalScheduledSeats() {
+        int seats = 0;
 
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
-        while (rooms.hasNext()) {
-            costs += rooms.next().getCosts();
-        }
-
-        return costs;
+        for (Room room : getRooms(RoomType.EXTERNAL)) {
+            Schedule schedule = getSchedule(room);
+            for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
+                if (scheduleElement.isBlocked()) {
+                    seats += scheduleElement.getCourse().getStudents();
+                }
+            }
+         }
+        
+        return seats;
     }
 
     /**
@@ -481,11 +500,11 @@ public class MasterSchedule {
 
     }
 
-    private void printCoreStats() {
-        System.out.println("Räume (intern) : " + getRoomCount(RoomType.INTERNAL));
-        System.out.println("Räume (extern) : " + getRoomCount(RoomType.EXTERNAL));
-        System.out.println("Gesamtkosten   : " + getCosts());
-        System.out.println("Anzahl Termine : " + getTotalBlocks(RoomType.INTERNAL) + getTotalBlocks(RoomType.EXTERNAL));
+    public void printCoreStats() {
+        System.out.println("Räume (intern)     : " + getRoomCount(RoomType.INTERNAL));
+        System.out.println("Räume (extern)     : " + getRoomCount(RoomType.EXTERNAL));
+        System.out.println("Externe Sitzplätze : " + getExternalScheduledSeats());
+        System.out.println("Anzahl Termine     : " + getTotalBlocks(RoomType.INTERNAL) + getTotalBlocks(RoomType.EXTERNAL));
     }
 
     public void printRoomSchedules(RoomType roomType) {
