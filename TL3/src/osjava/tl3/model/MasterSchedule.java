@@ -1,6 +1,7 @@
 package osjava.tl3.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -123,7 +124,9 @@ public class MasterSchedule {
                 roomList.add(r);
             }
         }
-
+        
+        Collections.sort(roomList);
+        
         return roomList;
     }
 
@@ -140,6 +143,8 @@ public class MasterSchedule {
             roomList.add(rooms.next());
         }
 
+        Collections.sort(roomList);
+         
         return roomList;
     }
 

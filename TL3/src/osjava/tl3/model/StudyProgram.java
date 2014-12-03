@@ -12,13 +12,14 @@ import java.util.List;
  * @author Christian Müller
  * @version 1.0
  */
-public class StudyProgram {
+public class StudyProgram implements Comparable<StudyProgram> {
 
     private String name;
     private List<Semester> semesters = new ArrayList<>();
 
     /**
      * Prüft ob der gegebene Kurs Teil des Curriculums des Studienganges ist
+     *
      * @param course Der zur prüfende Kurs
      * @return Ja oder Nein
      */
@@ -32,9 +33,12 @@ public class StudyProgram {
     }
 
     /**
-     * Liefert das Semester des Studiengangs, in dem der Kurs belegt werden soll.
+     * Liefert das Semester des Studiengangs, in dem der Kurs belegt werden
+     * soll.
+     *
      * @param course Der zu prüfende Kurs
-     * @return Das Semester oder null, wenn der Kurs nicht Teil des Studienganges ist
+     * @return Das Semester oder null, wenn der Kurs nicht Teil des
+     * Studienganges ist
      */
     public Semester getSemesterByCourse(Course course) {
         for (Semester semester : semesters) {
@@ -50,7 +54,6 @@ public class StudyProgram {
         return name;
     }
 
-    
     /**
      * @return the name
      */
@@ -77,5 +80,10 @@ public class StudyProgram {
      */
     public void setSemesters(List<Semester> semesters) {
         this.semesters = semesters;
+    }
+
+    @Override
+    public int compareTo(StudyProgram other) {
+        return name.compareToIgnoreCase(other.name);
     }
 }

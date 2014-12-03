@@ -37,7 +37,7 @@ public class MasterScheduleConsoleWriter {
      */
     public void printRoomScheduleOverview(RoomType roomType) {
         final String formatPattern = "|%-22s|%-10s|%6s|%6s|%7s|%s%n";
-        System.out.printf(formatPattern, "Raum", "Typ", "Plätze", "Kosten", "Termine", "Ausstattung");
+        System.out.printf(formatPattern, "Raum", "Typ", "Plätze", "Termine", "Ausstattung");
         printSeparator(true);
         Iterator<Room> rooms = masterSchedule.getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
@@ -45,7 +45,7 @@ public class MasterScheduleConsoleWriter {
             if (r.getType() == roomType) {
 
                 Schedule schedule = masterSchedule.getRoomSchedules().get(r);
-                System.out.printf(formatPattern, r.getName(), r.getType(), r.getSeats(), r.getCosts(), schedule.getBlockedCoordinates().size() + "/" + masterSchedule.generateMaximumCoordinates().size(), r.getAvailableEquipments());
+                System.out.printf(formatPattern, r.getName(), r.getType(), r.getSeats(), schedule.getBlockedCoordinates().size() + "/" + masterSchedule.generateMaximumCoordinates().size(), r.getAvailableEquipments());
 
             }
         }

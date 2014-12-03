@@ -1,6 +1,7 @@
 package examples.jtable;
 
 import java.util.Collections;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -79,26 +80,34 @@ public class ScheduleGUI extends javax.swing.JFrame {
         DefaultMutableTreeNode rRooms = new DefaultMutableTreeNode("Raumpläne");
         rMasterSchedule.add(rRooms);
         DefaultMutableTreeNode rRoomsInternal = new DefaultMutableTreeNode("Interne Räume");
-        for (Room room : masterSchedule.getRooms(RoomType.INTERNAL)) {
+        List<Room> rooms = masterSchedule.getRooms(RoomType.INTERNAL);
+        Collections.sort(rooms);
+        for (Room room : rooms) {
             rRoomsInternal.add(new DefaultMutableTreeNode(room));
         }
         rRooms.add(rRoomsInternal);
         
         DefaultMutableTreeNode rRoomsExternal = new DefaultMutableTreeNode("Externe Räume");
-        for (Room room : masterSchedule.getRooms(RoomType.EXTERNAL)) {
+        rooms = masterSchedule.getRooms(RoomType.EXTERNAL);
+        Collections.sort(rooms);
+        for (Room room : rooms) {
             rRoomsExternal.add(new DefaultMutableTreeNode(room));
         }
         rRooms.add(rRoomsExternal);
        
 
         DefaultMutableTreeNode rAcademics = new DefaultMutableTreeNode("Dozentenpläne");
-        for (Academic academic : dataController.getAcademics()) {
+        List<Academic> academics = dataController.getAcademics();
+        Collections.sort(academics);
+        for (Academic academic : academics) {
             rAcademics.add(new DefaultMutableTreeNode(academic));
         }
         rMasterSchedule.add(rAcademics);
 
         DefaultMutableTreeNode rStudyPrograms = new DefaultMutableTreeNode("Studiengangspläne");
-        for (StudyProgram studyProgram : dataController.getStudyPrograms()) {
+        List<StudyProgram> studyPrograms = dataController.getStudyPrograms();
+        Collections.sort(studyPrograms);
+        for (StudyProgram studyProgram : studyPrograms) {
             DefaultMutableTreeNode rStudyProgram = new DefaultMutableTreeNode(studyProgram);
             rStudyPrograms.add(rStudyProgram);
             for (Semester semester : studyProgram.getSemesters()) {

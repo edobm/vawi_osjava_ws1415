@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author Christian Müller
  * @version 1.0
  */
-public class Academic
+public class Academic implements Comparable<Academic>
 {
     private String name;
 
@@ -47,6 +47,10 @@ public class Academic
         return name;
     }
     
-    
+    @Override
+     public int compareTo(Academic other) {
+        return name.compareToIgnoreCase(other.name);
+    }
+
     
 }

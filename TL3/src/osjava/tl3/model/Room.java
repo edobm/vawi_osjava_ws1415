@@ -24,27 +24,9 @@ import java.util.UUID;
  * @author Christoph Lurz
  * @version 1.0
  */
-public class Room {
-
-    private static int COST_PER_SEAT = 10;
-
-    
-    /**
-     * @return the COST_PER_SEAT
-     */
-    public static int getCOST_PER_SEAT() {
-        return COST_PER_SEAT;
-    }
-
-    /**
-     * @param aCOST_PER_SEAT the COST_PER_SEAT to set
-     */
-    public static void setCOST_PER_SEAT(int aCOST_PER_SEAT) {
-        COST_PER_SEAT = aCOST_PER_SEAT;
-    }
-    
+public class Room implements Comparable<Room> {
+  
     private String roomId;
-
     private RoomType type;
     private String name;
     private List<Equipment> availableEquipments = new ArrayList<>();
@@ -80,17 +62,6 @@ public class Room {
     @Override
     public String toString() {
         return name + " (" + seats + ")";
-    }
-
-    /**
-     * Berechnet die Kosten eines Raumes, wenn dieser Extern angemietet werden
-     * muss unter der Annahme, dass die Kosten von der Anzahl verfügbarer
-     * Sitzeplätze abhängt.
-     *
-     * @return Die Kosten eines externen Raumes
-     */
-    public int getCosts() {
-        return type == RoomType.EXTERNAL ? seats * Room.COST_PER_SEAT : 0;
     }
 
     /**
@@ -154,6 +125,11 @@ public class Room {
      */
     public String getRoomId() {
         return roomId;
+    }
+
+    @Override
+    public int compareTo(Room other) {
+       return name.compareToIgnoreCase(other.name);
     }
 
 }

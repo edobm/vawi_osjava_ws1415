@@ -1,13 +1,13 @@
 package osjava.tl3.model.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.RoomReader;
 import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.CourseType;
 import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.StudyProgram;
@@ -23,11 +23,11 @@ import osjava.tl3.model.StudyProgram;
 public class DataController {
 
     private List<Room> rooms = new ArrayList<>();
-    
+
     private List<StudyProgram> studyPrograms = new ArrayList<>();
     private List<Course> courses = new ArrayList<>();
     private List<Equipment> equipments = new ArrayList<>();
-    
+
     private RoomReader roomReader;
     private StudyProgramReader studyProgrammReader;
     private CourseReader courseReader;
@@ -40,6 +40,7 @@ public class DataController {
 
     /**
      * Liefert den Raum mit der gegebenen Bezeichnung
+     *
      * @param name Der Name des Raumes
      * @return Der Raum oder null, wenn unbekannt
      */
@@ -51,9 +52,10 @@ public class DataController {
         }
         return null;
     }
-    
+
     /**
      * Liefert den Kurs mit der gegebenen Bezeichnung
+     *
      * @param name Der Name des Kurses
      * @return Der Kurs oder null, wenn unbekannt
      */
@@ -65,9 +67,10 @@ public class DataController {
         }
         return null;
     }
-    
+
     /**
      * Liefert den Kurs mit der gegebenen ID
+     *
      * @param id Die ID des Kurses
      * @return Der Kurs oder null, wenn unbekannt
      */
@@ -82,6 +85,7 @@ public class DataController {
 
     /**
      * Liefert den Dozenten mit dem gegebenen Namen
+     *
      * @param name Der Name des Dozenten
      * @return Der Dozent oder null, wenn unbekannt
      */
@@ -94,24 +98,26 @@ public class DataController {
         return null;
     }
 
-     /**
+    /**
      * Liefert alle Dozenten
+     *
      * @return Die Liste aller bekannten Dozenten
      */
     public List<Academic> getAcademics() {
         List<Academic> academics = new ArrayList<>();
-                
+
         for (Course course : courses) {
             if (!academics.contains(course.getAcademic())) {
                 academics.add(course.getAcademic());
-            }         
+            }
         }
- 
+
         return academics;
     }
 
     /**
      * Liefert den Studiengang mit der gegebenen Bezeichnung
+     *
      * @param name Der Name des Studienganges
      * @return Der Studiengang oder null, wenn unbekannt
      */
@@ -123,23 +129,24 @@ public class DataController {
         }
         return null;
     }
-    
+
     /**
      * Liefert die Studiengänge in denen der gegebene Kurs Bestandteil des
      * Curriculums ist
+     *
      * @param course Der Kurs für den Studiengänge gesucht werden
      * @return Die Liste der passenden Studiengänge
      */
     public List<StudyProgram> getStudyProgramsByCourse(Course course) {
-        
+
         List<StudyProgram> studyProgrammsWithCourse = new ArrayList<>();
-        
+
         for (StudyProgram studyProgramm : studyPrograms) {
-            if(studyProgramm.containsCourse(course)) {
+            if (studyProgramm.containsCourse(course)) {
                 studyProgrammsWithCourse.add(studyProgramm);
             }
         }
-        
+
         return studyProgrammsWithCourse;
     }
 
