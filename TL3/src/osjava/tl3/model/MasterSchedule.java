@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -33,12 +34,6 @@ public class MasterSchedule {
     private final HashMap<StudyProgram, HashMap<Semester, Schedule>> studyProgramSchedules = new HashMap<>();
 
     /**
-     * Default Construtor
-     */
-    public MasterSchedule() {
-    }
-
-    /**
      * Auf Basis der Informationen des DataControllers den Gesamtplan
      * initialisieren
      *
@@ -50,19 +45,19 @@ public class MasterSchedule {
          * Raumpläne intialisieren
          */
         for (Room room : dataControler.getRooms()) {
-            roomSchedules.put(room, new Schedule(ScheduleType.ROOM_INTERNAL));
+            getRoomSchedules().put(room, new Schedule(ScheduleType.ROOM_INTERNAL));
         }
-        System.out.println("Raumpläne erzeugt: " + roomSchedules.size());
+        StrategyProtocol.log("Raumpläne erzeugt: " + getRoomSchedules().size());
 
         /**
          * Dozentenpläne initialisieren
          */
         for (Course course : dataControler.getCourses()) {
             if (!acadademicSchedules.containsKey(course.getAcademic())) {
-                acadademicSchedules.put(course.getAcademic(), new Schedule(ScheduleType.ACADAMIC));
+                getAcadademicSchedules().put(course.getAcademic(), new Schedule(ScheduleType.ACADAMIC));
             }
         }
-        System.out.println("Dozentenpläne erzeugt: " + acadademicSchedules.size());
+        StrategyProtocol.log("Dozentenpläne erzeugt: " + getAcadademicSchedules().size());
 
         /**
          * Studiengangspläne initialisieren
@@ -74,12 +69,12 @@ public class MasterSchedule {
             for (Semester semester : studyProgram.getSemesters()) {
                 semesterPlans.put(semester, new Schedule(ScheduleType.STUDY_PROGRAM));
             }
-            studyProgramSchedules.put(studyProgram, semesterPlans);
+            getStudyProgramSchedules().put(studyProgram, semesterPlans);
             studyProgrammScheduleCount += semesterPlans.size();
         }
 
-        System.out.println("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
-        System.out.println("Gesamtplan initialisiert");
+        StrategyProtocol.log("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
+        StrategyProtocol.log("Gesamtplan erfolgreich initialisiert");
 
     }
 
@@ -109,7 +104,7 @@ public class MasterSchedule {
      * @return Die freien Koordinaten des Raumplanes
      */
     public List<ScheduleCoordinate> getFreeCoordiates(Room room) {
-        return getFreeCoordinates(roomSchedules.get(room));
+        return getFreeCoordinates(getRoomSchedules().get(room));
     }
 
     /**
@@ -121,7 +116,7 @@ public class MasterSchedule {
     public List<Room> getRooms(RoomType roomType) {
         List<Room> roomList = new ArrayList<>();
 
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
             if (r.getType() == roomType) {
@@ -140,7 +135,7 @@ public class MasterSchedule {
     public List<Room> getRooms() {
         List<Room> roomList = new ArrayList<>();
 
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             roomList.add(rooms.next());
         }
@@ -156,7 +151,7 @@ public class MasterSchedule {
      * @return Die freien Koordinaten des Dozentenplanes
      */
     public List<ScheduleCoordinate> getFreeCoordiates(Academic academic) {
-        return getFreeCoordinates(acadademicSchedules.get(academic));
+        return getFreeCoordinates(getAcadademicSchedules().get(academic));
     }
 
     /**
@@ -178,14 +173,14 @@ public class MasterSchedule {
          * Für alle Studiengänge in denen der Kurs im Curriculum ist die bereits
          * geblockten Koordinaten ermitteln und aus dem Maximalplan entfernen
          */
-        Iterator<StudyProgram> studyPrograms = studyProgramSchedules.keySet().iterator();
+        Iterator<StudyProgram> studyPrograms = getStudyProgramSchedules().keySet().iterator();
         while (studyPrograms.hasNext()) {
             StudyProgram studyProgram = studyPrograms.next();
 
             if (studyProgram.containsCourse(course)) {
 
                 Semester semester = studyProgram.getSemesterByCourse(course);
-                Schedule semesterSchedule = studyProgramSchedules.get(studyProgram).get(semester);
+                Schedule semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
 
                 freeCordinates.removeAll(semesterSchedule.getBlockedCoordinates());
             }
@@ -231,24 +226,24 @@ public class MasterSchedule {
         /**
          * Koordinate des Raumplanes belegen
          */
-        roomSchedules.get(room).getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
+        getRoomSchedules().get(room).getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
 
         /**
          * Koodinate des Dozentenplanes belegen
          */
-        acadademicSchedules.get(course.getAcademic()).getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
+        getAcadademicSchedules().get(course.getAcademic()).getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
 
         /**
          * Koordinate aller Pläne der relevanten Studiengänge belegen
          */
-        Iterator<StudyProgram> studyPrograms = studyProgramSchedules.keySet().iterator();
+        Iterator<StudyProgram> studyPrograms = getStudyProgramSchedules().keySet().iterator();
         while (studyPrograms.hasNext()) {
             StudyProgram studyProgram = studyPrograms.next();
 
             if (studyProgram.containsCourse(course)) {
 
                 Semester semester = studyProgram.getSemesterByCourse(course);
-                Schedule semesterSchedule = studyProgramSchedules.get(studyProgram).get(semester);
+                Schedule semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
 
                 semesterSchedule.getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
             }
@@ -256,55 +251,19 @@ public class MasterSchedule {
     }
 
     /**
-     * Erzeugt für einen Kurs eine externe Raumbelegung
-     *
-     * @param coordinate Die zu belegende Koordinate
-     * @param course Der einzuplanende Kurs
+     * Erzeugt einen externen Raum und einen korrespondierenden Plan. Weiterhin
+     * werden der Raum und der Plan der Liste der Raumpläne hinzufügt.
+     * @param allEquipments Die Obermenge alle Equipments
+     * @return Der neue, externe Raum
      */
-    public void scheduleExternal(ScheduleCoordinate coordinate, Course course) {
+    public Room createExternalRoom(List<Equipment> allEquipments) {
 
         /**
-         * Einen Raum erzeugen, der genau auf den Kurs passt
+         * Einen Raum erzeugen
          */
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);
-        if (course.getType().getName().equals("Uebung")) {
-            room.setName("Externer Seminarraum");
-        } else {
-            room.setName("Externer Hörsaal");
-        }
-        room.setSeats(course.getStudents());
-        room.setAvailableEquipments(course.getRequiredEquipments());
-
-        /**
-         * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
-         */
-        Schedule schedule = new Schedule(ScheduleType.ROOM_EXTERNAL);
-
-        /**
-         * Den externen Raum und seinen Plan zur liste der Raumpläne hinzufügen
-         */
-        roomSchedules.put(room, schedule);
-
-        /**
-         * Die Koordinate blocken
-         */
-        blockCoordinate(coordinate, room, course);
-
-    }
-
-    public Room createExternalRoom(Course course, List<Equipment> allEquipments) {
-
-        /**
-         * Einen Raum erzeugen, der genau auf den Kurs passt
-         */
-        Room room = new Room();
-        room.setType(RoomType.EXTERNAL);
-        if (course.getType().getName().equals("Uebung")) {
-            room.setName("Externer Seminarraum");
-        } else {
-            room.setName("Externer Hörsaal");
-        }
+        room.setName("Externer Raum " + (getRoomCount(RoomType.EXTERNAL) + 1));
         room.setSeats(10000);
         room.setAvailableEquipments(allEquipments);
 
@@ -316,7 +275,7 @@ public class MasterSchedule {
         /**
          * Den externen Raum und seinen Plan zur liste der Raumpläne hinzufügen
          */
-        roomSchedules.put(room, schedule);
+        getRoomSchedules().put(room, schedule);
 
         return room;
     }
@@ -350,7 +309,7 @@ public class MasterSchedule {
     public int getRoomCount(RoomType roomType) {
         int count = 0;
 
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             if (rooms.next().getType() == roomType) {
                 count++;
@@ -361,7 +320,7 @@ public class MasterSchedule {
     }
 
     /**
-     * Die Gesamtzahl aller Termine
+     * Die Gesamtzahl aller Raumtermine
      *
      * @param roomType
      * @return
@@ -369,11 +328,11 @@ public class MasterSchedule {
     public int getTotalBlocks(RoomType roomType) {
 
         int blocks = 0;
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
             if (r.getType() == roomType) {
-                blocks += roomSchedules.get(r).getBlockedCoordinates().size();
+                blocks += getRoomSchedules().get(r).getBlockedCoordinates().size();
             }
         }
 
@@ -387,16 +346,24 @@ public class MasterSchedule {
      * @return Der Raumplan
      */
     public Schedule getSchedule(Room room) {
-        return roomSchedules.get(room);
+        return getRoomSchedules().get(room);
     }
 
+    /**
+     * Liefert alle Pläne in denen der gegebene Kurs einplant wurde
+     * @param course Der Kurs dessen Einplanungen gesucht sind
+     * @return Die Liste der Pläne
+     */
     public List<Schedule> getSchedules(Course course) {
         List<Schedule> schedules = new ArrayList<>();
 
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
+        /**
+         * Alle Raumpläne finden
+         */
+        Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
-            Schedule schedule = roomSchedules.get(r);
+            Schedule schedule = getRoomSchedules().get(r);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                     schedules.add(schedule);
@@ -404,10 +371,13 @@ public class MasterSchedule {
             }
         }
 
-        Iterator<Academic> academics = acadademicSchedules.keySet().iterator();
+        /**
+         * Alle Dozentenpläne finden
+         */
+        Iterator<Academic> academics = getAcadademicSchedules().keySet().iterator();
         while (academics.hasNext()) {
             Academic a = academics.next();
-            Schedule schedule = acadademicSchedules.get(a);
+            Schedule schedule = getAcadademicSchedules().get(a);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                     schedules.add(schedule);
@@ -415,11 +385,14 @@ public class MasterSchedule {
             }
         }
 
-        Iterator<StudyProgram> studyPrograms = studyProgramSchedules.keySet().iterator();
+        /**
+         * Alle Fachsemesterpläne finden
+         */
+        Iterator<StudyProgram> studyPrograms = getStudyProgramSchedules().keySet().iterator();
         while (studyPrograms.hasNext()) {
             StudyProgram studyProgram = studyPrograms.next();
             for (Semester semester : studyProgram.getSemesters()) {
-                Schedule schedule = studyProgramSchedules.get(studyProgram).get(semester);
+                Schedule schedule = getStudyProgramSchedules().get(studyProgram).get(semester);
                 for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                     if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                         schedules.add(schedule);
@@ -438,7 +411,7 @@ public class MasterSchedule {
      * @return Der Dozentenplan
      */
     public Schedule getSchedule(Academic academic) {
-        return acadademicSchedules.get(academic);
+        return getAcadademicSchedules().get(academic);
     }
 
     /**
@@ -449,120 +422,30 @@ public class MasterSchedule {
      * @return Der Semesterplan
      */
     public Schedule getSchedule(StudyProgram studyProgram, Semester semester) {
-        return studyProgramSchedules.get(studyProgram).get(semester);
+        return getStudyProgramSchedules().get(studyProgram).get(semester);
     }
 
-    public void printRoomScheduleOverview(RoomType roomType) {
-        final String formatPattern = "|%-22s|%-10s|%6s|%6s|%7s|%s%n";
-        System.out.printf(formatPattern, "Raum", "Typ", "Plätze", "Kosten", "Termine", "Ausstattung");
-        printSeparator(true);
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
-        while (rooms.hasNext()) {
-            Room r = rooms.next();
-            if (r.getType() == roomType) {
-
-                Schedule schedule = roomSchedules.get(r);
-                System.out.printf(formatPattern, r.getName(), r.getType(), r.getSeats(), r.getCosts(), schedule.getBlockedCoordinates().size() + "/" + generateMaximumCoordinates().size(), r.getAvailableEquipments());
-
-            }
-        }
+    /**
+     * Liefert die Map der Raumpläne
+     * @return Die Raumpläne
+     */
+    public HashMap<Room, Schedule> getRoomSchedules() {
+        return roomSchedules;
     }
 
-    public void printStatistics() {
-        printHeader();
-        printCoreStats();
-        printSeparator(true);
-        printRoomScheduleOverview(RoomType.INTERNAL);
-        printSeparator(false);
-        printRoomScheduleOverview(RoomType.EXTERNAL);
-        printSeparator(false);
-        printRoomSchedules(RoomType.INTERNAL);
-        printSeparator(false);
-        printRoomSchedules(RoomType.EXTERNAL);
-        printSeparator(false);
-        printAcademicSchedules();
-
+    /**
+     * Liert die Map der Dozentenpläne
+     * @return Die Dozentenpläne
+     */
+    public HashMap<Academic, Schedule> getAcadademicSchedules() {
+        return acadademicSchedules;
     }
 
-    private void printHeader() {
-        printSeparator(false);
-        System.out.println(" GESAMTPLAN ");
-        printSeparator(false);
-    }
-
-    private void printSeparator(boolean single) {
-
-        if (single) {
-            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        } else {
-            System.out.println("===============================================================================================================================================================================================================================================================================================================================================================================");
-        }
-
-    }
-
-    public void printCoreStats() {
-        System.out.println("Räume (intern)     : " + getRoomCount(RoomType.INTERNAL));
-        System.out.println("Räume (extern)     : " + getRoomCount(RoomType.EXTERNAL));
-        System.out.println("Externe Sitzplätze : " + getExternalScheduledSeats());
-        System.out.println("Anzahl Termine     : " + getTotalBlocks(RoomType.INTERNAL) + getTotalBlocks(RoomType.EXTERNAL));
-    }
-
-    public void printRoomSchedules(RoomType roomType) {
-
-        Iterator<Room> rooms = roomSchedules.keySet().iterator();
-        while (rooms.hasNext()) {
-            Room r = rooms.next();
-            if (r.getType() == roomType) {
-                printSeparator(false);
-                System.out.println("Raumplan: " + r + "; Termine: " + roomSchedules.get(r).getBlockedCoordinates().size());
-
-                printSchedule(roomSchedules.get(r), false);
-
-            }
-        }
-    }
-
-    public void printAcademicSchedules() {
-
-        Iterator<Academic> academics = acadademicSchedules.keySet().iterator();
-        while (academics.hasNext()) {
-            Academic r = academics.next();
-            printSeparator(false);
-            System.out.println("Dozentenplan: " + r.getName() + "; Termine: " + acadademicSchedules.get(r).getBlockedCoordinates().size());
-
-            printSchedule(acadademicSchedules.get(r), true);
-
-        }
-    }
-
-    public void printSchedule(Schedule schedule, boolean withRoom) {
-        final String formatPattern = "%-11s|%-70s|%-70s|%-70s|%-70s|%-70s|%n";
-
-        System.out.printf(formatPattern, "Zeitrahmen", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag");
-        printSeparator(true);
-
-        String[] line = new String[6];
-
-        for (int i = 0; i < 5; i++) {
-            for (int y = 0; y < 5; y++) {
-                ScheduleElement scheduleElement = schedule.getScheduleElement(new ScheduleCoordinate(Day.valueOf(y), TimeSlot.valueOf(i)));
-                if (scheduleElement.isBlocked()) {
-                    line[y + 1] = scheduleElement.getCourse().getName() + " (" + scheduleElement.getCourse().getNumber() + "; " + scheduleElement.getCourse().getAcademic().getName() + "; " + scheduleElement.getCourse().getStudents();
-                    if (withRoom) {
-                        line[y + 1] += "; " + scheduleElement.getRoom().getName();
-                    }
-                    line[y + 1] += ")";
-                } else {
-                    line[y + 1] = "";
-                }
-
-                line[0] = TimeSlot.valueOf(i).toString();
-
-                if (y == 4) {
-
-                    System.out.printf(formatPattern, line[0], line[1], line[2], line[3], line[4], line[5]);
-                }
-            }
-        }
+    /**
+     * Liefert die Studigangs-/Fachsemesterpläne
+     * @return Die Studiengs-/Fachsemesterpläne
+     */
+    public HashMap<StudyProgram, HashMap<Semester, Schedule>> getStudyProgramSchedules() {
+        return studyProgramSchedules;
     }
 }

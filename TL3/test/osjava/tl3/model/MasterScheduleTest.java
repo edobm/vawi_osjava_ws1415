@@ -1,7 +1,6 @@
 package osjava.tl3.model;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -174,32 +173,6 @@ public class MasterScheduleTest {
     }
 
     /**
-     * Test of scheduleExternal method, of class MasterSchedule.
-     */
-    //@Test
-    public void testScheduleExternal() {
-        System.out.println("scheduleExternal");
-        ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
-        Course course = dataController.getCourseByID("1");
-
-        instance.scheduleExternal(coordinate, course);
-
-        assertEquals(1, instance.getRoomCount(RoomType.EXTERNAL));
-        
-    
-        Room room = dataController.getRoomByName("Externer Hörsaal");
-        
-        Schedule schedule = instance.getSchedule(room);
-        ScheduleElement scheduleElement = schedule.getScheduleElement(coordinate);
-
-        assertTrue(scheduleElement.isBlocked());
-        assertTrue(scheduleElement.getCourse().equals(course));
-        assertTrue(scheduleElement.getRoom().equals(room));
-        assertTrue(scheduleElement.getCoordiate().equals(coordinate));
-        assertTrue(scheduleElement.getRoom().getType() == RoomType.EXTERNAL);
-    }
-
-    /**
      * Test of getCosts method, of class MasterSchedule.
      */
     @Test
@@ -208,9 +181,10 @@ public class MasterScheduleTest {
        
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
         Course course = dataController.getCourseByID("1");
-
+        Room room = instance.createExternalRoom(dataController.getEquipments());
+        
         assertEquals(0, instance.getExternalScheduledSeats());
-        instance.scheduleExternal(coordinate, course);
+        instance.blockCoordinate(coordinate, room, course);
         assertEquals(course.getStudents(), instance.getExternalScheduledSeats());
     }
 
@@ -223,6 +197,8 @@ public class MasterScheduleTest {
         
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
         Room room1 = dataController.getRoomByName("Audimax");
+        Room room2 = instance.createExternalRoom(dataController.getEquipments());
+        
         Course course1 = dataController.getCourseByID("1");
         Course course2 = dataController.getCourseByID("17");
 
@@ -230,7 +206,7 @@ public class MasterScheduleTest {
         assertEquals(0, instance.getTotalBlocks(RoomType.EXTERNAL));
          
         instance.blockCoordinate(coordinate, room1, course1);
-        instance.scheduleExternal(coordinate, course2);
+        instance.blockCoordinate(coordinate, room2, course2);
         
         assertEquals(1, instance.getTotalBlocks(RoomType.INTERNAL));
         assertEquals(1, instance.getTotalBlocks(RoomType.EXTERNAL));

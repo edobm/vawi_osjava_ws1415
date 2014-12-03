@@ -9,6 +9,7 @@ import javax.swing.tree.TreeNode;
 import osjava.tl3.logic.planning.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.StrategyType;
+import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
@@ -118,26 +119,68 @@ public class ScheduleGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        protocolDialog = new javax.swing.JDialog();
+        jButton2 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         spTree = new javax.swing.JScrollPane();
         jt = new javax.swing.JTree();
         spTable = new javax.swing.JScrollPane();
 
+        protocolDialog.setTitle("Protokoll der Strategieausführung");
+
+        jButton2.setText("Schließen");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        javax.swing.GroupLayout protocolDialogLayout = new javax.swing.GroupLayout(protocolDialog.getContentPane());
+        protocolDialog.getContentPane().setLayout(protocolDialogLayout);
+        protocolDialogLayout.setHorizontalGroup(
+            protocolDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(protocolDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(protocolDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolDialogLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)))
+                .addContainerGap())
+        );
+        protocolDialogLayout.setVerticalGroup(
+            protocolDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addGap(6, 6, 6))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 738, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        jToolBar1.setRollover(true);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        jButton1.setText("Protokoll zeigen");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+
+        getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setDividerLocation(200);
 
@@ -179,6 +222,20 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jtValueChanged
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        protocolDialog.setVisible(false);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+         jTextArea1.setText(StrategyProtocol.getProtocol());
+         protocolDialog.setSize(1024, 800);
+         protocolDialog.setLocationRelativeTo(null);;
+         protocolDialog.setVisible(true);
+         
+         
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -215,9 +272,14 @@ public class ScheduleGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTree jt;
+    private javax.swing.JDialog protocolDialog;
     private javax.swing.JScrollPane spTable;
     private javax.swing.JScrollPane spTree;
     // End of variables declaration//GEN-END:variables
