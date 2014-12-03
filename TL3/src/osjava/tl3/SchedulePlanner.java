@@ -45,9 +45,14 @@ public class SchedulePlanner
    }
    
    public void parseArgumentVector(String[] argv) {
-       for(String argument : argv) {
-           System.out.println(argument);
+       if(argv.length == 2) {
+           inputDirectory = argv[0];
+           outputDirectory = argv[1];
+           outputFormat = argv[2];
+       } else {
+           System.exit(0);
        }
+       
    }
    
    /**
