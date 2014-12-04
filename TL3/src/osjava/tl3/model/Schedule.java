@@ -51,14 +51,14 @@ public class Schedule {
     }
 
     /**
-     * Initialisiert den Plan
+     * Initialisiert den Plan mit 5 x 5 Koordinaten
      */
     private void initSchedule() {
 
-        for (int i = 0; i < 5; i++) {
-            for (int y = 0; y < 5; y++) {
+        for (int day = 0; day < 5; day++) {
+            for (int timeSlot = 0; timeSlot < 5; timeSlot++) {
                 ScheduleElement scheduleElement = new ScheduleElement();
-                scheduleElement.setCoordiate(new ScheduleCoordinate(Day.valueOf(i), TimeSlot.valueOf(y)));
+                scheduleElement.setCoordiate(new ScheduleCoordinate(Day.valueOf(day), TimeSlot.valueOf(timeSlot)));
                 scheduleElements.add(scheduleElement);
             }
         }
