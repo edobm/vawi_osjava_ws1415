@@ -200,7 +200,7 @@ public class MasterScheduleTest {
         Room room2 = instance.createExternalRoom(dataController.getEquipments());
         
         Course course1 = dataController.getCourseByID("1");
-        Course course2 = dataController.getCourseByID("17");
+        Course course2 = dataController.getCourseByID("114");
 
         assertEquals(0, instance.getTotalBlocks(RoomType.INTERNAL));
         assertEquals(0, instance.getTotalBlocks(RoomType.EXTERNAL));

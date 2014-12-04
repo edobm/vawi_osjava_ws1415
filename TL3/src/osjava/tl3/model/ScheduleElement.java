@@ -40,6 +40,9 @@ public class ScheduleElement
      * @return Die aktuelle Instanz des Planelements auf dem gearbeitet wird.
      */
     public ScheduleElement assignCourse(Course course) {
+        if (this.course != null) {
+            throw new IllegalStateException("Course already assinged!");
+        }
         this.course = course;
         return this;
     }
@@ -50,6 +53,9 @@ public class ScheduleElement
      * @return Die aktuelle Instanz des Planelements auf dem gearbeitet wird.
      */
     public ScheduleElement assignRoom(Room room) {
+        if (this.room != null) {
+            throw new IllegalStateException("Room already assinged!");
+        }
         this.room = room;
         return this;
     }

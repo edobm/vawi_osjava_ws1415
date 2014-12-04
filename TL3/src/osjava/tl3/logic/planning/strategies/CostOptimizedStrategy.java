@@ -136,7 +136,7 @@ public class CostOptimizedStrategy extends Strategy {
 
                 /**
                  * Schnittmenge über alle freien Koordinaten des Raumplans, des
-                 * Dozenteplans und alle Fachsemesterpläne erzeugen
+                 * Dozentenplans und alle Fachsemesterpläne erzeugen
                  */
                 freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -193,7 +193,7 @@ public class CostOptimizedStrategy extends Strategy {
 
                     /**
                      * Schnittmenge über alle freien Koordinaten des Raumplans,
-                     * des Dozenteplans und alle Fachsemesterpläne erzeugen
+                     * des Dozentenplans und alle Fachsemesterpläne erzeugen
                      */
                     freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -247,11 +247,20 @@ public class CostOptimizedStrategy extends Strategy {
                 dataController.getRooms().add(externalRoom);
 
                 /**
+                 * Schnittmenge über alle freien Koordinaten des Raumplans, des
+                 * Dozentenplans und alle Fachsemesterpläne erzeugen
+                 */
+                freeCoordinatesRoom = masterSchedule.getFreeCoordiates(externalRoom);
+                freeIntersection = new ArrayList<>(freeCoordinatesRoom);
+                freeIntersection.retainAll(freeCoordinatesStudyPrograms);
+                freeIntersection.retainAll(freeCoordinatesAcademic);
+                
+                /**
                  * Erste freie Koordinate für die Planung verwenden
                  */
-                masterSchedule.blockCoordinate(freeCoordinatesAcademic.get(0), externalRoom, course);
+                masterSchedule.blockCoordinate(freeIntersection.get(0), externalRoom, course);
 
-                StrategyProtocol.log("\tExtern Eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeCoordinatesAcademic.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+                StrategyProtocol.log("\tExtern Eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
 
             }
         }
