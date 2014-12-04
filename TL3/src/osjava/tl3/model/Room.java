@@ -3,7 +3,6 @@ package osjava.tl3.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Diese Klasse repräsentiert die Entität Raum.
@@ -26,14 +25,17 @@ import java.util.UUID;
  */
 public class Room implements Comparable<Room> {
   
-    private String roomId;
+    private static int counter = 0;
+    
+    private final String roomId;
     private RoomType type;
     private String name;
     private List<Equipment> availableEquipments = new ArrayList<>();
     private int seats;
 
     public Room() {
-        roomId = UUID.randomUUID().toString().toUpperCase();
+ 
+        roomId = String.valueOf(counter++);
     }
 
     @Override

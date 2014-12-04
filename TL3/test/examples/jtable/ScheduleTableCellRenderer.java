@@ -13,29 +13,30 @@ import osjava.tl3.model.TimeSlot;
  * @author Meikel Bode
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
-    
+
     Color colorTutorial = new Color(143, 188, 143);
     Color colorHearing = new Color(240, 255, 240);
     Color colorFree = Color.WHITE;
     Color colorTimeSlot = new Color(212, 212, 212);
-    
+
     public ScheduleTableCellRenderer() {
         super();
         setBorder(new LineBorder(Color.DARK_GRAY, 1));
-        
+
     }
-    
+
     @Override
     public Component getTableCellRendererComponent(JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,
             int column) {
+        
         if (value instanceof ScheduleElement) {
             ScheduleElement scheduleElement = (ScheduleElement) value;
-            
+          
             if (!scheduleElement.isBlocked()) {
                 setText("");
                 setToolTipText("Nicht belegt.");
-                 setBackground(Color.WHITE);
+                setBackground(colorFree);
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
@@ -46,18 +47,18 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 sb.append("</body></html>");
                 setText(sb.toString());
                 setBackground(colorHearing);
-                setToolTipText("ID: " + scheduleElement.getRoom().getRoomId() + ", Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments());
+                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
             }
         } else if (value instanceof TimeSlot) {
             setText(value.toString());
             setToolTipText("");
             setBackground(colorTimeSlot);
-            
         } else {
             setToolTipText("Nicht belegt.");
             setText("");
-            setBackground(Color.WHITE);
+            setBackground(colorFree);
         }
         return this;
     }
+    
 }

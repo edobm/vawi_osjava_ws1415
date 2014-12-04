@@ -53,7 +53,7 @@ public class SchedulePlanner {
         sb.append(" -out=\"<Ausgabeverzeichnis>\" - Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen\n");
         sb.append(" -format=plaintext|html - Das Format in dem die Ausgabedateien erzeugt werden sollen\n");
         sb.append(" -strategy=costoptimized - Die Planungsstrategie\n\n");
-        sb.append(" Pfade dürfen keinen Leerzeichen enthalten!");
+        sb.append("Pfade dürfen keine Leerzeichen enthalten!");
 
         System.out.println(sb.toString());
     }

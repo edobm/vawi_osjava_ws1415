@@ -72,7 +72,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten.", SwingConstants.CENTER);
         
         spTable.setViewportView(lSelectNode);
-
+        
     }
 
     private TreeNode buildTreeModel() {
@@ -209,21 +209,30 @@ public class ScheduleGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jtValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jtValueChanged
-
+        final int timeSlotWidth = 25;
+        
+        if (jt.getLastSelectedPathComponent() == null) {
+            spTable.setViewportView(lSelectNode);
+            return;
+        }
+        
         DefaultMutableTreeNode n = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
-
+        
         if (n.getUserObject() instanceof Room) {
             Schedule schedule = masterSchedule.getSchedule((Room) n.getUserObject());
             scheduleTableModel.setSchedule(schedule);
+            scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
             spTable.setViewportView(scheduleTable);
         } else if (n.getUserObject() instanceof Academic) {
             Schedule schedule = masterSchedule.getSchedule((Academic) n.getUserObject());
             scheduleTableModel.setSchedule(schedule);
+            scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
             spTable.setViewportView(scheduleTable);
         } else if (n.getUserObject() instanceof Semester) {
             Semester semester = (Semester) n.getUserObject();
             Schedule schedule = masterSchedule.getSchedule(semester.getStudyProgram(), semester);
             scheduleTableModel.setSchedule(schedule);
+            scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
             spTable.setViewportView(scheduleTable);
         } else {
             spTable.setViewportView(lSelectNode);
