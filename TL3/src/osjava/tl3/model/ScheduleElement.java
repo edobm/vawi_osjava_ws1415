@@ -11,8 +11,19 @@ package osjava.tl3.model;
  */
 public class ScheduleElement
 {
+    /**
+     * Die Koordinate dieses Planelements
+     */
     private ScheduleCoordinate coordiate = null;
+    
+    /**
+     * Der diesem Planelement zugewiesene Raum
+     */
     private Room room = null;
+    
+    /**
+     * Der diesem Planelement zugewiesene Kurs
+     */
     private Course course = null;
     
     /**

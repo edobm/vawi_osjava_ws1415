@@ -1,19 +1,19 @@
 package osjava.tl3.model;
-  
+
 import java.util.Objects;
 
 /**
  * Diese Klasse repräsentiert die Entität Dozent.
- * 
+ *
  * Zu diesem Zeitpunkt ist unklar, ob diese Klasse tatsächlich benötigt wird.
- * Wenn zu Dozenten keine weiteren Daten über die Eingabedateien geliefert werden sollten,
- * könnte diese Klasse obsolet werden.
- * 
+ * Wenn zu Dozenten keine weiteren Daten über die Eingabedateien geliefert
+ * werden sollten, könnte diese Klasse obsolet werden.
+ *
  * @author Christian Müller
  * @version 1.0
  */
-public class Academic implements Comparable<Academic>
-{
+public class Academic implements Comparable<Academic> {
+
     private String name;
 
     /**
@@ -32,7 +32,11 @@ public class Academic implements Comparable<Academic>
 
     @Override
     public boolean equals(Object obj) {
-       return this.name.equals(((Academic)obj).getName());
+        if (obj instanceof Academic) {
+            return this.name.equals(((Academic) obj).getName());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -46,11 +50,10 @@ public class Academic implements Comparable<Academic>
     public String toString() {
         return name;
     }
-    
+
     @Override
-     public int compareTo(Academic other) {
+    public int compareTo(Academic other) {
         return name.compareToIgnoreCase(other.name);
     }
 
-    
 }

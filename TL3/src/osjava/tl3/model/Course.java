@@ -2,6 +2,7 @@ package osjava.tl3.model;
   
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Diese Klasse repräsentiert die Entität Lehrveranstaltung.
@@ -33,6 +34,14 @@ public class Course
         else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.type);
+        hash = 59 * hash + Objects.hashCode(this.number);
+        return hash;
     }
     
     @Override

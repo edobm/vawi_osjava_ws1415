@@ -23,6 +23,7 @@ public enum Day {
 
     /**
      * Konvertiert den gegebene Integerwert in den entsprechend Enum Wert
+     *
      * @param i Der Integer, der konvertiert werden soll
      * @return Die Wert
      */

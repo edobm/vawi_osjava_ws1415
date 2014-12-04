@@ -2,10 +2,10 @@ package osjava.tl3.logic.planning.strategies;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
+import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
@@ -88,8 +88,18 @@ public abstract class Strategy {
             }
         }
 
-        Collections.sort(matchingRooms, RoomAvailableEquipmentComparator.getInstance(RoomAvailableEquipmentComparator.SortOrder.ASCENDING));
+        /**
+         * Sortiere die passenden Räume anhand der Anzahl verfügbarer
+         * Ausstattung in aufsteigender Reihenfolge. Damit ist der Raum mit den
+         * wenigsten passenden Ausstattungsgegenständen vorne in der Liste.
+         * Damit werden zunächst die Räume für Kurse verplant, die am ehesten an
+         * das geforderte Mindestmaß herranreichen.
+         */
+        Collections.sort(matchingRooms, new RoomAvailableEquipmentComparator(SortOrder.ASCENDING));
 
+        /**
+         * Die Liste zurück geben
+         */
         return matchingRooms;
     }
 

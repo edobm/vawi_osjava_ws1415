@@ -9,6 +9,13 @@ package osjava.tl3.model;
  */
 public enum RoomType
 {
-    INTERNAL, // Eigener Raum (kostenlos)
-    EXTERNAL  // Extern angemieteter Raum (kostenbehaftet)
+    /**
+     * Interner Raum (kostenlos)
+     */
+    INTERNAL,
+    
+    /**
+     * Externer Raum (kostenbehaftet)
+     */
+    EXTERNAL
 }

@@ -24,9 +24,9 @@ import java.util.Objects;
  * @version 1.0
  */
 public class Room implements Comparable<Room> {
-  
+
     private static int counter = 0;
-    
+
     private final String roomId;
     private RoomType type;
     private String name;
@@ -34,22 +34,21 @@ public class Room implements Comparable<Room> {
     private int seats;
 
     public Room() {
- 
+
         roomId = String.valueOf(counter++);
     }
 
     @Override
     public boolean equals(Object other) {
-       if (other == null) {
-           return false;
-       }
-       if (other instanceof Room) {
-           return this.roomId.equals(((Room)other).roomId);
-       }
-       else {
-           return false;
-       }
-        
+        if (other == null) {
+            return false;
+        }
+        if (other instanceof Room) {
+            return this.roomId.equals(((Room) other).roomId);
+        } else {
+            return false;
+        }
+
     }
 
     @Override
@@ -59,8 +58,6 @@ public class Room implements Comparable<Room> {
         return hash;
     }
 
-    
-    
     @Override
     public String toString() {
         return name + " (" + seats + ")";
@@ -131,7 +128,7 @@ public class Room implements Comparable<Room> {
 
     @Override
     public int compareTo(Room other) {
-       return name.compareToIgnoreCase(other.name);
+        return name.compareToIgnoreCase(other.name);
     }
 
 }

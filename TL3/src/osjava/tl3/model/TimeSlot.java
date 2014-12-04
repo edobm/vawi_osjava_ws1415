@@ -23,6 +23,7 @@ public enum TimeSlot {
 
     /**
      * Konvertiert den gegebene Integerwert in den entsprechend Enum Wert
+     *
      * @param i Der Integer, der konvertiert werden soll
      * @return Die Wert
      */
@@ -37,14 +38,14 @@ public enum TimeSlot {
             return SLOT_1400;
         } else if (i == SLOT_1600.value) {
             return SLOT_1600;
-        }
-        else  {
+        } else {
             throw new IllegalArgumentException("Unbekannter TimeSlot");
         }
     }
 
     /**
      * Konvertiert den Zeitrahmen in eine natürliche Ausgabe
+     *
      * @return Der konvertierte Wert
      */
     @Override
@@ -54,13 +55,12 @@ public enum TimeSlot {
         } else if (value == SLOT_1000.value) {
             return "10:00-12:00";
         } else if (value == SLOT_1200.value) {
-            return"12:00-14:00";
+            return "12:00-14:00";
         } else if (value == SLOT_1400.value) {
             return "14:00-16:00";
         } else {
             return "16:00-18:00";
         }
     }
-    
-    
+
 }

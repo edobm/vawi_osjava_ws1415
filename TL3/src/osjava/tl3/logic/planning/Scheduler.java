@@ -31,49 +31,50 @@ public class Scheduler {
      * Instanz des Gesamtplans
      */
     private MasterSchedule masterSchedule;
-    
+
     /**
      * Typ der Strategie für die Erstellung des Gesamtplans
      */
     private StrategyType strategyType = StrategyType.COST_OPTIMIZED;
-    
+
     /**
      * Instanz der Strategie für die Planung
      */
     private Strategy strategy;
-    
+
     /**
      * Den Gesamtplan auf Basis der gewählten Strategie erstellen.
-     * 
+     *
      * @param parameters Laufzeitparameter für die Planungsstrategie
      */
     public void executeStrategy(HashMap<String, Object> parameters) {
-     
+
         // Eine Instanz der Planungsstrategie erzeugen
         initStrategy();
-        
+
         // Führt die Strategie aus und erzeugt dabei den Gesamtplan
         masterSchedule = strategy.execute(dataController, parameters);
     }
-    
+
     /**
      * Erzeugt eine Instanz der vorgegebenen Planungsstrategie
      */
     private void initStrategy() {
-           
+
         // Die Strategie wählen
-        switch(strategyType) {
-            
+        switch (strategyType) {
+
             // Kostenoptimierte Strategie (zugleich der Default)
             case COST_OPTIMIZED:
             default:
                 strategy = new CostOptimizedStrategy();
-          
+
         }
     }
-    
+
     /**
      * Setzt den Data Controller der die Eingabedaten hält
+     *
      * @param dataController the dataController to set
      */
     public void setDataController(DataController dataController) {
@@ -82,6 +83,7 @@ public class Scheduler {
 
     /**
      * Liefert den Gesamtplan zurück
+     *
      * @return Der Gesamtplan
      */
     public MasterSchedule getMasterSchedule() {
@@ -90,10 +92,11 @@ public class Scheduler {
 
     /**
      * Setzt die Planungsstrategie
+     *
      * @param strategyType the strategyType to set
      */
     public void setStrategyType(StrategyType strategyType) {
         this.strategyType = strategyType;
     }
-    
+
 }

@@ -3,6 +3,7 @@ package osjava.tl3.model;
 import java.util.Objects;
 
 /**
+ * Diese Klasse repräsentiert Ausstattungsgegenstände
  *
  * @author Meikel Bode
  */
@@ -28,9 +29,13 @@ public class Equipment {
         this.name = name;
     }
 
- @Override
+    @Override
     public boolean equals(Object obj) {
-       return this.name.equals(((Equipment)obj).getName());
+        if (obj instanceof Equipment) {
+            return this.name.equals(((Equipment) obj).getName());
+        } else {
+            return false;
+        }
     }
 
     @Override

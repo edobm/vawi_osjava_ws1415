@@ -3,6 +3,7 @@ package osjava.tl3.model;
 import java.util.Objects;
 
 /**
+ * Diese Klasse dient der Differenzierung der Veranstaltungstypen
  *
  * @author Meikel Bode
  */
@@ -27,10 +28,14 @@ public class CourseType {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-       return this.name.equals(((CourseType)obj).getName());
+        if (obj instanceof CourseType) {
+            return this.name.equals(((CourseType) obj).getName());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -40,7 +45,6 @@ public class CourseType {
         return hash;
     }
 
-   
     @Override
     public String toString() {
         return name;

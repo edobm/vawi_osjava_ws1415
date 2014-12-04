@@ -6,15 +6,15 @@ import java.util.Objects;
 
 /**
  * Diese Klasse repräsentiert die Entität Fachsemester.
- * 
- * Einfachsemester hat eine Bezeichnung und im Verlauf des Semesters werden 
+ *
+ * Einfachsemester hat eine Bezeichnung und im Verlauf des Semesters werden
  * Lehrveranstaltungen angeboten.
- * 
+ *
  * @author Christian Müller
  * @version 1.0
  */
-public class Semester
-{
+public class Semester {
+
     private StudyProgram studyProgram;
     private String name;
     private List<Course> courses = new ArrayList<>();
@@ -26,14 +26,13 @@ public class Semester
 
     @Override
     public boolean equals(Object obj) {
-       if (obj instanceof Semester) {
-           Semester other = (Semester)obj;
-           
-           return this.getName().equals(other.getName()) && this.getStudyProgram().getName().equals(other.getStudyProgram().getName());
-       }
-       else {
-           return false;
-       }
+        if (obj instanceof Semester) {
+            Semester other = (Semester) obj;
+
+            return this.getName().equals(other.getName()) && this.getStudyProgram().getName().equals(other.getStudyProgram().getName());
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -44,8 +43,6 @@ public class Semester
         return hash;
     }
 
-    
-    
     /**
      * @return the name
      */

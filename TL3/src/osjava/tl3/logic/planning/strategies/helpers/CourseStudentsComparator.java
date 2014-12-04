@@ -4,18 +4,17 @@ import java.util.Comparator;
 import osjava.tl3.model.Course;
 
 /**
+ * Eine Hilfsklasse für die Sortierung von Kursen anhand der Anzahl der von
+ * teilnehmenden Studenten
  *
  * @author Meikel Bode
  */
 public class CourseStudentsComparator implements Comparator<Course> {
 
-    public enum SortOrder {
-
-        ASCENDING,
-        DESCENDING
-    }
-
-    private SortOrder sortOrder = SortOrder.ASCENDING;
+    /**
+     * Die Sortierungreihenfolge dieser Instanz
+     */
+    private final SortOrder sortOrder;
 
     /**
      * Erzeugt eine Instanz mit aufsteigender Sortierung nach Anzahl Studenten
@@ -34,36 +33,34 @@ public class CourseStudentsComparator implements Comparator<Course> {
     }
 
     /**
+     * Vergleicht Kurs1 und Kurs2 anhand der Anzahl der Studenten in
+     * Abhängigkeit der konfigurierten Sortierreihenfolge
      *
-     * @param o1
-     * @param o2
-     * @return
+     * @param course1 Kurs1
+     * @param course2 Kurs2
+     * @return Das Ergebnis des Vergleichs
      */
     @Override
-    public int compare(Course o1, Course o2) {
+    public int compare(Course course1, Course course2) {
 
         if (sortOrder == SortOrder.ASCENDING) {
-            if (o1.getStudents() < o2.getStudents()) {
+            if (course1.getStudents() < course2.getStudents()) {
                 return -1;
-            } else if (o1.getStudents() == o2.getStudents()) {
+            } else if (course1.getStudents() == course2.getStudents()) {
                 return 0;
             } else {
                 return 1;
             }
         } else {
-            if (o1.getStudents() < o2.getStudents()) {
+            if (course1.getStudents() < course2.getStudents()) {
                 return 1;
-            } else if (o1.getStudents() == o2.getStudents()) {
+            } else if (course1.getStudents() == course2.getStudents()) {
                 return 0;
             } else {
                 return -1;
             }
         }
 
-    }
-
-    public static CourseStudentsComparator getInstance(SortOrder sortOrder) {
-        return new CourseStudentsComparator(sortOrder);
     }
 
 }

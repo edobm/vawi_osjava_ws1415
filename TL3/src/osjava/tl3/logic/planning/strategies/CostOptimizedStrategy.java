@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
+import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
@@ -70,7 +71,7 @@ public class CostOptimizedStrategy extends Strategy {
          * Kurse erzeugen
          */
         Queue<Course> courseQueue
-                = new PriorityQueue<>(new CourseStudentsComparator(CourseStudentsComparator.SortOrder.DESCENDING));
+                = new PriorityQueue<>(new CourseStudentsComparator(SortOrder.DESCENDING));
         courseQueue.addAll(dataController.getCourses());
 
         StrategyProtocol.log("Kurse zu planen: " + courseQueue.size());
@@ -123,9 +124,8 @@ public class CostOptimizedStrategy extends Strategy {
             }
 
             /**
-             * Schritt 1:
-             * Einen passenden, internen Raum finden, um den Kurs dort
-             * einzuplnen.
+             * Schritt 1: Einen passenden, internen Raum finden, um den Kurs
+             * dort einzuplnen.
              */
             matchingRooms = getMatchingRooms(course, RoomType.INTERNAL);
 
@@ -174,9 +174,8 @@ public class CostOptimizedStrategy extends Strategy {
             }
 
             /**
-             * Schritt 2:
-             * Den Raum versuchen extern einzuplanen auf Basis bereits
-             * existierender, externer Räume.
+             * Schritt 2: Den Raum versuchen extern einzuplanen auf Basis
+             * bereits existierender, externer Räume.
              *
              * Wurde der Kurs bisher nicht eingeplant?
              */
@@ -218,35 +217,36 @@ public class CostOptimizedStrategy extends Strategy {
 
                     /**
                      * Vermerken, dass der aktuelle Kurs extern eingeplant wurde
-                     * und damit kein weiterer externer Raum erzeugt werden muss.
+                     * und damit kein weiterer externer Raum erzeugt werden
+                     * muss.
                      */
                     coursePlanned = true;
 
                     StrategyProtocol.log("\tExtern Eingeplant (bestehender Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                     /**
-                     * Die Schleife kann beendet werden, da der Kurs erfolgreich  eingeplant wurde
+                     * Die Schleife kann beendet werden, da der Kurs erfolgreich
+                     * eingeplant wurde
                      */
                     break;
                 }
             }
 
-            
             /**
-             * Schritt 3:
-             * Der Kurs konnte bisher werder intern noch in einen bereits erzeugten
-             * externen Raum eingeplant werden. Daher einen weiteren externen Raum erzeugen 
-             * um den Kurs dort einzuplanen.
+             * Schritt 3: Der Kurs konnte bisher werder intern noch in einen
+             * bereits erzeugten externen Raum eingeplant werden. Daher einen
+             * weiteren externen Raum erzeugen um den Kurs dort einzuplanen.
              */
             if (!coursePlanned) {
 
                 /**
-                 * Wurde kein passender Raum gefunden, erzeugen wir einen externen
+                 * Wurde kein passender Raum gefunden, erzeugen wir einen
+                 * externen
                  */
                 Room externalRoom = masterSchedule.createExternalRoom(dataController.getEquipments());
                 dataController.getRooms().add(externalRoom);
 
-                /** 
+                /**
                  * Erste freie Koordinate für die Planung verwenden
                  */
                 masterSchedule.blockCoordinate(freeCoordinatesAcademic.get(0), externalRoom, course);

@@ -1,18 +1,20 @@
 package osjava.tl3.model;
 
+import java.util.Objects;
+
 /**
- * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem 
- * Wochenplan dar, wie beispielsweise (MO;0800) oder (MI;1400)
- * 
+ * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Wochenplan
+ * dar, wie beispielsweise (MO;0800) oder (MI;1400)
+ *
  * @author Meikel Bode
  */
 public class ScheduleCoordinate {
-    
+
     /**
      * Die Tag-Komponente der Koordinate
      */
     private final Day day;
-    
+
     /**
      * Die Zeitraum-Komponente der Koordinate
      */
@@ -20,6 +22,7 @@ public class ScheduleCoordinate {
 
     /**
      * Erzeugt eine Plankoordinate
+     *
      * @param day Die Tag-Komponente der Koordinate
      * @param timeSlot Die Zeitraum-Komponente der Koordinate
      */
@@ -27,7 +30,7 @@ public class ScheduleCoordinate {
         this.day = day;
         this.timeSlot = timeSlot;
     }
-    
+
     /**
      * @return Die Tag-Komponente der Koordinate
      */
@@ -43,22 +46,30 @@ public class ScheduleCoordinate {
     }
 
     /**
-     * Prüft auf Gleichheit. 
-     * Diese liegt vor, wenn Tag- und Zeitraum-Komponente identisch sind
+     * Prüft auf Gleichheit. Diese liegt vor, wenn Tag- und Zeitraum-Komponente
+     * identisch sind
+     *
      * @param obj Die andere Plankoordinate
      * @return Ja oder Nein
      */
     @Override
     public boolean equals(Object obj) {
-        ScheduleCoordinate other = (ScheduleCoordinate)obj;
-        
+        ScheduleCoordinate other = (ScheduleCoordinate) obj;
+
         return this.day == other.day && this.timeSlot == other.timeSlot;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 73 * hash + Objects.hashCode(this.day);
+        hash = 73 * hash + Objects.hashCode(this.timeSlot);
+        return hash;
     }
 
     @Override
     public String toString() {
         return "[" + day + ";" + timeSlot + "]";
     }
-    
-    
+
 }

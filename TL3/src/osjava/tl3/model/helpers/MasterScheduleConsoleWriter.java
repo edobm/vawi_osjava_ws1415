@@ -19,12 +19,15 @@ import osjava.tl3.model.TimeSlot;
 public class MasterScheduleConsoleWriter {
 
     /**
-     * Die Instanz des Gesamtplans auf deren Basis Daten ausgegeben werden sollen
+     * Die Instanz des Gesamtplans auf deren Basis Daten ausgegeben werden
+     * sollen
      */
     private final MasterSchedule masterSchedule;
 
     /**
-     * Erzeugt eine neue Instanz der Konsoleneschreibers für die gegebene Gesamtplaninstanz
+     * Erzeugt eine neue Instanz der Konsoleneschreibers für die gegebene
+     * Gesamtplaninstanz
+     *
      * @param masterSchedule Der Gesamtplan
      */
     public MasterScheduleConsoleWriter(MasterSchedule masterSchedule) {
@@ -33,6 +36,7 @@ public class MasterScheduleConsoleWriter {
 
     /**
      * Gibt eine Übersicht der Raumpläne für den gegebene Raumtyp aus
+     *
      * @param roomType Der Raumtyp
      */
     public void printRoomScheduleOverview(RoomType roomType) {
@@ -45,7 +49,9 @@ public class MasterScheduleConsoleWriter {
             if (r.getType() == roomType) {
 
                 Schedule schedule = masterSchedule.getRoomSchedules().get(r);
-                System.out.printf(formatPattern, r.getName(), r.getType(), r.getSeats(), schedule.getBlockedCoordinates().size() + "/" + masterSchedule.generateMaximumCoordinates().size(), r.getAvailableEquipments());
+                System.out.printf(formatPattern, r.getName(), r.getType(), r.getSeats(), 
+                        schedule.getBlockedCoordinates().size() + "/" 
+                                + masterSchedule.generateMaximumCoordinates().size(), r.getAvailableEquipments());
 
             }
         }
@@ -81,6 +87,7 @@ public class MasterScheduleConsoleWriter {
 
     /**
      * Gibt eine Trennlinie des gewünschten Typs aus
+     *
      * @param single true = "----", false = "===="
      */
     private void printSeparator(boolean single) {
@@ -105,6 +112,7 @@ public class MasterScheduleConsoleWriter {
 
     /**
      * Gibt Raumpläne des gewünschten Raumtyps aus
+     *
      * @param roomType Der Raumtyp
      */
     public void printRoomSchedules(RoomType roomType) {
@@ -140,6 +148,7 @@ public class MasterScheduleConsoleWriter {
 
     /**
      * Gibt einen Plan aus, wenn gewünscht mit Rauminfos
+     *
      * @param schedule Der auszugebende Plan
      * @param withRoom Mit Rauminfos ausgeben
      */

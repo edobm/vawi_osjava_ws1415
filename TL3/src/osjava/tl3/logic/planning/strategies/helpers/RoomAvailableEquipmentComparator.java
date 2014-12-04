@@ -4,21 +4,21 @@ import java.util.Comparator;
 import osjava.tl3.model.Room;
 
 /**
+ * Eine Hilfsklasse für die Sortierung von Räumen anhand der Anzahl der der
+ * enthaltenen Equipments
  *
  * @author Meikel Bode
  */
 public class RoomAvailableEquipmentComparator implements Comparator<Room> {
 
-    public enum SortOrder {
-
-        ASCENDING,
-        DESCENDING
-    }
-
+    /**
+     * Die Sortierungreihenfolge dieser Instanz
+     */
     private SortOrder sortOrder = SortOrder.ASCENDING;
 
     /**
-     * Erzeugt eine Instanz mit aufsteigender Sortierung nach Anzahl Studenten
+     * Erzeugt eine Instanz mit aufsteigender Sortierung nach Anzahl verfügbarer
+     * Equipments
      */
     public RoomAvailableEquipmentComparator() {
         this.sortOrder = SortOrder.ASCENDING;
@@ -33,19 +33,34 @@ public class RoomAvailableEquipmentComparator implements Comparator<Room> {
         this.sortOrder = sortOrder;
     }
 
+    /**
+     * Vergleicht Raum1 und Raum2 anhand der Anzahl verfügbaren Equipments
+     * Abhängigkeit der konfigurierten Sortierreihenfolge
+     *
+     * @param room1 Raum1
+     * @param room2 Raum2
+     * @return Das Ergebnis des Vergleichs
+     */
     @Override
-    public int compare(Room o1, Room o2) {
-        if (o1.getAvailableEquipments().size() < o2.getAvailableEquipments().size()) {
-            return -1;
-        } else if (o1.getAvailableEquipments().size() > o2.getAvailableEquipments().size()) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
+    public int compare(Room room1, Room room2) {
 
-    public static RoomAvailableEquipmentComparator getInstance(SortOrder sortOrder) {
-        return new RoomAvailableEquipmentComparator(sortOrder);
+        if (sortOrder == SortOrder.ASCENDING) {
+            if (room1.getAvailableEquipments().size() < room2.getAvailableEquipments().size()) {
+                return -1;
+            } else if (room1.getAvailableEquipments().size() > room2.getAvailableEquipments().size()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            if (room1.getAvailableEquipments().size() > room2.getAvailableEquipments().size()) {
+                return -1;
+            } else if (room1.getAvailableEquipments().size() < room2.getAvailableEquipments().size()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 
 }
