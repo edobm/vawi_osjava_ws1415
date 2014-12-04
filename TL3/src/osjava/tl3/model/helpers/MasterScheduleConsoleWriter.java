@@ -104,9 +104,9 @@ public class MasterScheduleConsoleWriter {
      * Gibt zentrale Statistiken aus
      */
     public void printCoreStats() {
-        System.out.println("Räume (intern)     : " + masterSchedule.getRoomCount(RoomType.INTERNAL));
-        System.out.println("Räume (extern)     : " + masterSchedule.getRoomCount(RoomType.EXTERNAL));
-        System.out.println("Externe Sitzplätze : " + masterSchedule.getExternalScheduledSeats());
+        System.out.println("Räume (intern)     : " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
+        System.out.println("Räume (extern)     : " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
+        System.out.println("Externe Sitzplätze : " + masterSchedule.getExternallyScheduledSeats());
         System.out.println("Anzahl Termine     : " + masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL));
     }
 

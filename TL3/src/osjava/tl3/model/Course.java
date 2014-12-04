@@ -16,7 +16,7 @@ import java.util.Objects;
  * @author Christian Müller
  * @version 1.0
  */
-public class Course
+public class Course implements Comparable<Course>
 {
     private CourseType type;
     private String number;
@@ -129,5 +129,10 @@ public class Course
      */
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    @Override
+    public int compareTo(Course other) {
+        return name.compareToIgnoreCase(other.name);
     }
 }

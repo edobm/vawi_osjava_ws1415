@@ -57,7 +57,7 @@ public class MasterScheduleTest {
     public void testInitFromDataController() {
         System.out.println("initFromDataController");
 
-        assertEquals(10, instance.getRoomCount(RoomType.INTERNAL));
+        assertEquals(10, instance.getRoomCount(RoomType.INTERNAL, false));
 
     }
 
@@ -183,9 +183,9 @@ public class MasterScheduleTest {
         Course course = dataController.getCourseByID("1");
         Room room = instance.createExternalRoom(dataController.getEquipments());
         
-        assertEquals(0, instance.getExternalScheduledSeats());
+        assertEquals(0, instance.getExternallyScheduledSeats());
         instance.blockCoordinate(coordinate, room, course);
-        assertEquals(course.getStudents(), instance.getExternalScheduledSeats());
+        assertEquals(course.getStudents(), instance.getExternallyScheduledSeats());
     }
 
     /**

@@ -124,9 +124,9 @@ public class MasterSchedule {
                 roomList.add(r);
             }
         }
-        
+
         Collections.sort(roomList);
-        
+
         return roomList;
     }
 
@@ -144,7 +144,7 @@ public class MasterSchedule {
         }
 
         Collections.sort(roomList);
-         
+
         return roomList;
     }
 
@@ -258,6 +258,7 @@ public class MasterSchedule {
     /**
      * Erzeugt einen externen Raum und einen korrespondierenden Plan. Weiterhin
      * werden der Raum und der Plan der Liste der Raumpläne hinzufügt.
+     *
      * @param allEquipments Die Obermenge alle Equipments
      * @return Der neue, externe Raum
      */
@@ -268,7 +269,7 @@ public class MasterSchedule {
          */
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);
-        room.setName("Externer Raum " + (getRoomCount(RoomType.EXTERNAL) + 1));
+        room.setName("Externer Raum " + (getRoomCount(RoomType.EXTERNAL, false) + 1));
         room.setSeats(10000);
         room.setAvailableEquipments(allEquipments);
 
@@ -288,9 +289,9 @@ public class MasterSchedule {
     /**
      * Liefert die Gesamtzahl extern eingeplanter Sitzplätze
      *
-     * @return Die anfallenden Kosten
+     * @return Die Anzahl der extern eingeplanten Plätze
      */
-    public int getExternalScheduledSeats() {
+    public int getExternallyScheduledSeats() {
         int seats = 0;
 
         for (Room room : getRooms(RoomType.EXTERNAL)) {
@@ -306,18 +307,50 @@ public class MasterSchedule {
     }
 
     /**
-     * Ermittelt die Anzahl der Räume des gegebenen Raumtyps
+     * Liefert die Gesamtzahl intern eingeplanter Sitzplätze
      *
-     * @param roomType
+     * @return Die Anzahl der intern eingeplanten Plätze
+     */
+    public int getInternallyScheduledSeats() {
+        int seats = 0;
+
+        for (Room room : getRooms(RoomType.INTERNAL)) {
+            Schedule schedule = getSchedule(room);
+            for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
+                if (scheduleElement.isBlocked()) {
+                    seats += scheduleElement.getCourse().getStudents();
+                }
+            }
+        }
+
+        return seats;
+    }
+
+    /**
+     * Ermittelt die Anzahl der Räume des gegebenen Raumtyps und kann dabei
+     * auch nur die jeweilige Anzahl unbenutzter Räume liefern.
+     *
+     * @param roomType Der Raumtyp
+     * @param unusedOnly Zählt nur die nicht genutzten Räume
      * @return Die Anzahl der Räume des gegebenen Typs
      */
-    public int getRoomCount(RoomType roomType) {
+    public int getRoomCount(RoomType roomType, boolean unusedOnly) {
         int count = 0;
 
+        Room room;
         Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
-            if (rooms.next().getType() == roomType) {
-                count++;
+            room = rooms.next();
+            if (room.getType() == roomType) {
+                
+                if (!unusedOnly) {
+                    count++;
+                }
+                else {
+                    if(getSchedule(room).getFreeCoordinates().size() == 25) {
+                        count++;
+                    }
+                }
             }
         }
 
@@ -356,6 +389,7 @@ public class MasterSchedule {
 
     /**
      * Liefert alle Pläne in denen der gegebene Kurs einplant wurde
+     *
      * @param course Der Kurs dessen Einplanungen gesucht sind
      * @return Die Liste der Pläne
      */
@@ -432,6 +466,7 @@ public class MasterSchedule {
 
     /**
      * Liefert die Map der Raumpläne
+     *
      * @return Die Raumpläne
      */
     public HashMap<Room, Schedule> getRoomSchedules() {
@@ -440,6 +475,7 @@ public class MasterSchedule {
 
     /**
      * Liert die Map der Dozentenpläne
+     *
      * @return Die Dozentenpläne
      */
     public HashMap<Academic, Schedule> getAcadademicSchedules() {
@@ -448,6 +484,7 @@ public class MasterSchedule {
 
     /**
      * Liefert die Studigangs-/Fachsemesterpläne
+     *
      * @return Die Studiengs-/Fachsemesterpläne
      */
     public HashMap<StudyProgram, HashMap<Semester, Schedule>> getStudyProgramSchedules() {

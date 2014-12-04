@@ -1,6 +1,8 @@
 package examples.jtable;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -12,10 +14,12 @@ import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Academic;
+import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.Schedule;
+import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
@@ -34,18 +38,17 @@ public class ScheduleGUI extends javax.swing.JFrame {
     ScheduleTableModel scheduleTableModel;
 
     JLabel lSelectNode;
-    
+
     /**
      * Creates new form ScheduleGUI
      */
     public ScheduleGUI() {
         initComponents();
         init();
-        
+
         setSize(1200, 800);
         setLocationRelativeTo(null);
-        
-        
+
     }
 
     private void init() {
@@ -61,9 +64,9 @@ public class ScheduleGUI extends javax.swing.JFrame {
         scheduler.executeStrategy(null);
 
         masterSchedule = scheduler.getMasterSchedule();
-        
+
         initMasterScheduleInfos(masterSchedule);
-        
+
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         jt.setModel(treeModel);
 
@@ -72,9 +75,9 @@ public class ScheduleGUI extends javax.swing.JFrame {
         scheduleTable.setModel(scheduleTableModel);
 
         lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten.", SwingConstants.CENTER);
-        
+
         spTable.setViewportView(lSelectNode);
-        
+
     }
 
     private TreeNode buildTreeModel() {
@@ -88,7 +91,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
             rRoomsInternal.add(new DefaultMutableTreeNode(room));
         }
         rRooms.add(rRoomsInternal);
-        
+
         DefaultMutableTreeNode rRoomsExternal = new DefaultMutableTreeNode("Externe Räume");
         rooms = masterSchedule.getRooms(RoomType.EXTERNAL);
         Collections.sort(rooms);
@@ -96,7 +99,6 @@ public class ScheduleGUI extends javax.swing.JFrame {
             rRoomsExternal.add(new DefaultMutableTreeNode(room));
         }
         rRooms.add(rRoomsExternal);
-       
 
         DefaultMutableTreeNode rAcademics = new DefaultMutableTreeNode("Dozentenpläne");
         List<Academic> academics = dataController.getAcademics();
@@ -118,16 +120,98 @@ public class ScheduleGUI extends javax.swing.JFrame {
         }
         rMasterSchedule.add(rStudyPrograms);
 
+        /**
+         * Pläne pro Kurs ausgeben
+         */
+        DefaultMutableTreeNode rCourses = new DefaultMutableTreeNode("Pläne pro Kurs");
+        rMasterSchedule.add(rCourses);
+
+        List<Course> courses = dataController.getCourses();
+        Collections.sort(courses);
+        for (Course course : courses) {
+            DefaultMutableTreeNode rCourse = new DefaultMutableTreeNode(course);
+            rCourses.add(rCourse);
+
+            DefaultMutableTreeNode rCourseRooms = new DefaultMutableTreeNode("Räume");
+            rCourse.add(rCourseRooms);
+            List<Room> relevantRooms = new ArrayList<>();
+
+            Iterator<Room> roomSchedules = masterSchedule.getRoomSchedules().keySet().iterator();
+            while (roomSchedules.hasNext()) {
+                Room room = roomSchedules.next();
+                for (ScheduleElement scheduleElement : masterSchedule.getSchedule(room).getScheduleElements()) {
+                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course)) {
+                        relevantRooms.add(room);
+                    }
+                }
+            }
+            Collections.sort(relevantRooms);
+            for (Room room : relevantRooms) {
+                rCourseRooms.add(new DefaultMutableTreeNode(room));
+            }
+
+            DefaultMutableTreeNode rCourseAcadmic = new DefaultMutableTreeNode("Dozent");
+            rCourse.add(rCourseAcadmic);
+            List<Academic> relevantAcademics = new ArrayList<>();
+
+            Iterator<Academic> academicSchedules = masterSchedule.getAcadademicSchedules().keySet().iterator();
+            while (academicSchedules.hasNext()) {
+                Academic academic = academicSchedules.next();
+                for (ScheduleElement scheduleElement : masterSchedule.getSchedule(academic).getScheduleElements()) {
+                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course) 
+                            && scheduleElement.getCourse().getAcademic().equals(academic)) {
+                        relevantAcademics.add(academic);
+                    }
+                }
+            }
+            Collections.sort(relevantAcademics);
+            for (Academic academic : relevantAcademics) {
+                rCourseAcadmic.add(new DefaultMutableTreeNode(academic));
+            }
+
+            DefaultMutableTreeNode rCourseStudyPrograms = new DefaultMutableTreeNode("Studiengänge");
+            rCourse.add(rCourseStudyPrograms);
+            List<StudyProgram> relevantStudyPrograms = new ArrayList<>();
+
+            Iterator<StudyProgram> studyProgrammSchedules = masterSchedule.getStudyProgramSchedules().keySet().iterator();
+            while (studyProgrammSchedules.hasNext()) {
+                StudyProgram studyProgram = studyProgrammSchedules.next();
+
+                if (studyProgram.containsCourse(course)) {
+                    relevantStudyPrograms.add(studyProgram);
+                }
+
+            }
+            Collections.sort(relevantStudyPrograms);
+            for (StudyProgram studyProgram : relevantStudyPrograms) {
+                DefaultMutableTreeNode rCourseStudyProgram = new DefaultMutableTreeNode(studyProgram);
+                rCourseStudyPrograms.add(rCourseStudyProgram);
+                for (Semester semester : studyProgram.getSemesters()) {
+                    if (semester.getCourses().contains(course)) {
+                        rCourseStudyProgram.add(new DefaultMutableTreeNode(semester));
+                    }
+                }
+
+            }
+
+        }
+
         return rMasterSchedule;
     }
 
-    
     private void initMasterScheduleInfos(MasterSchedule masterSchedule) {
-        lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL)));
-        lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL)));
-        lSeatsExternal.setText(String.valueOf(masterSchedule.getExternalScheduledSeats()));
+        lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, false)));
+        lRoomsInternalUsed.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, true)));
+        lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
+        lCoursesScheduledIntern.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL)));
+        lCoursesScheduledExternal.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
+
+        lSeatsInternalBlocked.setText(String.valueOf(masterSchedule.getInternallyScheduledSeats()));
+        lSeatsExternal.setText(String.valueOf(masterSchedule.getExternallyScheduledSeats()));
+
         lBlocksCount.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -151,6 +235,14 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lSeatsExternal = new javax.swing.JLabel();
         lBlocksCount = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        lSeatsInternalBlocked = new javax.swing.JLabel();
+        lCoursesScheduledIntern = new javax.swing.JLabel();
+        lCoursesScheduledExternal = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        lRoomsInternalUsed = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -200,7 +292,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
         jLabel2.setText("Räume (extern):");
 
-        jLabel3.setText("Externe Sitzplätze:");
+        jLabel3.setText("Externe Plätze belegt:");
 
         jLabel4.setText("Anzahl Termine:");
 
@@ -215,6 +307,22 @@ public class ScheduleGUI extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
         jLabel5.setText("Informationen zum Gesamtplan");
 
+        jLabel6.setText("Interne Plätze belegt:");
+
+        jLabel7.setText("Kurse intern geplant:");
+
+        jLabel8.setText("Kurse extern geplant:");
+
+        lSeatsInternalBlocked.setText("jLabel9");
+
+        lCoursesScheduledIntern.setText("jLabel9");
+
+        lCoursesScheduledExternal.setText("jLabel10");
+
+        jLabel9.setText("ungenutzt:");
+
+        lRoomsInternalUsed.setText("jLabel10");
+
         javax.swing.GroupLayout panelMasterScheduleStatusLayout = new javax.swing.GroupLayout(panelMasterScheduleStatus);
         panelMasterScheduleStatus.setLayout(panelMasterScheduleStatusLayout);
         panelMasterScheduleStatusLayout.setHorizontalGroup(
@@ -223,51 +331,95 @@ public class ScheduleGUI extends javax.swing.JFrame {
                 .addGap(171, 171, 171)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(163, 163, 163)
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lCoursesScheduledIntern)
+                            .addComponent(lCoursesScheduledExternal))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                         .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
                             .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addGap(32, 32, 32)
-                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lRoomsExternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lRoomsInternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(jLabel2))
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(jLabel3)
                                     .addComponent(jLabel4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(26, 26, 26)))
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lSeatsInternalBlocked)
+                                    .addComponent(lBlocksCount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lSeatsExternal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(2, 2, 2))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
                                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lBlocksCount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lSeatsExternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(2, 2, 2)))
-                        .addGap(497, 497, 497))))
+                                    .addComponent(lRoomsExternal, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lRoomsInternal, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lRoomsInternalUsed))))
+                        .addGap(479, 479, 479))
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                .addGap(214, 214, 214)
+                .addComponent(jLabel9)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        panelMasterScheduleStatusLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4, jLabel6, jLabel7, jLabel8});
+
+        panelMasterScheduleStatusLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel5, lBlocksCount, lCoursesScheduledExternal, lCoursesScheduledIntern, lRoomsExternal, lRoomsInternal, lRoomsInternalUsed, lSeatsExternal, lSeatsInternalBlocked});
+
         panelMasterScheduleStatusLayout.setVerticalGroup(
             panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                 .addGap(96, 96, 96)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(lRoomsInternal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addComponent(lRoomsInternalUsed))
+                .addGap(29, 29, 29)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(lRoomsExternal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(lSeatsExternal))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel7)
+                    .addComponent(lCoursesScheduledIntern))
+                .addGap(2, 2, 2)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(lBlocksCount))
-                .addContainerGap(290, Short.MAX_VALUE))
+                    .addComponent(jLabel8)
+                    .addComponent(lCoursesScheduledExternal))
+                .addGap(14, 14, 14)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(lSeatsInternalBlocked))
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4))
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(lSeatsExternal)
+                        .addGap(18, 18, 18)
+                        .addComponent(lBlocksCount)))
+                .addContainerGap(164, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -303,14 +455,14 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
     private void jtValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jtValueChanged
         final int timeSlotWidth = 25;
-        
+
         if (jt.getLastSelectedPathComponent() == null) {
             spTable.setViewportView(lSelectNode);
             return;
         }
-        
+
         DefaultMutableTreeNode n = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
-        
+
         if (n.getUserObject() instanceof Room) {
             Schedule schedule = masterSchedule.getSchedule((Room) n.getUserObject());
             scheduleTableModel.setSchedule(schedule);
@@ -327,11 +479,9 @@ public class ScheduleGUI extends javax.swing.JFrame {
             scheduleTableModel.setSchedule(schedule);
             scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
             spTable.setViewportView(scheduleTable);
-        } 
-        else if(n.getUserObject() instanceof String && n.getUserObject().toString().equals("Gesamtplan")) {
+        } else if (n.getUserObject() instanceof String && n.getUserObject().toString().equals("Gesamtplan")) {
             spTable.setViewportView(panelMasterScheduleStatus);
-        }
-        else {
+        } else {
             spTable.setViewportView(lSelectNode);
         }
 
@@ -342,13 +492,13 @@ public class ScheduleGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-         jTextArea1.setText(StrategyProtocol.getProtocol());
-         protocolDialog.setSize(1024, 800);
-         protocolDialog.setLocationRelativeTo(null);;
-         protocolDialog.setVisible(true);
-         
-         
+
+        jTextArea1.setText(StrategyProtocol.getProtocol());
+        protocolDialog.setSize(1024, 800);
+        protocolDialog.setLocationRelativeTo(null);;
+        protocolDialog.setVisible(true);
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -394,15 +544,23 @@ public class ScheduleGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTree jt;
     private javax.swing.JLabel lBlocksCount;
+    private javax.swing.JLabel lCoursesScheduledExternal;
+    private javax.swing.JLabel lCoursesScheduledIntern;
     private javax.swing.JLabel lRoomsExternal;
     private javax.swing.JLabel lRoomsInternal;
+    private javax.swing.JLabel lRoomsInternalUsed;
     private javax.swing.JLabel lSeatsExternal;
+    private javax.swing.JLabel lSeatsInternalBlocked;
     private javax.swing.JPanel panelMasterScheduleStatus;
     private javax.swing.JDialog protocolDialog;
     private javax.swing.JScrollPane spTable;
