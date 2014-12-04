@@ -18,7 +18,7 @@ import java.util.List;
  * Dozenten - Überschneidunngsfreie Planung der Kurse eines Fachsemesters -
  * Möglichst geringe Kosten bei externer Raumbelegung
  *
- * @author Christoph Lurz
+ * @author Meikel Bode
  * @version 1.0
  */
 public class Schedule {
@@ -26,12 +26,12 @@ public class Schedule {
     /**
      * Der Typ des Plans
      */
-    private ScheduleType type;
+    private final ScheduleType type;
 
     /**
-     * Die Liste der Planelemente
+     * Die Elemente des Plans
      */
-    private List<ScheduleElement> scheduleElements = new ArrayList<>();
+    private final List<ScheduleElement> scheduleElements;
 
     /**
      * Erzeugt einen neuen Plan
@@ -40,14 +40,8 @@ public class Schedule {
      */
     public Schedule(ScheduleType type) {
         this.type = type;
+        this.scheduleElements = new ArrayList<>(25);
         initSchedule();
-    }
-
-    /**
-     * @return the type
-     */
-    public ScheduleType getType() {
-        return type;
     }
 
     /**
@@ -63,6 +57,14 @@ public class Schedule {
             }
         }
 
+    }
+
+    /**
+     * Der Typ des Plans
+     * @return Der Typ
+     */
+    public ScheduleType getType() {
+        return type;
     }
 
     /**
@@ -116,17 +118,11 @@ public class Schedule {
     }
 
     /**
-     * @return the scheduleElements
+     * Liefert die Planelemente
+     * @return Die Planelemente
      */
     public List<ScheduleElement> getScheduleElements() {
         return scheduleElements;
-    }
-
-    /**
-     * @param scheduleElements the scheduleElements to set
-     */
-    public void setScheduleElements(List<ScheduleElement> scheduleElements) {
-        this.scheduleElements = scheduleElements;
     }
 
 }

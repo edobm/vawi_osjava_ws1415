@@ -61,7 +61,9 @@ public class ScheduleGUI extends javax.swing.JFrame {
         scheduler.executeStrategy(null);
 
         masterSchedule = scheduler.getMasterSchedule();
-
+        
+        initMasterScheduleInfos(masterSchedule);
+        
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         jt.setModel(treeModel);
 
@@ -119,6 +121,13 @@ public class ScheduleGUI extends javax.swing.JFrame {
         return rMasterSchedule;
     }
 
+    
+    private void initMasterScheduleInfos(MasterSchedule masterSchedule) {
+        lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL)));
+        lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL)));
+        lSeatsExternal.setText(String.valueOf(masterSchedule.getExternalScheduledSeats()));
+        lBlocksCount.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -132,6 +141,16 @@ public class ScheduleGUI extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        panelMasterScheduleStatus = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        lRoomsInternal = new javax.swing.JLabel();
+        lRoomsExternal = new javax.swing.JLabel();
+        lSeatsExternal = new javax.swing.JLabel();
+        lBlocksCount = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -175,6 +194,80 @@ public class ScheduleGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addGap(6, 6, 6))
+        );
+
+        jLabel1.setText("Räume (intern):");
+
+        jLabel2.setText("Räume (extern):");
+
+        jLabel3.setText("Externe Sitzplätze:");
+
+        jLabel4.setText("Anzahl Termine:");
+
+        lRoomsInternal.setText("jLabel5");
+
+        lRoomsExternal.setText("jLabel6");
+
+        lSeatsExternal.setText("jLabel7");
+
+        lBlocksCount.setText("jLabel8");
+
+        jLabel5.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        jLabel5.setText("Informationen zum Gesamtplan");
+
+        javax.swing.GroupLayout panelMasterScheduleStatusLayout = new javax.swing.GroupLayout(panelMasterScheduleStatus);
+        panelMasterScheduleStatus.setLayout(panelMasterScheduleStatusLayout);
+        panelMasterScheduleStatusLayout.setHorizontalGroup(
+            panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                .addGap(171, 171, 171)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addGap(32, 32, 32)
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lRoomsExternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lRoomsInternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lBlocksCount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lSeatsExternal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(2, 2, 2)))
+                        .addGap(497, 497, 497))))
+        );
+        panelMasterScheduleStatusLayout.setVerticalGroup(
+            panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lRoomsInternal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(lRoomsExternal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lSeatsExternal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(lBlocksCount))
+                .addContainerGap(290, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -234,7 +327,11 @@ public class ScheduleGUI extends javax.swing.JFrame {
             scheduleTableModel.setSchedule(schedule);
             scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
             spTable.setViewportView(scheduleTable);
-        } else {
+        } 
+        else if(n.getUserObject() instanceof String && n.getUserObject().toString().equals("Gesamtplan")) {
+            spTable.setViewportView(panelMasterScheduleStatus);
+        }
+        else {
             spTable.setViewportView(lSelectNode);
         }
 
@@ -292,11 +389,21 @@ public class ScheduleGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTree jt;
+    private javax.swing.JLabel lBlocksCount;
+    private javax.swing.JLabel lRoomsExternal;
+    private javax.swing.JLabel lRoomsInternal;
+    private javax.swing.JLabel lSeatsExternal;
+    private javax.swing.JPanel panelMasterScheduleStatus;
     private javax.swing.JDialog protocolDialog;
     private javax.swing.JScrollPane spTable;
     private javax.swing.JScrollPane spTree;
