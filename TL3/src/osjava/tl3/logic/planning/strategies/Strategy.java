@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
+import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
@@ -19,6 +22,11 @@ import osjava.tl3.model.controller.DataController;
  * @author Meikel Bode
  */
 public abstract class Strategy {
+
+    /**
+     * Der Name der Planungsstrategie
+     */
+    private final String name;
 
     /**
      * Der durch die Strategie erstellte Gesamtplan
@@ -37,9 +45,21 @@ public abstract class Strategy {
 
     /**
      * Eine neue Instanz erzeugen
+     *
+     * @param name Der Name der Planungsstrategie
      */
-    public Strategy() {
-        masterSchedule = new MasterSchedule();
+    public Strategy(String name) {
+        this.name = name;
+        this.masterSchedule = new MasterSchedule();
+    }
+
+    /**
+     * Liefert den Namen der Planungsstrategie
+     *
+     * @return Der Name der Planungsstrategie
+     */
+    public final String getName() {
+        return name;
     }
 
     /**
@@ -62,7 +82,7 @@ public abstract class Strategy {
      * @param roomType Der Raumtyp
      * @return Die Liste der geeigneten Räume
      */
-    protected List<Room> getMatchingRooms(Course course, RoomType roomType) {
+    public final List<Room> getMatchingRooms(Course course, RoomType roomType) {
 
         List<Room> matchingRooms = new ArrayList<>();
 
@@ -101,6 +121,33 @@ public abstract class Strategy {
          * Die Liste zurück geben
          */
         return matchingRooms;
+    }
+
+    /**
+     * Erzeugt eine Instanz der angegebenen Planungsstrategie Klasse
+     * @param className Der Name der Klasse 
+     * @return Die Instanz der Klasse oder null, wenn diese nicht gefunden werden konnte
+     */
+    public static final Strategy getStrategyInstanceByClassName(String className) {
+
+        final String packagePath = Strategy.class.getName().substring(0, Strategy.class.getName().lastIndexOf("."));
+
+        try {
+            Class<?> cls = Class.forName(packagePath + "." + className);
+
+            if (Strategy.class.isAssignableFrom(cls)) {
+                StrategyProtocol.log("Strategie geladen: " + cls.getName());
+                return (Strategy) cls.newInstance();
+            } else {
+                StrategyProtocol.log("Strategie konnte nicht geladen werden: " + packagePath + "." + className);
+                return null;
+            }
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            StrategyProtocol.log("Strategie konnte nicht geladden werden: " + packagePath + "." + className);
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

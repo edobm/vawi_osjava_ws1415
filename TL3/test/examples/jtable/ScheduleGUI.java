@@ -11,6 +11,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import osjava.tl3.logic.planning.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
+import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Academic;
@@ -60,7 +61,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
         scheduler = new Scheduler();
         scheduler.setDataController(dataController);
-        scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
+        scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
         scheduler.executeStrategy(null);
 
         masterSchedule = scheduler.getMasterSchedule();
@@ -158,7 +159,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
             while (academicSchedules.hasNext()) {
                 Academic academic = academicSchedules.next();
                 for (ScheduleElement scheduleElement : masterSchedule.getSchedule(academic).getScheduleElements()) {
-                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course) 
+                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course)
                             && scheduleElement.getCourse().getAcademic().equals(academic)) {
                         relevantAcademics.add(academic);
                     }
@@ -205,9 +206,15 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
         lCoursesScheduledIntern.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL)));
         lCoursesScheduledExternal.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
+        
+        double percentInternal = masterSchedule.getTotalBlocks(RoomType.INTERNAL) * 100 / (masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL));
+        lPercentCoursesInternal.setText(String.valueOf(Math.rint(percentInternal)));
 
         lSeatsInternalBlocked.setText(String.valueOf(masterSchedule.getInternallyScheduledSeats()));
         lSeatsExternal.setText(String.valueOf(masterSchedule.getExternallyScheduledSeats()));
+
+        percentInternal = masterSchedule.getInternallyScheduledSeats() * 100 / (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats());
+        lPercentInternal.setText(String.valueOf(Math.rint(percentInternal)));
 
         lBlocksCount.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
     }
@@ -243,6 +250,10 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lCoursesScheduledExternal = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         lRoomsInternalUsed = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        lPercentInternal = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        lPercentCoursesInternal = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -323,56 +334,83 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
         lRoomsInternalUsed.setText("jLabel10");
 
+        jLabel10.setText("Belegungung intern %:");
+
+        lPercentInternal.setText("jLabel11");
+
+        jLabel11.setText("Kurse intern %:");
+
+        lPercentCoursesInternal.setText("jLabel12");
+
         javax.swing.GroupLayout panelMasterScheduleStatusLayout = new javax.swing.GroupLayout(panelMasterScheduleStatus);
         panelMasterScheduleStatus.setLayout(panelMasterScheduleStatusLayout);
         panelMasterScheduleStatusLayout.setHorizontalGroup(
             panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                .addGap(214, 214, 214)
+                .addComponent(jLabel9)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                 .addGap(171, 171, 171)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                        .addGap(163, 163, 163)
-                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lCoursesScheduledIntern)
-                            .addComponent(lCoursesScheduledExternal))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                         .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jLabel2))
-                                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                                     .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(26, 26, 26)))
+                                    .addGap(26, 26, 26))))
                         .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMasterScheduleStatusLayout.createSequentialGroup()
                                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lSeatsInternalBlocked)
-                                    .addComponent(lBlocksCount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lSeatsExternal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(2, 2, 2))
+                                .addGap(481, 481, 481))
                             .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                                 .addGap(2, 2, 2)
                                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lRoomsExternal, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lRoomsInternal, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lRoomsInternalUsed))))
+                                    .addComponent(lRoomsInternalUsed))
+                                .addGap(479, 479, 479))))
+                    .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMasterScheduleStatusLayout.createSequentialGroup()
+                        .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(2, 2, 2)
+                                .addComponent(lRoomsExternal, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addGap(163, 163, 163)
+                                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lCoursesScheduledIntern)
+                                    .addComponent(lCoursesScheduledExternal))))
                         .addGap(479, 479, 479))
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                         .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
-                .addGap(214, 214, 214)
-                .addComponent(jLabel9)
-                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addGap(68, 68, 68)
+                                .addComponent(lPercentCoursesInternal, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(22, 22, 22)
+                                .addComponent(lPercentInternal, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(26, 26, 26)
+                                .addComponent(lBlocksCount, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         panelMasterScheduleStatusLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4, jLabel6, jLabel7, jLabel8});
@@ -392,7 +430,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(lRoomsInternalUsed))
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(lRoomsExternal))
@@ -404,22 +442,30 @@ public class ScheduleGUI extends javax.swing.JFrame {
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(lCoursesScheduledExternal))
-                .addGap(14, 14, 14)
+                .addGap(3, 3, 3)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(lPercentCoursesInternal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                         .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(lSeatsInternalBlocked))
                         .addGap(5, 5, 5)
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4))
+                        .addComponent(jLabel3))
                     .addGroup(panelMasterScheduleStatusLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(lSeatsExternal)
-                        .addGap(18, 18, 18)
-                        .addComponent(lBlocksCount)))
-                .addContainerGap(164, Short.MAX_VALUE))
+                        .addComponent(lSeatsExternal)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(lPercentInternal))
+                .addGap(25, 25, 25)
+                .addGroup(panelMasterScheduleStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(lBlocksCount))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -540,6 +586,8 @@ public class ScheduleGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -556,6 +604,8 @@ public class ScheduleGUI extends javax.swing.JFrame {
     private javax.swing.JLabel lBlocksCount;
     private javax.swing.JLabel lCoursesScheduledExternal;
     private javax.swing.JLabel lCoursesScheduledIntern;
+    private javax.swing.JLabel lPercentCoursesInternal;
+    private javax.swing.JLabel lPercentInternal;
     private javax.swing.JLabel lRoomsExternal;
     private javax.swing.JLabel lRoomsInternal;
     private javax.swing.JLabel lRoomsInternalUsed;

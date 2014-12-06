@@ -52,7 +52,7 @@ public class SchedulePlanner {
         sb.append(" -in=\"<Eingabeverzeichnis>\" - Das Verzeichnis in dem die Eingabedateien liegen\n");
         sb.append(" -out=\"<Ausgabeverzeichnis>\" - Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen\n");
         sb.append(" -format=plaintext|html - Das Format in dem die Ausgabedateien erzeugt werden sollen\n");
-        sb.append(" -strategy=costoptimized - Die Planungsstrategie\n\n");
+        sb.append(" -strategy=CostOptimizedStrategy - Die Planungsstrategie\n\n");
         sb.append("Pfade dürfen keine Leerzeichen enthalten!");
 
         System.out.println(sb.toString());
@@ -133,13 +133,6 @@ public class SchedulePlanner {
         // Parametertabelle zurückliefern.
         return parameters;
 
-//        if (argv.length == 2) {
-//            inputDirectory = argv[0];
-//            outputDirectory = argv[1];
-//            outputFormat = argv[2];
-//        } else {
-//            System.exit(0);
-//        }
     }
 
     /**
@@ -164,13 +157,13 @@ public class SchedulePlanner {
         System.out.println("Starte Konsolen-Modus");
         DataController dataController = new DataController();
         MasterSchedule masterSchedule;
-        
+
         // Eingabedaten lesen
         loadInputData(dataController);
-        
+
         // Plan erzeugen
         masterSchedule = createSchedule();
-        
+
         // Ausgabedateien erzeugen
         writeOutput(masterSchedule);
     }
@@ -192,32 +185,42 @@ public class SchedulePlanner {
      */
     private MasterSchedule createSchedule() {
 
-        // Strategie erzeugen auf Basis Eingabedateien
-        String strategyName = parameters.get("strategy");
-        Strategy strategy = null;
-        if (strategyName.equals("costoptimized")) {
-            strategy = new CostOptimizedStrategy();
+        /**
+         * Strategie erzeugen auf Basis Eingabedateien
+         */
+        Strategy strategy = Strategy.getStrategyInstanceByClassName(parameters.get("strategy"));
+        if (strategy == null) {
+            System.out.println("Unbekannte Planungsstrategie: " + parameters.get("strategy"));
+            System.exit(2);
         }
 
-        // Scheduler erzeugen
+        /**
+         * Scheduler erzeugen
+         */
         Scheduler scheduler = new Scheduler();
-        if (strategyName.equals("costoptimized")) {
-            scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
-        }
 
-        // Planungsstrategie ausführen
+        /**
+         * Planungsstrategie zuweisen
+         */
+        scheduler.setStrategy(strategy);
+
+        /**
+         * Planungsstrategie ausführen
+         */
         scheduler.executeStrategy(null);
 
-        MasterSchedule masterSchedule = scheduler.getMasterSchedule();
+        /**
+         * Gesamtplan zurück geben
+         */
+        return scheduler.getMasterSchedule();
         
-        return masterSchedule;
     }
 
     /**
      * Erzeugen des Outputs im gewünschten Format
      */
     private void writeOutput(MasterSchedule masterSchedule) {
-        
+
         //
         // Ausgabelogik integrieren
         // 

@@ -25,7 +25,10 @@ import java.util.Objects;
  */
 public class Room implements Comparable<Room> {
 
-    private static int counter = 0;
+    /**
+     * Die eindeutige Raumnummer
+     */
+    private static int counter = 1;
 
     private final String roomId;
     private RoomType type;
@@ -35,6 +38,9 @@ public class Room implements Comparable<Room> {
 
     public Room() {
 
+        /**
+         * Jede neue Instanz erzeugt eine neue eindeutige Raumnummer
+         */
         roomId = String.valueOf(counter++);
     }
 

@@ -48,7 +48,7 @@ public class MasterSchedule {
         for (Room room : dataControler.getRooms()) {
             getRoomSchedules().put(room, new Schedule(ScheduleType.ROOM_INTERNAL));
         }
-        StrategyProtocol.log("Raumpläne erzeugt: " + getRoomSchedules().size());
+        StrategyProtocol.log("Raumpläne initialisiert: " + getRoomSchedules().size());
 
         /**
          * Dozentenpläne initialisieren
@@ -58,7 +58,7 @@ public class MasterSchedule {
                 getAcadademicSchedules().put(course.getAcademic(), new Schedule(ScheduleType.ACADAMIC));
             }
         }
-        StrategyProtocol.log("Dozentenpläne erzeugt: " + getAcadademicSchedules().size());
+        StrategyProtocol.log("Dozentenpläne initialisiert: " + getAcadademicSchedules().size());
 
         /**
          * Studiengangspläne initialisieren
@@ -74,7 +74,7 @@ public class MasterSchedule {
             studyProgrammScheduleCount += semesterPlans.size();
         }
 
-        StrategyProtocol.log("Fachsemesterpläne erzeugt: " + studyProgrammScheduleCount);
+        StrategyProtocol.log("Fachsemesterpläne initialisiert: " + studyProgrammScheduleCount);
         StrategyProtocol.log("Gesamtplan erfolgreich initialisiert");
 
     }

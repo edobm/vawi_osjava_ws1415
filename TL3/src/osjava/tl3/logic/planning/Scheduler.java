@@ -1,9 +1,7 @@
 package osjava.tl3.logic.planning;
 
 import java.util.HashMap;
-import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.Strategy;
-import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.controller.DataController;
 
@@ -33,11 +31,6 @@ public class Scheduler {
     private MasterSchedule masterSchedule;
 
     /**
-     * Typ der Strategie für die Erstellung des Gesamtplans
-     */
-    private StrategyType strategyType = StrategyType.COST_OPTIMIZED;
-
-    /**
      * Instanz der Strategie für die Planung
      */
     private Strategy strategy;
@@ -48,28 +41,11 @@ public class Scheduler {
      * @param parameters Laufzeitparameter für die Planungsstrategie
      */
     public void executeStrategy(HashMap<String, Object> parameters) {
-
-        // Eine Instanz der Planungsstrategie erzeugen
-        initStrategy();
-
-        // Führt die Strategie aus und erzeugt dabei den Gesamtplan
+        
+        /**
+         * Führt die Strategie aus und erzeugt dabei den Gesamtplan
+         */
         masterSchedule = strategy.execute(dataController, parameters);
-    }
-
-    /**
-     * Erzeugt eine Instanz der vorgegebenen Planungsstrategie
-     */
-    private void initStrategy() {
-
-        // Die Strategie wählen
-        switch (strategyType) {
-
-            // Kostenoptimierte Strategie (zugleich der Default)
-            case COST_OPTIMIZED:
-            default:
-                strategy = new CostOptimizedStrategy();
-
-        }
     }
 
     /**
@@ -91,12 +67,19 @@ public class Scheduler {
     }
 
     /**
-     * Setzt die Planungsstrategie
-     *
-     * @param strategyType the strategyType to set
+     * Liefert die Strategie
+     * @return Die Strategie
      */
-    public void setStrategyType(StrategyType strategyType) {
-        this.strategyType = strategyType;
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    /**
+     * Setzt die Strategie
+     * @param strategy Die Strategie
+     */
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 
 }

@@ -30,7 +30,7 @@ public class InputFileHelper {
 
         List<String> records = InputFileHelper.getInputFile("raeume.csv");
 
-        Room room = null;
+        Room room;
         for (String s : records) {
             room = new Room();
             String[] columns = s.split(delimiter);
@@ -67,7 +67,7 @@ public class InputFileHelper {
 
         List<String> records = InputFileHelper.getInputFile("lehrveranstaltungen.csv");
 
-        Course course = null;
+        Course course;
         for (String s : records) {
             course = new Course();
 
@@ -160,7 +160,6 @@ public class InputFileHelper {
 
     public static String removeQuotationMarks(String inString) {
         if (inString != null) {
-
             return inString.trim().replaceAll("\"", "");
         } else {
             return "";

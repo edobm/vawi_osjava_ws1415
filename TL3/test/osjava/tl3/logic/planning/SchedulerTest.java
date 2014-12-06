@@ -6,7 +6,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import osjava.tl3.logic.planning.strategies.StrategyType;
+import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -33,7 +33,7 @@ public class SchedulerTest {
     public void setUp() {
 
         dataController = new DataController();
-        
+
         InputFileHelper.loadRooms(dataController);
         InputFileHelper.loadCourses(dataController);
         InputFileHelper.loadStudyPrograms(dataController);
@@ -50,10 +50,10 @@ public class SchedulerTest {
     public void testExecuteStrategy() {
         System.out.println("executeStrategy");
         HashMap<String, Object> parameters = null;
-        
+
         Scheduler instance = new Scheduler();
         instance.setDataController(dataController);
-        instance.setStrategyType(StrategyType.COST_OPTIMIZED);
+        instance.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
 
         instance.executeStrategy(parameters);
 

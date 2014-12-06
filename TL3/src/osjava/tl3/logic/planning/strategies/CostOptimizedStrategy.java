@@ -24,14 +24,16 @@ import osjava.tl3.model.helpers.MasterScheduleConsoleWriter;
  *
  */
 public class CostOptimizedStrategy extends Strategy {
-
+    
     /**
      * Erzeugt eine Instanz der Planungsstrategie CostOptimizedStrategy
      */
     public CostOptimizedStrategy() {
-        super();
-        StrategyProtocol.log("Strategie: kostenoptimiert");
+        super("Kostenoptimiert");
+        StrategyProtocol.log("Strategie: " + getName());
     }
+    
+    
 
     /**
      * Erzeugt einen Auf Basis der Eingabedaten einen kostenoptimierten
@@ -72,12 +74,27 @@ public class CostOptimizedStrategy extends Strategy {
          */
         Queue<Course> courseQueue
                 = new PriorityQueue<>(new CourseStudentsComparator(SortOrder.DESCENDING));
+
+        /**
+         * Alle Kurse in die Queue eintragen
+         */
         courseQueue.addAll(dataController.getCourses());
 
+        /**
+         * Protokoll fortschreiben
+         */
         StrategyProtocol.log("Kurse zu planen: " + courseQueue.size());
 
         /**
-         * Hält Kurse, die nicht eingeplant werden konnten
+         * Liste für Kurse, die nicht eingeplant werden konnten Gründe dafür
+         * sind:
+         *
+         * a) Dem Dozenten wurden mehr 25 als Kurse zugeordnet und zu diesem
+         * Zeitpunkt wurden bereits alle Plan Koordinaten mit anderen
+         * Veranstaltungen belegt.
+         *
+         * b) Einem der Fachsemester wurden bereits mehr als 25 Veranstaltungen
+         * zugeordnet und alle Plan Koordinaten sind damit bereits belegt
          */
         List<Course> coursesNotPlanned = new ArrayList<>();
 
@@ -90,19 +107,26 @@ public class CostOptimizedStrategy extends Strategy {
         List<ScheduleCoordinate> freeCoordinatesStudyPrograms;
         List<ScheduleCoordinate> freeIntersection;
         Course course;
-        boolean coursePlanned = false;
+        boolean coursePlanned;
 
         /**
          * Alle Kurse in der Queue verarbeiten
          */
         while ((course = courseQueue.poll()) != null) {
+
+            /**
+             * Vermerken, dass der aktuelle Kurs bisher nicht eingeplant wurde
+             */
             coursePlanned = false;
 
+            /**
+             * Protokoll fortschreiben
+             */
             StrategyProtocol.log("Plane Kurs: " + course);
 
             /**
-             * Prüfen ob der Dozent noch freie Termine hat. Wenn nicht den Kurs
-             * in die Liste der nicht einplanbaren Kurse eintragen
+             * Prüfen ob der Dozent noch freie Termine hat un wenn nicht, den
+             * Kurs in die Liste der nicht einplanbaren Kurse eintragen
              */
             freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
             if (freeCoordinatesAcademic.isEmpty()) {
@@ -113,11 +137,11 @@ public class CostOptimizedStrategy extends Strategy {
 
             /**
              * Prüfen ob die Studiengangs-/Fachsemesterpläne noch freie Termine
-             * haben. Wenn nicht den Kurs in die Liste der nicht einplanbaren
-             * Kurse eintragen
+             * haben und wenn nicht, den Kurs in die Liste der nicht
+             * einplanbaren Kurse eintragen
              */
             freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
-            if (freeCoordinatesAcademic.isEmpty()) {
+            if (freeCoordinatesStudyPrograms.isEmpty()) {
                 StrategyProtocol.log("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
                 coursesNotPlanned.add(course);
                 continue;
@@ -125,7 +149,7 @@ public class CostOptimizedStrategy extends Strategy {
 
             /**
              * Schritt 1: Einen passenden, internen Raum finden, um den Kurs
-             * dort einzuplnen.
+             * dort einzuplanen.
              */
             matchingRooms = getMatchingRooms(course, RoomType.INTERNAL);
 
@@ -136,7 +160,7 @@ public class CostOptimizedStrategy extends Strategy {
 
                 /**
                  * Schnittmenge über alle freien Koordinaten des Raumplans, des
-                 * Dozentenplans und alle Fachsemesterpläne erzeugen
+                 * Dozentenplans und aller Fachsemesterpläne erzeugen
                  */
                 freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -164,7 +188,7 @@ public class CostOptimizedStrategy extends Strategy {
                  */
                 coursePlanned = true;
 
-                StrategyProtocol.log("\tEingeplant (interner Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                StrategyProtocol.log("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                 /**
                  * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -174,10 +198,14 @@ public class CostOptimizedStrategy extends Strategy {
             }
 
             /**
-             * Schritt 2: Den Raum versuchen extern einzuplanen auf Basis
-             * bereits existierender, externer Räume.
+             * Schritt 2: Konnte der Raum nicht intern eingeplant werden, jetzt
+             * versuchen ihn extern einzuplanen. Dieser Schritt versucht
+             * zunächst, einen bereits erzeugten, externen Raum zu finden, der
+             * noch eine passende, freie Plan Koordinate hat.
              *
-             * Wurde der Kurs bisher nicht eingeplant?
+             * Dieser Schritt optimiert daher die Anzahl der anzumietenden, externen
+             * Räume indem so viele Kurse eingeplant werden, wie freie Plan
+             * Koordinaten existieren, also maximal 25 Kurse pro externem Raum.
              */
             if (!coursePlanned) {
 
@@ -193,7 +221,7 @@ public class CostOptimizedStrategy extends Strategy {
 
                     /**
                      * Schnittmenge über alle freien Koordinaten des Raumplans,
-                     * des Dozentenplans und alle Fachsemesterpläne erzeugen
+                     * des Dozentenplans und aller Fachsemesterpläne erzeugen
                      */
                     freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -205,7 +233,7 @@ public class CostOptimizedStrategy extends Strategy {
                      * Wenn nicht, zum nächsten Raum gehen.
                      */
                     if (freeIntersection.isEmpty()) {
-                        StrategyProtocol.log("\tKeine Koordiate frei: " + room + " [" + room.getRoomId() + "]");
+                        StrategyProtocol.log("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
                         continue;
                     }
 
@@ -222,7 +250,10 @@ public class CostOptimizedStrategy extends Strategy {
                      */
                     coursePlanned = true;
 
-                    StrategyProtocol.log("\tExtern Eingeplant (bestehender Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                    /**
+                     * Protokoll fortschreiben
+                     */
+                    StrategyProtocol.log("\tExtern eingeplant (bestehender Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                     /**
                      * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -233,38 +264,59 @@ public class CostOptimizedStrategy extends Strategy {
             }
 
             /**
-             * Schritt 3: Der Kurs konnte bisher werder intern noch in einen
+             * Schritt 3: Der Kurs konnte bisher weder intern noch in einen
              * bereits erzeugten externen Raum eingeplant werden. Daher einen
-             * weiteren externen Raum erzeugen um den Kurs dort einzuplanen.
+             * weiteren externen Raum erzeugen, um den Kurs dort einzuplanen.
              */
             if (!coursePlanned) {
 
                 /**
-                 * Wurde kein passender Raum gefunden, erzeugen wir einen
-                 * externen
+                 * Einen weiteren externen Raum mithilfe des Gesamtplans
+                 * erzeugen und dem Raum alle möglichen bekannten
+                 * Ausstatungsgegenstände zuweisen
                  */
                 Room externalRoom = masterSchedule.createExternalRoom(dataController.getEquipments());
+
+                /**
+                 * Den Raum auch im DataController ablegen
+                 */
                 dataController.getRooms().add(externalRoom);
 
                 /**
                  * Schnittmenge über alle freien Koordinaten des Raumplans, des
-                 * Dozentenplans und alle Fachsemesterpläne erzeugen
+                 * Dozentenplans und aller Fachsemesterpläne erzeugen
                  */
                 freeCoordinatesRoom = masterSchedule.getFreeCoordiates(externalRoom);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                 freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                 freeIntersection.retainAll(freeCoordinatesAcademic);
-                
+
+                /**
+                 * Prüfen ob eine freie Plan Koordinaten gefunden werden konnte.
+                 * Wenn nicht, dann ist der Kurs endgültig nicht einplanbar!
+                 */
+                if (freeIntersection.isEmpty()) {
+                    StrategyProtocol.log("\tKeine Koordinate frei: Kurs konnte nicht eingeplant werden!");
+                    coursesNotPlanned.add(course);
+                    continue;
+                }
+
                 /**
                  * Erste freie Koordinate für die Planung verwenden
                  */
                 masterSchedule.blockCoordinate(freeIntersection.get(0), externalRoom, course);
 
-                StrategyProtocol.log("\tExtern Eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+                /**
+                 * Protokoll fortschreiben
+                 */
+                StrategyProtocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
 
             }
         }
 
+        /**
+         * Protokoll fortschreiben
+         */
         StrategyProtocol.log("Nicht einplanbare Kurse: " + coursesNotPlanned);
     }
 

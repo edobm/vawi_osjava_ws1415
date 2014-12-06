@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import osjava.tl3.logic.planning.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
-import osjava.tl3.logic.planning.strategies.StrategyType;
+import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -219,7 +219,7 @@ public class MasterScheduleTest {
          
          Scheduler scheduler = new Scheduler();
          scheduler.setDataController(dataController);
-         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
+         scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
          scheduler.executeStrategy(null);
          
          instance = scheduler.getMasterSchedule();
@@ -235,7 +235,7 @@ public class MasterScheduleTest {
          
          Scheduler scheduler = new Scheduler();
          scheduler.setDataController(dataController);
-         scheduler.setStrategyType(StrategyType.COST_OPTIMIZED);
+         scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
          scheduler.executeStrategy(null);
          
          instance = scheduler.getMasterSchedule();
