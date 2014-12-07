@@ -1,4 +1,4 @@
-package osjava.tl3.logic.planning;
+package osjava.tl3.logic.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -207,7 +207,7 @@ public class InputFileHelper {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(SchedulerTest.class.getName()).log(Level.SEVERE, null, ex);
+           // Logger.getLogger(SchedulerTest.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 br.close();

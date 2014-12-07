@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import osjava.tl3.logic.planning.InputFileHelper;
+import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.controller.DataController;

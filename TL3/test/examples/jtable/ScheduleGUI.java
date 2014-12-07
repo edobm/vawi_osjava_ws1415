@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import osjava.tl3.logic.planning.InputFileHelper;
+import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyType;
@@ -73,7 +73,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         jt.setModel(treeModel);
 
-        scheduleTable = new ScheduleTable();
+       
         scheduleTableModel = new ScheduleTableModel();
         scheduleTable.setModel(scheduleTableModel);
 
