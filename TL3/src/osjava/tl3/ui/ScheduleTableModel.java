@@ -1,4 +1,4 @@
-package examples.jtable;
+package osjava.tl3.ui;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;

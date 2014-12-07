@@ -1,5 +1,7 @@
 package examples.jtable;
 
+import osjava.tl3.ui.ScheduleTableModel;
+import osjava.tl3.ui.ScheduleTable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;

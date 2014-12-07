@@ -1,4 +1,4 @@
-package examples.jtable;
+package osjava.tl3.ui;
 
 import java.awt.Color;
 import java.awt.Component;

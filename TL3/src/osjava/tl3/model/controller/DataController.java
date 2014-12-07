@@ -12,7 +12,7 @@ import osjava.tl3.model.Room;
 import osjava.tl3.model.StudyProgram;
 
 /**
- * Diese Klasse lädt die verschiedenen Eingabedaten mittels der verschiedenen
+ * Diese Klasse lädt und hält die verschiedenen Eingabedaten mittels der verschiedenen
  * Reader Ausprägungen. Zudem hält sie die eingelesenen Daten für die spätere
  * Nutzung der Klasse Scheduler.
  *
@@ -22,7 +22,6 @@ import osjava.tl3.model.StudyProgram;
 public class DataController {
 
     private List<Room> rooms = new ArrayList<>();
-
     private List<StudyProgram> studyPrograms = new ArrayList<>();
     private List<Course> courses = new ArrayList<>();
     private List<Equipment> equipments = new ArrayList<>();
