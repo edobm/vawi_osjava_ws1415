@@ -256,6 +256,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lPercentCoursesInternal = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         spTree = new javax.swing.JScrollPane();
         jt = new javax.swing.JTree();
@@ -480,6 +481,17 @@ public class ScheduleGUI extends javax.swing.JFrame {
         });
         jToolBar1.add(jButton1);
 
+        jButton3.setText("Exportieren");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton3);
+
         getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setDividerLocation(200);
@@ -547,6 +559,10 @@ public class ScheduleGUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -585,6 +601,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

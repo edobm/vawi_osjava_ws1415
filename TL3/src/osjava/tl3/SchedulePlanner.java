@@ -3,11 +3,10 @@ package osjava.tl3;
 import java.io.File;
 import java.util.HashMap;
 import osjava.tl3.logic.planning.Scheduler;
-import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.Strategy;
-import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.ui.SchedulerUI;
 
 /**
  * Diese Klasse stellt mit der Main-Methode den Einstiegspunkt in das
@@ -32,7 +31,7 @@ public class SchedulePlanner {
          * Argumenten Vektor prozessieren, validieren und
          * Instanz des SchedulePlanners erzeugen
          */
-        SchedulePlanner.parseArgumentVector(argv);
+        parameters = SchedulePlanner.parseArgumentVector(argv);
 
         /**
          * Instanz von SchedulePlanner erzeugen und ausführen
@@ -80,54 +79,54 @@ public class SchedulePlanner {
             System.exit(2);
         }
 
-        for (String key : parameterKeys) {
-            if (!parameters.containsKey(key)) {
-                printExecutionHint();
-                System.exit(2);
-            }
-        }
-
-        if (parameters.get("mode").equals("console")) {
-            // Die Liste der Parameter überprüfen, ob alle definierten 
-            // Parameterschlüssel tatsächlich vorhanden sind
-            for (String key : parameterKeys) {
-                if (key.equals("mode")) {
-                    continue;
-                }
-
-                if (key.equals("in")) {
-                    File file = new File(parameters.get(key));
-                    if (!file.exists()) {
-                        System.out.println("Eingabeverzeichnis exitiert nicht!");
-                    }
-                }
-
-                if (key.equals("out")) {
-                    File file = new File(parameters.get(key));
-                    if (!file.exists()) {
-                        System.out.println("Ausgabeverzeichnis exitiert nicht!");
-                    }
-                }
-
-                if (key.equals("format")) {
-                    if (!parameters.get(key).equals("plaintext") && !parameters.get(key).equals("html")) {
-                        System.out.println("Ausgabeformat unbekannt!");
-                    }
-                }
-
-                if (key.equals("strategy")) {
-                    if (!parameters.get(key).equals("costoptimized")) {
-                        System.out.println("Planungsstrategy unbekannt!");
-                    }
-                }
-            }
-        } else if (parameters.get("mode").equals("gui")) {
-            // Überprüfung der Parameter nicht notwendig,
-            // da die Parametrisierung der Anwedung über das GUI erfolgt
-        } else {
-            printExecutionHint();
-            System.exit(2);
-        }
+//        for (String key : parameterKeys) {
+//            if (!parameters.containsKey(key)) {
+//                printExecutionHint();
+//                System.exit(2);
+//            }
+//        }
+//
+//        if (parameters.get("mode").equals("console")) {
+//            // Die Liste der Parameter überprüfen, ob alle definierten 
+//            // Parameterschlüssel tatsächlich vorhanden sind
+//            for (String key : parameterKeys) {
+//                if (key.equals("mode")) {
+//                    continue;
+//                }
+//
+//                if (key.equals("in")) {
+//                    File file = new File(parameters.get(key));
+//                    if (!file.exists()) {
+//                        System.out.println("Eingabeverzeichnis exitiert nicht!");
+//                    }
+//                }
+//
+//                if (key.equals("out")) {
+//                    File file = new File(parameters.get(key));
+//                    if (!file.exists()) {
+//                        System.out.println("Ausgabeverzeichnis exitiert nicht!");
+//                    }
+//                }
+//
+//                if (key.equals("format")) {
+//                    if (!parameters.get(key).equals("plaintext") && !parameters.get(key).equals("html")) {
+//                        System.out.println("Ausgabeformat unbekannt!");
+//                    }
+//                }
+//
+//                if (key.equals("strategy")) {
+//                    if (!parameters.get(key).equals("costoptimized")) {
+//                        System.out.println("Planungsstrategy unbekannt!");
+//                    }
+//                }
+//            }
+//        } else if (parameters.get("mode").equals("gui")) {
+//            // Überprüfung der Parameter nicht notwendig,
+//            // da die Parametrisierung der Anwedung über das GUI erfolgt
+//        } else {
+//            printExecutionHint();
+//            System.exit(2);
+//        }
 
         // Eingabeparameter sind in Ordnung.
         // Parametertabelle zurückliefern.
@@ -142,7 +141,9 @@ public class SchedulePlanner {
     }
 
     public void execute() {
-        if (parameters.get("mode").equals("console")) {
+        String mode = parameters.get("mode");
+        
+        if (mode.equals("console")) {
             executeConsole();
         } else {
             executeGUI();
@@ -151,6 +152,12 @@ public class SchedulePlanner {
 
     private void executeGUI() {
         System.out.println("Starte GUI-Modus");
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new SchedulerUI().setVisible(true);
+            }
+        });
     }
 
     private void executeConsole() {
@@ -213,7 +220,7 @@ public class SchedulePlanner {
          * Gesamtplan zurück geben
          */
         return scheduler.getMasterSchedule();
-        
+
     }
 
     /**
