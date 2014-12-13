@@ -73,8 +73,8 @@ public class MasterSchedule {
             getStudyProgramSchedules().put(studyProgram, semesterPlans);
             studyProgrammScheduleCount += semesterPlans.size();
         }
-
         StrategyProtocol.log("Fachsemesterpläne initialisiert: " + studyProgrammScheduleCount);
+        
         StrategyProtocol.log("Gesamtplan erfolgreich initialisiert");
 
     }
@@ -358,12 +358,12 @@ public class MasterSchedule {
     }
 
     /**
-     * Die Gesamtzahl aller Raumtermine
+     * Die Gesamtzahl aller Raumtermine des gegebenen Raumtyps
      *
-     * @param roomType
-     * @return
+     * @param roomType Der Raumtyp
+     * @return Die Anzahl der Termine zum gegebenen Raumtyps
      */
-    public int getTotalBlocks(RoomType roomType) {
+    public int getTotalRoomBlocks(RoomType roomType) {
 
         int blocks = 0;
         Iterator<Room> rooms = getRoomSchedules().keySet().iterator();

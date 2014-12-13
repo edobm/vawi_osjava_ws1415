@@ -189,7 +189,7 @@ public class MasterScheduleTest {
     }
 
     /**
-     * Test of getTotalBlocks method, of class MasterSchedule.
+     * Test of getTotalRoomBlocks method, of class MasterSchedule.
      */
     @Test
     public void testGetTotalBlocks() {
@@ -202,14 +202,14 @@ public class MasterScheduleTest {
         Course course1 = dataController.getCourseByID("1");
         Course course2 = dataController.getCourseByID("114");
 
-        assertEquals(0, instance.getTotalBlocks(RoomType.INTERNAL));
-        assertEquals(0, instance.getTotalBlocks(RoomType.EXTERNAL));
+        assertEquals(0, instance.getTotalRoomBlocks(RoomType.INTERNAL));
+        assertEquals(0, instance.getTotalRoomBlocks(RoomType.EXTERNAL));
          
         instance.blockCoordinate(coordinate, room1, course1);
         instance.blockCoordinate(coordinate, room2, course2);
         
-        assertEquals(1, instance.getTotalBlocks(RoomType.INTERNAL));
-        assertEquals(1, instance.getTotalBlocks(RoomType.EXTERNAL));
+        assertEquals(1, instance.getTotalRoomBlocks(RoomType.INTERNAL));
+        assertEquals(1, instance.getTotalRoomBlocks(RoomType.EXTERNAL));
        
     }
     
