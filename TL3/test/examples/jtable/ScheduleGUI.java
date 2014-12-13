@@ -14,7 +14,6 @@ import javax.swing.tree.TreeNode;
 import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
-import osjava.tl3.logic.planning.strategies.StrategyType;
 import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
@@ -73,7 +72,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         jt.setModel(treeModel);
 
-       
+        scheduleTable = new  ScheduleTable();
         scheduleTableModel = new ScheduleTableModel();
         scheduleTable.setModel(scheduleTableModel);
 
@@ -206,10 +205,10 @@ public class ScheduleGUI extends javax.swing.JFrame {
         lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, false)));
         lRoomsInternalUsed.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, true)));
         lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
-        lCoursesScheduledIntern.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL)));
-        lCoursesScheduledExternal.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
+        lCoursesScheduledIntern.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL)));
+        lCoursesScheduledExternal.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
         
-        double percentInternal = masterSchedule.getTotalBlocks(RoomType.INTERNAL) * 100 / (masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL));
+        double percentInternal = masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) * 100 / (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL));
         lPercentCoursesInternal.setText(String.valueOf(Math.rint(percentInternal)));
 
         lSeatsInternalBlocked.setText(String.valueOf(masterSchedule.getInternallyScheduledSeats()));
@@ -218,7 +217,7 @@ public class ScheduleGUI extends javax.swing.JFrame {
         percentInternal = masterSchedule.getInternallyScheduledSeats() * 100 / (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats());
         lPercentInternal.setText(String.valueOf(Math.rint(percentInternal)));
 
-        lBlocksCount.setText(String.valueOf(masterSchedule.getTotalBlocks(RoomType.INTERNAL) + masterSchedule.getTotalBlocks(RoomType.EXTERNAL)));
+        lBlocksCount.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
     }
 
     /**
