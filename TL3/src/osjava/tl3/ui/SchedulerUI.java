@@ -30,6 +30,7 @@ import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
+import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
@@ -45,22 +46,22 @@ public class SchedulerUI extends JFrame {
     JButton btnSelectInput = new JButton("Eingabeverzeichnis");
     JButton btnSelectOutput = new JButton("Ausgabeverzeichnis");
     JButton btnGenerateMasterSchedule = new JButton("Plan erzeugen");
-    
-    JComboBox<String> comboBoxStrategies = new JComboBox<>(new String []{"Kostenoptimiert", "Nur Extern", "Nur Intern"});
-    
+
+    JComboBox<String> comboBoxStrategies = new JComboBox<>(new String[]{"Kostenoptimiert", "Nur Extern", "Nur Intern"});
+
     JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
     JSplitPane splitPane = new JSplitPane();
     JScrollPane scrollPaneTree = new JScrollPane();
     JScrollPane scrollPaneTable = new JScrollPane();
     JTree treeMasterSchedule = new JTree();
-    
+
     private DataController dataController;
     private OutputController outputController;
     private Scheduler scheduler;
     private MasterSchedule masterSchedule;
 
     ScheduleTable scheduleTable = new ScheduleTable();
-    
+
     ScheduleTableModel scheduleTableModel;
 
     JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten.", SwingConstants.CENTER);
@@ -69,21 +70,25 @@ public class SchedulerUI extends JFrame {
         setSize(1200, 900);
         setTitle("VAWi OSJAVA TL3");
         setLocationRelativeTo(null);
-
+        initializeComponents();
+        initializeTree();
+    }
+    
+    private void initializeComponents() {
+        
         setLayout(new BorderLayout());
         getContentPane().add(panelTop, BorderLayout.NORTH);
         panelTop.add(btnOpenProtocol);
         panelTop.add(btnSelectInput);
         panelTop.add(btnSelectOutput);
         btnSelectInput.addActionListener(new ActionListener() {
- 
+
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-              
+            public void actionPerformed(ActionEvent e) {
+
             }
-        });      
-        
+        });
+
         panelTop.add(comboBoxStrategies);
         panelTop.add(btnGenerateMasterSchedule);
         btnGenerateMasterSchedule.addActionListener(new ActionListener() {
@@ -93,25 +98,58 @@ public class SchedulerUI extends JFrame {
                 init();
             }
         });
-        
+
         getContentPane().add(splitPane, BorderLayout.CENTER);
-        
+
         splitPane.add(scrollPaneTree, JSplitPane.LEFT);
         scrollPaneTree.setViewportView(treeMasterSchedule);
-        
+
         splitPane.add(scrollPaneTable, JSplitPane.RIGHT);
         scrollPaneTable.setViewportView(lSelectNode);
-        
-       
 
-        
+    }
 
+    private void initializeTree() {
+
+        treeMasterSchedule.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                final int timeSlotWidth = 25;
+
+                if (treeMasterSchedule.getLastSelectedPathComponent() == null) {
+                    scrollPaneTable.setViewportView(lSelectNode);
+                    return;
+                }
+
+                DefaultMutableTreeNode n = (DefaultMutableTreeNode) treeMasterSchedule.getLastSelectedPathComponent();
+
+                if (n.getUserObject() instanceof Room) {
+                    Schedule schedule = masterSchedule.getSchedule((Room) n.getUserObject());
+                    scheduleTableModel.setSchedule(schedule);
+                    scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
+                    scrollPaneTable.setViewportView(scheduleTable);
+                } else if (n.getUserObject() instanceof Academic) {
+                    Schedule schedule = masterSchedule.getSchedule((Academic) n.getUserObject());
+                    scheduleTableModel.setSchedule(schedule);
+                    scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
+                    scrollPaneTable.setViewportView(scheduleTable);
+                } else if (n.getUserObject() instanceof Semester) {
+                    Semester semester = (Semester) n.getUserObject();
+                    Schedule schedule = masterSchedule.getSchedule(semester.getStudyProgram(), semester);
+                    scheduleTableModel.setSchedule(schedule);
+                    scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
+                    scrollPaneTable.setViewportView(scheduleTable);
+                } else if (n.getUserObject() instanceof String && n.getUserObject().toString().equals("Gesamtplan")) {
+                   // scrollPaneTable.setViewportView(panelMasterScheduleStatus);
+                } else {
+                    scrollPaneTable.setViewportView(lSelectNode);
+                }
+
+            }
+        });
     }
 
     private void init() {
 
-        
-        
         dataController = new DataController();
         InputFileHelper.loadCourses(dataController);
         InputFileHelper.loadRooms(dataController);
