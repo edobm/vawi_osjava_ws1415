@@ -1,5 +1,7 @@
 package osjava.tl3.logic.io;
 
+import osjava.tl3.model.Schedule;
+
 
 
 /**
@@ -10,4 +12,17 @@ package osjava.tl3.logic.io;
  */
 public class RoomScheduleWriter extends FileWriter
 {
+    
+    /**
+     * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe 
+     * eines Raumplanes im angegebenen Format in den angegebenen Pfad.
+     *
+     * @param schedule
+     * @param outputFormat
+     * @param outputPath
+     */
+    public static void writeRoomSchedule (Schedule schedule, OutputFormat outputFormat, String outputPath){
+        
+    }
+    
 }

@@ -1,8 +1,9 @@
 package osjava.tl3.logic.io;
 
 /**
+ * Ausgabeformat
  *
- * @author meikelbode
+ * @author Fabian Simon
  */
 public enum OutputFormat {
     PLAINTEXT,

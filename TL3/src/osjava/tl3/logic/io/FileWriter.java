@@ -17,9 +17,10 @@ public abstract class FileWriter
      * Diese wird abgearbeitet und pro String wird eine Zeile in die Zieldatei
      * für die Ausgabe der Daten geschrieben.
      * 
-     * @param output
+     * @param output Liste aus Strings, die in die Datei geschrieben werden sollen
+     * @param outputPath Ausgabepfad
      */
-    public static void writeFile(ArrayList<String> output){
+    public static void writeFile(ArrayList<String> output, String outputPath){
         
     }
     

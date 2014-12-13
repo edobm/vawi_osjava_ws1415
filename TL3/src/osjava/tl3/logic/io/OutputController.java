@@ -7,14 +7,14 @@ import osjava.tl3.model.ScheduleType;
 /**
  * Steuert die Erzeugung von Plandaten als Dateien.
  *
- * @author
+ * @author Fabian Simon
  */
 public class OutputController {
 
     private FileWriter fileWriter;
 
     /**
-     * Gigt einen Schedule im gegebenen Ausgabeformat aus
+     * Gibt einen Schedule im gegebenen Ausgabeformat in den gegebenen Pfad aus
      *
      * @param schedule Der Plan
      * @param outputFormat Das Format
@@ -22,12 +22,23 @@ public class OutputController {
      */
     public void outputSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
 
-        if(schedule.getType() == ScheduleType.ACADAMIC){}
+        if(schedule.getType() == ScheduleType.ACADAMIC){
+            AcademicScheduleWriter.writeAcademicSchedule(schedule, outputFormat, outputPath);
+        } else if (schedule.getType() == ScheduleType.STUDY_PROGRAM){
+            StudyProgramScheduleWriter.writeStudyProgramSchedule(schedule, outputFormat, outputPath);
+        } else if (schedule.getType() == ScheduleType.ROOM_INTERNAL){
+            RoomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
+        } else if (schedule.getType() == ScheduleType.ROOM_EXTERNAL){
+            RoomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
+        } else {
+            // @TODO: Ausgabe Fehler
+        }
         
     }
 
     /**
      * Gibt eine Liste von Plänen aus
+     * 
      * @param schedules Die Pläne
      * @param outputFormat 
      * @param outputPath 
