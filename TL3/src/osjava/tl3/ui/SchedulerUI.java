@@ -119,6 +119,8 @@ public class SchedulerUI extends JFrame {
 
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
+        splitPane.setDividerLocation(200);
+        
         splitPane.add(scrollPaneTree, JSplitPane.LEFT);
         scrollPaneTree.setViewportView(treeMasterSchedule);
 

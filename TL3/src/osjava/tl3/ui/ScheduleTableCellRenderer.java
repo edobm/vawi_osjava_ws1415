@@ -2,6 +2,7 @@ package osjava.tl3.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -20,14 +21,14 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
     Color colorHearing = new Color(240, 255, 240);
     Color colorFree = Color.WHITE;
     Color colorTimeSlot = new Color(212, 212, 212);
-
+    
     /**
      * Erzeugt eine neue Instanz des Renderers
      */
     public ScheduleTableCellRenderer() {
         super();
         setBorder(new LineBorder(Color.DARK_GRAY, 1));
-
+        setFont(new Font("Helvetica", Font.PLAIN, 12));
     }
 
     /**
@@ -57,7 +58,8 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
-                sb.append("[").append(scheduleElement.getCourse().getNumber()).append(",").append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Ü" : "V").append("] ").append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
+                sb.append("Kurs ").append(scheduleElement.getCourse().getNumber()).append(" (").append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
+                sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
                 sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
                 sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
                 sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
