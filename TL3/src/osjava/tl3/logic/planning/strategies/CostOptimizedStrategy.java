@@ -21,7 +21,6 @@ import osjava.tl3.model.helpers.MasterScheduleConsoleWriter;
  * Kosten.
  *
  * @author Meikel Bode
- *
  */
 public class CostOptimizedStrategy extends Strategy {
     
@@ -32,8 +31,6 @@ public class CostOptimizedStrategy extends Strategy {
         super("Kostenoptimiert");
         StrategyProtocol.log("Strategie: " + getName());
     }
-    
-    
 
     /**
      * Erzeugt einen Auf Basis der Eingabedaten einen kostenoptimierten
@@ -253,7 +250,8 @@ public class CostOptimizedStrategy extends Strategy {
                     /**
                      * Protokoll fortschreiben
                      */
-                    StrategyProtocol.log("\tExtern eingeplant (bestehender Raum): " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                    StrategyProtocol.log("\tExtern eingeplant (bestehender Raum): " 
+                            + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                     /**
                      * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -309,7 +307,8 @@ public class CostOptimizedStrategy extends Strategy {
                 /**
                  * Protokoll fortschreiben
                  */
-                StrategyProtocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+                StrategyProtocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() 
+                        + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
 
             }
         }

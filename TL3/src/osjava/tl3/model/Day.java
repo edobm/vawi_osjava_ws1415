@@ -2,27 +2,54 @@ package osjava.tl3.model;
 
 /**
  * Dieser Enum Typ repräsentiert die Wochentage. Die Sortierbarkeit wird über
- * die Parametrisierung der Auspräungen mittels numerischer Wertzuweisung
+ * die Parametrisierung der Ausprägungen mittels numerischer Wertzuweisung
  * möglich.
  *
- * @author Christoph Lurz
+ * @author Meikel Bode
  * @version 1.0
  */
 public enum Day {
 
-    MONDAY(0), TUESDAY(1), WEDNESDAY(2), THURSDAY(3), FRIDAY(4), SATURDAY(5), SUNDAY(6);
+    /**
+     * Montag
+     */
+    MONDAY(0), 
+    
+    /**
+     * Dienstag
+     */
+    TUESDAY(1), 
+    
+    /**
+     * Mittwoch
+     */
+    WEDNESDAY(2), 
+    
+    /**
+     * Donnerstag
+     */
+    THURSDAY(3), 
+    
+    /**
+     * Freitag
+     */
+    FRIDAY(4);
 
     /**
-     * The enums value
+     * Der Integer Wert des jeweiligen Enum Wertes
      */
     public final int value;
 
+    /**
+     * Privater Konstruktor zur Zuweisung des Integer Wertes
+     * @param value 
+     */
     private Day(int value) {
         this.value = value;
     }
 
     /**
-     * Konvertiert den gegebene Integerwert in den entsprechend Enum Wert
+     * Konvertiert den gegebenen Integerwert in den entsprechend Enum Wert
      *
      * @param i Der Integer, der konvertiert werden soll
      * @return Die Wert

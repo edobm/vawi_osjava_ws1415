@@ -37,8 +37,16 @@ import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 
 /**
- *
- * @author
+ * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung 
+ * der Planungslogik bereit.
+ * 
+ * Die GUI stellt Möglichkeiten der Parametrisierung der Planungslogik und 
+ * der Eingabe und Ausgabe bereit.
+ * Weiterhin dient die GUI zu bequemen Auswahl mittels JTree und Darstellung aller im 
+ * Gesamtplan (MasterSchedule) enthaltenen Plane (Schedule)  in tabellarischer Form
+ * (JTable) bereit.
+ * 
+ * @author Christian Müller
  */
 public class SchedulerUI extends JFrame {
 
@@ -66,14 +74,24 @@ public class SchedulerUI extends JFrame {
 
     JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten.", SwingConstants.CENTER);
 
+    /**
+     * Erzeugt eine neue Instanz der Klasse ScheduleGUI und nimmt dabei 
+     * grundlegende Einstellungen am UI vor.
+     * 
+     * @throws HeadlessException Wird ausgelöst, wenn die unterliegende JVM im headless Modus, läuft und
+     * damit eine grafische Benutzeroberfläche nicht erzeugt werden kann.
+     */
     public SchedulerUI() throws HeadlessException {
         setSize(1200, 900);
         setTitle("VAWi OSJAVA TL3");
         setLocationRelativeTo(null);
         initializeComponents();
-        initializeTree();
+        initializeTreeEvents();
     }
     
+    /**
+     * UI Komponenten initialisieren
+     */
     private void initializeComponents() {
         
         setLayout(new BorderLayout());
@@ -109,7 +127,10 @@ public class SchedulerUI extends JFrame {
 
     }
 
-    private void initializeTree() {
+    /**
+     * Events und Aktionen für den Navigationsbaum erzeugen und binden.
+     */
+    private void initializeTreeEvents() {
 
         treeMasterSchedule.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
@@ -148,6 +169,11 @@ public class SchedulerUI extends JFrame {
         });
     }
 
+    /**
+     * Initialisiert die Datenhaltung und erzeugt den Gesamtplan (MasterSchedule)
+     * und erzeugt das TreeModel und sowie das TableModel für die tabellarische 
+     * Plandarstellung
+     */
     private void init() {
 
         dataController = new DataController();
@@ -171,7 +197,11 @@ public class SchedulerUI extends JFrame {
         scheduleTable.setModel(scheduleTableModel);
 
     }
-
+    
+    /**
+     * Erzeugt auf Basis des Gesamtplanes (MasterSchedule) das TreeModel mithilfe
+     * von verknüpften DefaultMutableTreeNodes
+    */
     private TreeNode buildTreeModel() {
         DefaultMutableTreeNode rMasterSchedule = new DefaultMutableTreeNode("Gesamtplan");
         DefaultMutableTreeNode rRooms = new DefaultMutableTreeNode("Raumpläne");
@@ -291,6 +321,11 @@ public class SchedulerUI extends JFrame {
         return rMasterSchedule;
     }
 
+    /**
+     * Erzeugt mithilfe des Gesamtplans eine Ausgabe der wichtigsten Rahmendaten
+     * zum Plan
+     * @param masterSchedule Der MasterSchedule des Rahmendaten ausgegeben werden sollen
+     */
     private void initMasterScheduleInfos(MasterSchedule masterSchedule) {
 //        lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, false)));
 //        lRoomsInternalUsed.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, true)));
@@ -311,6 +346,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Liefert den DatenController
      * @return the dataController
      */
     public DataController getDataController() {
@@ -318,6 +354,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Setzt den DatenController
      * @param dataController the dataController to set
      */
     public void setDataController(DataController dataController) {
@@ -325,6 +362,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Liefert den OutputController
      * @return the outputController
      */
     public OutputController getOutputController() {
@@ -332,6 +370,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Setzt den OutputController
      * @param outputController the outputController to set
      */
     public void setOutputController(OutputController outputController) {
@@ -339,6 +378,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Liefert den Scheduler
      * @return the scheduler
      */
     public Scheduler getScheduler() {
@@ -346,6 +386,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Setzt den Scheduler
      * @param scheduler the scheduler to set
      */
     public void setScheduler(Scheduler scheduler) {
@@ -353,6 +394,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Liefert den MasterSchedule
      * @return the masterSchedule
      */
     public MasterSchedule getMasterSchedule() {
@@ -360,6 +402,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
+     * Setzt den MasterSchedule
      * @param masterSchedule the masterSchedule to set
      */
     public void setMasterSchedule(MasterSchedule masterSchedule) {

@@ -2,27 +2,28 @@ package osjava.tl3.model;
 
 /**
  * Mögliche Plantypen
+ * 
  * @author Meikel Bode
  */
 public enum ScheduleType {
     
     /**
-     * Dozentenplan
+     * Repräsentiert einen Dozentenplan
      */
     ACADAMIC, 
     
     /**
-     * Raumplan (intern)
+     * Repräsentiert einen Plan für einen internen Raum
      */
     ROOM_INTERNAL, 
     
     /**
-     * Raumplan (extern)
+     * Repräsentiert einen Plan für einen externen Raum
      */
     ROOM_EXTERNAL, 
     
     /**
-     * Studiengangsplan
+     * Repräsentiert einen Studiengangsplan
      */
     STUDY_PROGRAM
     

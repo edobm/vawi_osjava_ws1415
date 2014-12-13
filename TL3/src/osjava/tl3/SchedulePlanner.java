@@ -1,6 +1,5 @@
 package osjava.tl3;
 
-import java.io.File;
 import java.util.HashMap;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
@@ -23,15 +22,20 @@ import osjava.tl3.ui.SchedulerUI;
 public class SchedulePlanner {
 
     private static final String[] parameterKeys = new String[]{"mode", "in", "out", "format", "strategy"};
-    private static HashMap<String, String> parameters;
+    private static HashMap<String, String> parameters = new HashMap<>();
 
+    /**
+     * Die Main-Methode und zugleich der Einstiegspunkt in das Klassensystem
+     *
+     * @param argv Der Argumentenvektor
+     */
     public static void main(String[] argv) {
 
         /* 
          * Argumenten Vektor prozessieren, validieren und
          * Instanz des SchedulePlanners erzeugen
          */
-        parameters = SchedulePlanner.parseArgumentVector(argv);
+        SchedulePlanner.parseArgumentVector(argv);
 
         /**
          * Instanz von SchedulePlanner erzeugen und ausführen
@@ -40,6 +44,9 @@ public class SchedulePlanner {
         schedulePlanner.execute();
     }
 
+    /**
+     * Gibt Eine Hilfe zur Bedienung des Programms auf der Konsole aus
+     */
     private static void printExecutionHint() {
         StringBuilder sb = new StringBuilder();
         sb.append("SchedulePlanner (VAWi, Modul OS_JAVA, TL3, Gruppe 1)\n");
@@ -57,8 +64,14 @@ public class SchedulePlanner {
         System.out.println(sb.toString());
     }
 
-    public static HashMap<String, String> parseArgumentVector(String[] argv) {
-        HashMap<String, String> parameters = new HashMap<>();
+    /**
+     * Verarbeitet den Argumentenvektor und speichert die Parameter in der
+     * Parameterhashmap
+     *
+     * @param argv die Kommandozeilenparameter des Programms
+     * @return Die HashMap mit den aufbereiteten parametern
+     */
+    public static void parseArgumentVector(String[] argv) {
 
         try {
             for (String parameter : argv) {
@@ -127,22 +140,14 @@ public class SchedulePlanner {
 //            printExecutionHint();
 //            System.exit(2);
 //        }
-
-        // Eingabeparameter sind in Ordnung.
-        // Parametertabelle zurückliefern.
-        return parameters;
-
     }
 
     /**
-     * Initialisierung
+     * Startet die eigentliche Programmausführung
      */
-    public SchedulePlanner() {
-    }
-
     public void execute() {
         String mode = parameters.get("mode");
-        
+
         if (mode.equals("console")) {
             executeConsole();
         } else {
@@ -150,16 +155,23 @@ public class SchedulePlanner {
         }
     }
 
+    /**
+     * Startet den GUI Modus
+     */
     private void executeGUI() {
         System.out.println("Starte GUI-Modus");
-        /* Create and display the form */
+
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new SchedulerUI().setVisible(true);
             }
         });
     }
 
+    /**
+     * Startet die Kommandozeilenausführung
+     */
     private void executeConsole() {
         System.out.println("Starte Konsolen-Modus");
         DataController dataController = new DataController();
@@ -177,18 +189,17 @@ public class SchedulePlanner {
 
     /**
      * Laden der Eingabedaten
+     * @param dataController Der DataController der die Eingabedaten puffert
      */
     public void loadInputData(DataController dataController) {
 
-        //
-        // Logik zum Laden der Eingabedateien einbauen
-        // 
+        // @ToDo Logik zum Laden der Eingabedateien einbauen
         String inputDirectory = parameters.get("in");
         dataController.load();
     }
 
     /**
-     * Erzeugen der Zeitplanung
+     * Auf Basis der Parametriesierung die Zeitplanung durchführen
      */
     private MasterSchedule createSchedule() {
 
@@ -229,7 +240,7 @@ public class SchedulePlanner {
     private void writeOutput(MasterSchedule masterSchedule) {
 
         //
-        // Ausgabelogik integrieren
+        // @TODO Ausgabelogik integrieren
         // 
     }
 }

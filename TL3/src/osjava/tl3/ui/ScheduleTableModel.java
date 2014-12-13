@@ -1,6 +1,5 @@
 package osjava.tl3.ui;
 
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import osjava.tl3.model.Day;
 import osjava.tl3.model.Schedule;
@@ -10,28 +9,51 @@ import osjava.tl3.model.ScheduleType;
 import osjava.tl3.model.TimeSlot;
 
 /**
- *
- * @author Meikel Bode
+ * Ein auf Instanzen der Klasse Schedule spezialisiertes TableModel.
+ * Diese Klasse erweiter die Klasse DefaultTableModel
+ * @author Christian Müller
  */
 public class ScheduleTableModel extends DefaultTableModel  {
 
     private Schedule schedule = new Schedule(ScheduleType.ACADAMIC);
 
+    /**
+     * Setzt die Instanz der Klasse Schedule, auf der dieses TableModel
+     * operieren soll
+     * @param schedule 
+     */
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
         fireTableDataChanged();
     }
 
+    /**
+     * Liefert die Zeilen des Models
+     * Dieser Wert ist immer 5!
+     * Zeilen: 0800-1000, 1000-1200, 1200-1400, 1400-1600 und 1600-1800
+     * @return Die Anzahl der Zeilen
+     */
     @Override
     public int getRowCount() {
         return 5;
     }
 
+    /**
+     * Liefert die Spaten des Models
+     * Dieser Wert ist immer 6!
+     * Spalten: Zeitraum, Montag, Dienstag, Mittwoch, Donnerstag, Freitag
+     * @return Die Anzahl der Spalten
+     */
     @Override
     public int getColumnCount() {
         return 6;
     }
 
+    /**
+     * Der Bezeichner der gegebenen Spalte
+     * @param columnIndex Index der Spalte
+     * @return Der Bezeichner der Spalte mit dem gegebenen Index
+     */
     @Override
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
@@ -51,16 +73,35 @@ public class ScheduleTableModel extends DefaultTableModel  {
         return "";
     }
 
+    /**
+     * Die Klasse des Werts der Spalte mit dem gegebenen Index
+     * Ist immer ScheduleElement
+     * @param columnIndex Der Index
+     * @return Die Klasse des Werts am gegebenen Index
+     */
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return ScheduleElement.class;
     }
 
+    /**
+     * Ob die Zelle am Zeilen- und Spaltenindex editiertbar ist.
+     * Ist immer false
+     * @param rowIndex Der Index der Zeile
+     * @param columnIndex der Index der Spalte
+     * @return Ob editierbar oder nicht. Immer False!
+     */
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
 
+    /**
+     * Liefert den Wert an der Position Zeile und Spalte
+     * @param row Die Zeile
+     * @param col Die Spalte
+     * @return Der Wert des Models an den gegeben Indices
+     */
     @Override
     public Object getValueAt(int row, int col) {
         
@@ -72,21 +113,6 @@ public class ScheduleTableModel extends DefaultTableModel  {
             
             return schedule.getScheduleElement(scheduleCoordinate);
         }
-    }
-
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener l) {
-       
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-        
     }
 
 }

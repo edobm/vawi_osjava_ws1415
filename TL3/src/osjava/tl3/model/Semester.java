@@ -10,20 +10,32 @@ import java.util.Objects;
  * Einfachsemester hat eine Bezeichnung und im Verlauf des Semesters werden
  * Lehrveranstaltungen angeboten.
  *
- * @author Christian Müller
+ * @author Christoph Lurz
  * @version 1.0
  */
 public class Semester {
 
+    /**
+     * Der Studiengang zu dem dieses Semester gehört
+     */
     private StudyProgram studyProgram;
+
+    /**
+     * Die Bezeichnung dieses Fachsemsters
+     */
     private String name;
+
+    /**
+     * Die Kurse dieses Fachsemesters
+     */
     private List<Course> courses = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
+     /**
+     * Vergleicht zwei Instanzen von Semester mithilfe von Name und Studiengangsbezeichnung
+     *
+     * @param obj Das andere Semester
+     * @return Ob diese Instanz gleich der anderen ist
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Semester) {
@@ -35,6 +47,10 @@ public class Semester {
         }
     }
 
+    /**
+     * Berechnet den HashCode
+     * @return Der HashCode
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -44,42 +60,58 @@ public class Semester {
     }
 
     /**
-     * @return the name
+     * Liefert die String-Darstellung
+     * @return Die String-Darstellung
+     */
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    /**
+     * Liefert den Namen
+     * @return Der Name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name the name to set
+     * Setzt den Namen
+     * 
+     * @param name Der Name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return the courses
+     * Liefert die Kurse
+     * @return Die Kurse
      */
     public List<Course> getCourses() {
         return courses;
     }
 
     /**
-     * @param courses the courses to set
+     * Setzt die Kurse
+     * @param courses Die Kurse
      */
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
 
     /**
-     * @return the studyProgram
+     * Liefert den Studiengang
+     * @return Der Studiengang
      */
     public StudyProgram getStudyProgram() {
         return studyProgram;
     }
 
     /**
-     * @param studyProgram the studyProgram to set
+     * Setzt den Studiengang
+     * @param studyProgram Der Studiengang
      */
     public void setStudyProgram(StudyProgram studyProgram) {
         this.studyProgram = studyProgram;

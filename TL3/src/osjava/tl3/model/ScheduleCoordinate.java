@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Wochenplan
- * dar, wie beispielsweise (MO;0800) oder (MI;1400)
+ * dar, wie beispielsweise (MONDAY;0800) oder (WEDNESDAY;1400)
  *
  * @author Meikel Bode
  */
@@ -32,13 +32,15 @@ public class ScheduleCoordinate {
     }
 
     /**
-     * @return Die Tag-Komponente der Koordinate
+     * Liefert die Tag-Komponente der Koordinate
+     * @return Die Tag-Komponente
      */
     public Day getDay() {
         return day;
     }
 
     /**
+     * Liefert die Zeitraum-Komponente der Koordinate
      * @return Die Zeitraum-Komponente der Koordinate
      */
     public TimeSlot getTimeSlot() {
@@ -59,6 +61,10 @@ public class ScheduleCoordinate {
         return this.day == other.day && this.timeSlot == other.timeSlot;
     }
 
+    /**
+     * Berechnet den HashCode
+     * @return 
+     */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -67,6 +73,10 @@ public class ScheduleCoordinate {
         return hash;
     }
 
+    /**
+     * Die String-Darstellung
+     * @return Die String-Darstellung
+     */
     @Override
     public String toString() {
         return "[" + day + ";" + timeSlot + "]";

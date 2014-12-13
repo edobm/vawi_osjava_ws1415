@@ -5,18 +5,42 @@ package osjava.tl3.model;
  * Slots wird über numerische Wertzuweisung erreicht. Es ergeben sich 5 Slots
  * pro Tag mit einer jeweiligen Dauer von 2 Stunden.
  *
- * @author Christoph Lurz
+ * @author Meikel Bode
  * @version 1.0
  */
 public enum TimeSlot {
 
-    SLOT_0800(0), SLOT_1000(1), SLOT_1200(2), SLOT_1400(3), SLOT_1600(4);
+    /**
+     * Repräsentiert den Zeitraum 08:00 bis 10:00 Uhr
+     */
+    SLOT_0800(0),
+    /**
+     * Repräsentiert den Zeitraum 10:00 bis 12:00 Uhr
+     */
+    SLOT_1000(1),
+    /**
+     * Repräsentiert den Zeitraum 12:00 bis 14:00 Uhr
+     */
+    SLOT_1200(2),
+    /**
+     * Repräsentiert den Zeitraum 14:00 bis 16:00 Uhr
+     */
+    SLOT_1400(3),
+    /**
+     * Repräsentiert den Zeitraum 16:00 bis 18:00 Uhr
+     */
+    SLOT_1600(4);
 
     /**
-     * The enums value
+     * Der Integerwert des Enum Wertes
      */
     public final int value;
 
+    /**
+     * Privater Konstruktur zur Erzeugung einer neuen Instanz
+     *
+     * @param value Der Integerwert des Enum Wertes
+     */
     private TimeSlot(int value) {
         this.value = value;
     }

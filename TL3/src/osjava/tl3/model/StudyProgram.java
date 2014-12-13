@@ -14,7 +14,14 @@ import java.util.List;
  */
 public class StudyProgram implements Comparable<StudyProgram> {
 
+    /**
+     * Der Name des Studiengangs
+     */
     private String name;
+
+    /**
+     * Die Fachsemester des Studiengangs
+     */
     private List<Semester> semesters = new ArrayList<>();
 
     /**
@@ -49,39 +56,60 @@ public class StudyProgram implements Comparable<StudyProgram> {
         return null;
     }
 
+    /**
+     * Liefert die String-Darstellung
+     *
+     * @return Die String-Darstellung
+     */
     @Override
     public String toString() {
         return name;
     }
 
     /**
-     * @return the name
+     * Liefert den Namen
+     *
+     * @return Der Name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name the name to set
+     * Setzt den Namen
+     *
+     * @param name Der Name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @return the semesters
+     * Liefert die Fachsemester
+     *
+     * @return Die Fachsemester
      */
     public List<Semester> getSemesters() {
         return semesters;
     }
 
     /**
-     * @param semesters the semesters to set
+     * Setzt die Fachsemester
+     *
+     * @param semesters Die Fachsemester
      */
     public void setSemesters(List<Semester> semesters) {
         this.semesters = semesters;
     }
 
+    /**
+     * Überschreibt die Methode compareTo für die Klasse StudyProgram auf Basis des
+     * Attributs Name
+     *
+     * @param other Das andere Objekte
+     * @return Ob dieses Objekt vor, gleich oder hinter diesem Objekt in der
+     * Folge steht
+     */
     @Override
     public int compareTo(StudyProgram other) {
         return name.compareToIgnoreCase(other.name);

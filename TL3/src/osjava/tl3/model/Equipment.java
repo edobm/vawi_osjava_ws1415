@@ -5,10 +5,13 @@ import java.util.Objects;
 /**
  * Diese Klasse repräsentiert Ausstattungsgegenstände
  *
- * @author Meikel Bode
+ * @author Christoph Lurz
  */
 public class Equipment {
 
+    /**
+     * Der Name des Equipments
+     */
     private String name;
 
     public Equipment(String name) {
@@ -16,19 +19,30 @@ public class Equipment {
     }
 
     /**
-     * @return the name
+     * Liefert den Namen des Equipments
+     *
+     * @return Der Name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @param name the name to set
+     * Setzt den Namen des Equipments
+     *
+     * @param name Der Name
      */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Vergleicht zwei Instanzen von Equipment
+     *
+     * @param obj Die andere Instanz
+     * @return Ob diese Instanz vor, gleich oder hinter diesem in der
+     * Reihenfolge steht bezogen auf den Namen
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Equipment) {
@@ -38,6 +52,10 @@ public class Equipment {
         }
     }
 
+    /**
+     * Berechnet den HashCode
+     * @return Der HashCode
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -45,6 +63,10 @@ public class Equipment {
         return hash;
     }
 
+    /**
+     * Die String-Darstellung
+     * @return Die String-Darstellung
+     */
     @Override
     public String toString() {
         return name;

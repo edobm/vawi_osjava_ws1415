@@ -6,6 +6,7 @@ package osjava.tl3.logic.planning.strategies.helpers;
  * @author Meikel Bode
  */
 public enum SortOrder {
+    
     /**
      * Absteigende Sortierung
      */
@@ -15,4 +16,5 @@ public enum SortOrder {
      * Aufsteigende Sortierung
      */
     DESCENDING  
+    
 }

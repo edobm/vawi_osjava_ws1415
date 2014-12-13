@@ -21,13 +21,40 @@ import osjava.tl3.model.StudyProgram;
  */
 public class DataController {
 
+    /**
+     * Die Liste der Räume
+     */
     private List<Room> rooms = new ArrayList<>();
+    
+    /**
+     * Die Liste der Studiengänge
+     */
     private List<StudyProgram> studyPrograms = new ArrayList<>();
+    
+    /**
+     * Die Liste der Kurse
+     */
     private List<Course> courses = new ArrayList<>();
+    
+    /**
+     * Die Liste der Austattungsgegenstände
+     */
     private List<Equipment> equipments = new ArrayList<>();
 
+    
+    /**
+     * Readerinstanz für Räume
+     */
     private RoomReader roomReader;
+    
+    /**
+     * Readerinstanz für Studiengänge
+     */
     private StudyProgramReader studyProgrammReader;
+    
+    /**
+     * Readerinstanz für Kurse
+     */
     private CourseReader courseReader;
 
     /**
@@ -149,56 +176,65 @@ public class DataController {
     }
 
     /**
-     * @return the rooms
+     * Liefert die Räume
+     * 
+     * @return Die Räume
      */
     public List<Room> getRooms() {
         return rooms;
     }
 
     /**
-     * @param rooms the rooms to set
+     * Setzt die Räume
+     * @param rooms Die Räume
      */
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
 
     /**
-     * @return the studyPrograms
+     * Liefert die Studiengänge
+     * @return Die Studiengänge
      */
     public List<StudyProgram> getStudyPrograms() {
         return studyPrograms;
     }
 
     /**
-     * @param studyPrograms the studyPrograms to set
+     * Setzt die Studiengänge
+     * @param studyPrograms Die Studiengänge
      */
     public void setStudyPrograms(List<StudyProgram> studyPrograms) {
         this.studyPrograms = studyPrograms;
     }
 
     /**
-     * @return the courses
+     * Liefert die Kurse
+     * @return Die Kurse
      */
     public List<Course> getCourses() {
         return courses;
     }
 
     /**
-     * @param courses the courses to set
+     * Setzt die Kurse
+     * @param courses Die Kurse
      */
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
 
     /**
-     * @return the equipments
+     * Liefert die Ausstattungsgegenstände
+     * @return Die Ausstattungsgegenstände
      */
     public List<Equipment> getEquipments() {
         return equipments;
     }
 
     /**
-     * @param equipments the equipments to set
+     * Setzt die Ausstattungsgegenstände
+     * @param equipments Die Ausstattungsgegenstände
      */
     public void setEquipments(List<Equipment> equipments) {
         this.equipments = equipments;

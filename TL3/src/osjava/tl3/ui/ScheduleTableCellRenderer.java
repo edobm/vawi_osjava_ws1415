@@ -9,8 +9,10 @@ import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.TimeSlot;
 
 /**
- *
- * @author Meikel Bode
+ * Dieser Renderer kann Instanzen der Klassen ScheduleElement und TimeSlot ausgeben.
+ * Die Klasse erweitert die Klasse DefaultTableCellRenderer
+ * 
+ * @author Christian Müller
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
 
@@ -19,12 +21,27 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
     Color colorFree = Color.WHITE;
     Color colorTimeSlot = new Color(212, 212, 212);
 
+    /**
+     * Erzeugt eine neue Instanz des Renderers
+     */
     public ScheduleTableCellRenderer() {
         super();
         setBorder(new LineBorder(Color.DARK_GRAY, 1));
 
     }
 
+    /**
+     * Erzeugt eine Instanz von JLabel, die als darstellende Komponente der zugewiesenen
+     * Instanz von JTable an der Koordinate (row, column) verwendet werden soll.
+     * Dieser Renderer kann Instanzen von ScheduleElement und TimeSlot darstellen.
+     * @param table Die JTable auf der der Renderer operiert
+     * @param value Der Wert des TableModels, der durch diesen Renderer dargestellt werden soll
+     * @param isSelected Ob die aktuelle Zelle der Tabelle aktuell selektiert ist
+     * @param hasFocus Ob die aktuelle Zelle der Tabelle aktuell den Fokus hält
+     * @param row Der Index der Tabellenzeile
+     * @param column Der Index der Tabellenspalte
+     * @return Die Renderer Komponente (JLabel)
+     */
     @Override
     public Component getTableCellRendererComponent(JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,

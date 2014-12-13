@@ -34,7 +34,7 @@ public class Schedule {
     private final List<ScheduleElement> scheduleElements;
 
     /**
-     * Erzeugt einen neuen Plan
+     * Erzeugt einen neuen Plan vom gegebenen Typ
      *
      * @param type Der Typ des Plans
      */

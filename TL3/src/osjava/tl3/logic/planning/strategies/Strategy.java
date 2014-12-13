@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;

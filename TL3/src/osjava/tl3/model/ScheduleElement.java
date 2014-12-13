@@ -6,7 +6,7 @@ package osjava.tl3.model;
  * Zudem wird diesem Element ein bestimmter Kurs einem Raum zugeordnet. 
  * Implizit wird damit auch festgelegt welcher Dozent wann welche Lehrveranstaltung hält.
  * 
- * @author Christoph Lurz
+ * @author Meikel Bode
  * @version 1.0
  */
 public class ScheduleElement
@@ -61,42 +61,48 @@ public class ScheduleElement
     }
 
     /**
-     * @return the course
+     * Liefert den Kurs 
+     * @return Der Kurs
      */
     public Course getCourse() {
         return course;
     }
 
     /**
-     * @param course the course to set
+     * Setzt den Kurs
+     * @param course Der Kurs
      */
     public void setCourse(Course course) {
         this.course = course;
     }
 
     /**
-     * @return the room
+     * Liefert den Raum
+     * @return Der Raum
      */
     public Room getRoom() {
         return room;
     }
 
     /**
-     * @param room the room to set
+     * Setzt den Raum
+     * @param room Der Raum
      */
     public void setRoom(Room room) {
         this.room = room;
     }
 
     /**
-     * @return the coordiate
+     * Setzt die Plankoordinate
+     * @return Die Plankoordinate
      */
     public ScheduleCoordinate getCoordiate() {
         return coordiate;
     }
 
     /**
-     * @param coordiate the coordiate to set
+     * Setzt die Plankoordinate
+     * @param coordiate Plankoordinate
      */
     public void setCoordiate(ScheduleCoordinate coordiate) {
         this.coordiate = coordiate;
