@@ -66,7 +66,7 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
                 sb.append("</body></html>");
                 setText(sb.toString());
-                setBackground(colorHearing);
+                setBackground(scheduleElement.getCourse().getType().getName().equals("Uebung") ? colorTutorial : colorHearing);
                 setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " 
                         + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() 
                         + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " 
