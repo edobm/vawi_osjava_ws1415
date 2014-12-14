@@ -17,10 +17,10 @@ import osjava.tl3.model.TimeSlot;
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
 
-    Color colorTutorial = new Color(143, 188, 143);
-    Color colorHearing = new Color(240, 255, 240);
-    Color colorFree = Color.WHITE;
-    Color colorTimeSlot = new Color(212, 212, 212);
+    private final Color colorTutorial = new Color(143, 188, 143);
+    private final Color colorHearing = new Color(240, 255, 240);
+    private final Color colorFree = Color.WHITE;
+    private final Color colorTimeSlot = new Color(212, 212, 212);
     
     /**
      * Erzeugt eine neue Instanz des Renderers
@@ -58,7 +58,8 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
-                sb.append("Kurs ").append(scheduleElement.getCourse().getNumber()).append(" (").append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
+                sb.append("Kurs ").append(scheduleElement.getCourse().getNumber()).append(" (")
+                        .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
                 sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
                 sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
                 sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
@@ -66,7 +67,10 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 sb.append("</body></html>");
                 setText(sb.toString());
                 setBackground(colorHearing);
-                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
+                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " 
+                        + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() 
+                        + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " 
+                        + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
             }
         } else if (value instanceof TimeSlot) {
             setText(value.toString());
