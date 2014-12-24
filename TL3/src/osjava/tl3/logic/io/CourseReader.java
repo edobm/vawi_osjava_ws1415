@@ -2,7 +2,11 @@ package osjava.tl3.logic.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
+import osjava.tl3.model.CourseType;
+import osjava.tl3.model.Equipment;
+import osjava.tl3.model.controller.DataController;
 
 
 
@@ -21,14 +25,21 @@ public class CourseReader extends InputFileReader{
      * Diese Kurs-Obejekte werden in einer Liste gespeichert, welche von der Methode
      * zurückgegeben wird.
      *
-     * @return Die Liste mit Objekten der Kurse.
+     * @param fileName Name der Eingabedatei
+     * @param dataController DataController-Instanz zur Ablage der Daten
      */
-    public List<Course> readCourses(){
+    public void readCourses(String fileName, DataController dataController){
         ArrayList<String> courseData = super.readFile("lehrveranstaltungen.csv");
+        //ArrayList<String> courseData = super.readFile(fileName);
         
         List<Course> courses = new ArrayList<>();
         
-        return courses;
+        for (String courseDataRecord : courseData){
+            courses.add(getCourse(courseDataRecord));
+        }
+        
+        dataController.setCourses(courses);
+        
     }
     
     /**
@@ -39,9 +50,42 @@ public class CourseReader extends InputFileReader{
      */
     private Course getCourse (String courseDataRecord) {
         
-        Course c = new Course();
+        Course course = new Course();
         
-        return c;
+        // 1;"Mathematik 1";"Vorlesung";"Frey";800;"Tafel, Mikrofonanlage";
+        String [] courseData = courseDataRecord.split(";");
+        
+        //Setzen von Kursnummer und Kursname
+        course.setNumber(courseData[0]);
+        course.setName(super.removeQuotationMarks(courseData[1]));
+        
+        //Erzeugen und setzen des Kurstyp
+        CourseType courseType = new CourseType(super.removeQuotationMarks(courseData[2]));
+        course.setType(courseType);
+        
+        //Erzeugen und setzen des Dozenten
+        Academic academic = new Academic();
+        academic.setName(super.removeQuotationMarks(courseData[3]));
+        course.setAcademic(academic);
+        
+        //Setzen der Anzahl der Studenten
+        int numberOfStudents = 0;
+        try {
+            numberOfStudents = Integer.parseInt(courseData[4]);
+        } catch (Exception e) {
+            System.out.println("Eingabewert für die Anzahl der Studenten ist kein Integer!");
+        }
+        course.setStudents(numberOfStudents);
+        
+        //Equipments setzen falls vorhanden
+        if (courseData.length == 6){
+            List<Equipment> requiredEquipments = super.parseEquipments(courseData[5]);
+            course.setRequiredEquipments(requiredEquipments);
+        } else{
+            System.out.println("Die Veranstaltung " + super.removeQuotationMarks(courseData[1]) + " benötigt kein Equipment!");
+        }
+        
+        return course;
     }
   
 }

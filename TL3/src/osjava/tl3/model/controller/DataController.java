@@ -207,6 +207,14 @@ public class DataController {
     public void setStudyPrograms(List<StudyProgram> studyPrograms) {
         this.studyPrograms = studyPrograms;
     }
+    
+    /**
+     * Fügt einen Studiengang zur Liste der Studiengänge hinzu
+     * @param studyProgram Studiengang der hinzugefügt werden soll
+     */
+    public void addStudyProgram (StudyProgram studyProgram){
+        studyPrograms.add(studyProgram);
+    }
 
     /**
      * Liefert die Kurse
@@ -223,6 +231,14 @@ public class DataController {
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
+    
+    /**
+     * Fügt einen Kurs zur Liste der Kurse hinzu
+     * @param course Kurs der hinzugefügt werden soll
+     */
+    public void addCourse(Course course){
+        courses.add(course);
+    }
 
     /**
      * Liefert die Ausstattungsgegenstände
@@ -238,6 +254,14 @@ public class DataController {
      */
     public void setEquipments(List<Equipment> equipments) {
         this.equipments = equipments;
+    }
+    
+    /**
+     * Fügt einen Ausstattungsgegenstand zur Liste der Ausstattungsgegenstände hinzu
+     * @param equipment Ausstattungsgegenstand der hinzugefügt werden soll
+     */
+    public void addEquipment(Equipment equipment){
+        equipments.add(equipment);
     }
 
 }

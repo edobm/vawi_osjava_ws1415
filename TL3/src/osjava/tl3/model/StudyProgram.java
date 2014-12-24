@@ -101,6 +101,14 @@ public class StudyProgram implements Comparable<StudyProgram> {
     public void setSemesters(List<Semester> semesters) {
         this.semesters = semesters;
     }
+    
+    /**
+     * Fügt ein Semester zur Liste der Semester hinzu
+     * @param semester Semester das hinzugefügt werden soll
+     */
+    public void addSemester (Semester semester){
+        semesters.add(semester);
+    }
 
     /**
      * Überschreibt die Methode compareTo für die Klasse StudyProgram auf Basis des
