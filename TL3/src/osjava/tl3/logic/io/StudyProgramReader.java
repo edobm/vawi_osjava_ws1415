@@ -28,7 +28,7 @@ public class StudyProgramReader extends InputFileReader
      * @param fileNames Namen der einzulesenden Dateien
      * @param dataController DataController-Instanz zur Ablage der Dateien
      */
-    public void readStudyProgram(String fileNames, DataController dataController){
+    public void readStudyPrograms(String fileNames, DataController dataController){
         
         final String[] fileNamesTest = new String[]{
             "studiengang_bwlba.csv",
