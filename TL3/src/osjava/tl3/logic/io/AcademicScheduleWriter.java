@@ -36,9 +36,7 @@ public class AcademicScheduleWriter extends OutputFileWriter
             String descriptionLine;
             Integer i = 2;
             
-            ScheduleCoordinate firstBlockedCoordinate = schedule.getBlockedCoordinates().get(1);
-            ScheduleElement firstElement = schedule.getScheduleElement(firstBlockedCoordinate);
-            academicName = firstElement.getCourse().getAcademic().getName();
+            academicName = getFirstScheduleElement(schedule).getCourse().getAcademic().getName();
             nameLine = "Name des Dozenten:;" + academicName + ";" + ";";
             outputCSV.set(0, nameLine);
             
@@ -46,21 +44,24 @@ public class AcademicScheduleWriter extends OutputFileWriter
             outputCSV.set(1, descriptionLine);
             
             for(ScheduleElement scheduleElement : scheduleElements){
-                String line;
-                String spalte1 = scheduleElement.getCoordiate().getDay().toString();
-                String spalte2 = scheduleElement.getCoordiate().getTimeSlot().toString();
-                String spalte3 = "Keine Veranstaltung";
-                String spalte4 = "Kein Dozent";
+                String line, column1, column2, column3, column4;
+                
+                column1 = scheduleElement.getCoordiate().getDay().toString();
+                column2 = scheduleElement.getCoordiate().getTimeSlot().toString();
                 
                 if (scheduleElement.getCourse().getName() != null){
-                    spalte3 = scheduleElement.getCourse().getName();
+                    column3 = scheduleElement.getCourse().getName();
+                } else{
+                    column3 = "Keine Veranstaltung";
                 }
                 
                 if (scheduleElement.getRoom().getName() != null){
-                    spalte4 = scheduleElement.getRoom().getName();
+                    column4 = scheduleElement.getRoom().getName();
+                } else{
+                    column4 = "Kein Dozent";
                 }
                 
-                line = spalte1 + ";" + spalte2 + ";" + spalte3 + ";" + spalte4;
+                line = column1 + ";" + column2 + ";" + column3 + ";" + column4;
                 outputCSV.set(i, line);
                 i++;
                 

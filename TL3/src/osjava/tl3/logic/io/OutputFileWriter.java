@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import osjava.tl3.model.Schedule;
+import osjava.tl3.model.ScheduleCoordinate;
+import osjava.tl3.model.ScheduleElement;
 
 
 
@@ -52,6 +55,17 @@ public abstract class OutputFileWriter
             }
  
         }
+    }
+    
+    /**
+     * Liefert das erste belegte ScheduleElement
+     * @param schedule
+     * @return Das erste belegte ScheduleElement
+     */
+    public ScheduleElement getFirstScheduleElement(Schedule schedule){
+        ScheduleCoordinate firstBlockedCoodinate = schedule.getBlockedCoordinates().get(0);
+        ScheduleElement firstElement = schedule.getScheduleElement(firstBlockedCoodinate);
+        return firstElement;
     }
     
 }
