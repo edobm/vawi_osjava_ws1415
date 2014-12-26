@@ -12,7 +12,12 @@ import osjava.tl3.model.Schedule;
  */
 public class RoomScheduleWriter extends FileWriter
 {
-    
+    @Override
+    public String getPrimaryNameElement(Schedule schedule) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+     
     /**
      * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe 
      * eines Raumplanes im angegebenen Format in den angegebenen Pfad.
@@ -21,8 +26,9 @@ public class RoomScheduleWriter extends FileWriter
      * @param outputFormat
      * @param outputPath
      */
-    public static void writeRoomSchedule (Schedule schedule, OutputFormat outputFormat, String outputPath){
-        
+    @Override
+    public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

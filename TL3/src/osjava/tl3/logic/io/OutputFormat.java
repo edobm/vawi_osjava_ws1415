@@ -8,9 +8,9 @@ package osjava.tl3.logic.io;
  */
 public enum OutputFormat {
     /**
-     * Repräsentiert das Ausgabeformat Plaintext
+     * Repräsentiert das Ausgabeformat CSV-Text
      */
-    PLAINTEXT,
+    CSV_TEXT,
     
      /**
      * Repräsentiert das Ausgabeformat HTML

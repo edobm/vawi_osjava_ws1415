@@ -13,6 +13,12 @@ import osjava.tl3.model.Schedule;
 public class StudyProgramScheduleWriter extends FileWriter
 {
    
+
+    @Override
+    public String getPrimaryNameElement(Schedule schedule) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Umwandeln des gegebenen Schedules in eine Liste aus Srings und Ausgabe eines 
      * Studiengang-/Semesterplanes im angegebenen Format in den angegebenen Pfad.
@@ -21,8 +27,9 @@ public class StudyProgramScheduleWriter extends FileWriter
      * @param outputFormat
      * @param outputPath
      */
-    public static void writeStudyProgramSchedule (Schedule schedule, OutputFormat outputFormat, String outputPath){
-        
+    @Override
+    public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
