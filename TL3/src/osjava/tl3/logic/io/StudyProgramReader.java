@@ -26,7 +26,7 @@ public class StudyProgramReader extends InputFileReader
      * von der Methode zurückgegeben wird.
      *
      * @param fileNames Namen der einzulesenden Dateien
-     * @param dataController DataController-Instanz zur Ablage der Dateien
+     * @param dataController DataController-Instanz zur Ablage der Daten
      */
     public void readStudyPrograms(String fileNames, DataController dataController){
         

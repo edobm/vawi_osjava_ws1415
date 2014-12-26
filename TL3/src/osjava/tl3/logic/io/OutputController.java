@@ -11,7 +11,10 @@ import osjava.tl3.model.ScheduleType;
  */
 public class OutputController {
 
-    private FileWriter fileWriter;
+    private OutputFileWriter fileWriter;
+    private AcademicScheduleWriter academicScheduleWriter;
+    private StudyProgramScheduleWriter studyProgramScheduleWriter;
+    private RoomScheduleWriter roomScheduleWriter;
 
     /**
      * Gibt einen Schedule im gegebenen Ausgabeformat in den gegebenen Pfad aus
@@ -23,13 +26,13 @@ public class OutputController {
     public void outputSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
 
         if(schedule.getType() == ScheduleType.ACADAMIC){
-            AcademicScheduleWriter.writeAcademicSchedule(schedule, outputFormat, outputPath);
+            academicScheduleWriter.writeAcademicSchedule(schedule, outputFormat, outputPath);
         } else if (schedule.getType() == ScheduleType.STUDY_PROGRAM){
-            StudyProgramScheduleWriter.writeStudyProgramSchedule(schedule, outputFormat, outputPath);
+            studyProgramScheduleWriter.writeStudyProgramSchedule(schedule, outputFormat, outputPath);
         } else if (schedule.getType() == ScheduleType.ROOM_INTERNAL){
-            RoomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
+            roomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
         } else if (schedule.getType() == ScheduleType.ROOM_EXTERNAL){
-            RoomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
+            roomScheduleWriter.writeRoomSchedule(schedule, outputFormat, outputPath);
         } else {
             // @TODO: Ausgabe Fehler
         }

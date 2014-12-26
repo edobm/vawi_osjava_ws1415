@@ -10,7 +10,7 @@ import osjava.tl3.model.Schedule;
  * @author Fabian Simon
  * @version 1.0
  */
-public class StudyProgramScheduleWriter extends FileWriter
+public class StudyProgramScheduleWriter extends OutputFileWriter
 {
    
     /**
@@ -21,7 +21,7 @@ public class StudyProgramScheduleWriter extends FileWriter
      * @param outputFormat
      * @param outputPath
      */
-    public static void writeStudyProgramSchedule (Schedule schedule, OutputFormat outputFormat, String outputPath){
+    public void writeStudyProgramSchedule (Schedule schedule, OutputFormat outputFormat, String outputPath){
         
     }
     
