@@ -5,7 +5,6 @@ import java.util.List;
 import static osjava.tl3.logic.io.OutputFormat.HTML;
 import static osjava.tl3.logic.io.OutputFormat.PLAINTEXT;
 import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleCoordinate;
 import osjava.tl3.model.ScheduleElement;
 
 
