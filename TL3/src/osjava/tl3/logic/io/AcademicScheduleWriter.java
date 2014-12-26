@@ -4,14 +4,13 @@ import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.ScheduleType;
 
-
 /**
  * Diese Klasse erzeugt den Stundenplan für Dozenten
  * 
  * @author Fabian Simon
  * @version 1.0
  */
-public class AcademicScheduleWriter extends FileWriter
+public class AcademicScheduleWriter extends OutputFileWriter
 {
 
     /**
@@ -65,6 +64,8 @@ public class AcademicScheduleWriter extends FileWriter
         }
         
         return primaryNameElement == null ? "UnbekannterDozent" : primaryNameElement;
-        
+
     }
+    
+  
 }

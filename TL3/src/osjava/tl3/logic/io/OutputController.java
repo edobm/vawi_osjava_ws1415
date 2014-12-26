@@ -11,7 +11,7 @@ import osjava.tl3.model.ScheduleType;
  */
 public class OutputController {
 
-    FileWriter fileWriter = null;
+    private OutputFileWriter fileWriter;
 
     /**
      * Gibt einen Schedule im gegebenen Ausgabeformat in den gegebenen Pfad aus
@@ -30,6 +30,7 @@ public class OutputController {
             fileWriter = new RoomScheduleWriter();
         } else if (schedule.getType() == ScheduleType.ROOM_EXTERNAL) {
             fileWriter = new RoomScheduleWriter();
+
         } else {
             // @TODO: Ausgabe Fehler
         }
