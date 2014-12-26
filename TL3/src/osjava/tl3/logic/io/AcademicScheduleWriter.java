@@ -63,9 +63,8 @@ public class AcademicScheduleWriter extends OutputFileWriter
             }
         }
         
-        return primaryNameElement == null ? "UnbekannterDozent" : primaryNameElement;
+        return primaryNameElement == null ? "Unbekannter_Dozent" : primaryNameElement;
 
     }
-    
-  
+   
 }

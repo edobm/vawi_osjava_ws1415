@@ -64,11 +64,14 @@ public class MasterSchedule {
          * Studiengangspläne initialisieren
          */
         int studyProgrammScheduleCount = 0;
+        Schedule schedule = null;
         for (StudyProgram studyProgram : dataControler.getStudyPrograms()) {
 
             HashMap<Semester, Schedule> semesterPlans = new HashMap<>(studyProgram.getSemesters().size());
             for (Semester semester : studyProgram.getSemesters()) {
-                semesterPlans.put(semester, new Schedule(ScheduleType.STUDY_PROGRAM));
+                schedule = new Schedule(ScheduleType.STUDY_PROGRAM);
+                schedule.setSemester(semester);
+                semesterPlans.put(semester, schedule);
             }
             getStudyProgramSchedules().put(studyProgram, semesterPlans);
             studyProgrammScheduleCount += semesterPlans.size();

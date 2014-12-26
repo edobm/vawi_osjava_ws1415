@@ -34,6 +34,11 @@ public class Schedule {
     private final List<ScheduleElement> scheduleElements;
 
     /**
+     * Falls dieser Plan ein Fachsemesterplan ist folgedes Attribut gefüllt
+     */
+    private Semester semester;
+    
+    /**
      * Erzeugt einen neuen Plan vom gegebenen Typ
      *
      * @param type Der Typ des Plans
@@ -123,6 +128,22 @@ public class Schedule {
      */
     public List<ScheduleElement> getScheduleElements() {
         return scheduleElements;
+    }
+
+    /**
+     * Liefert das Fachsemester falls dieser Plan ein Studiegangsplan ist
+     * @return Das Fachsemester
+     */
+    public Semester getSemester() {
+        return semester;
+    }
+
+    /**
+     * Setzt das Semester des Studiengs, falls dies ein Studiengangsplan ist
+     * @param semester Das Fachsemester
+     */
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 
 }

@@ -2,7 +2,6 @@ package osjava.tl3.logic.io;
 
 import java.util.List;
 import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleType;
 
 /**
  * Steuert die Erzeugung von Plandaten als Dateien.
@@ -22,20 +21,16 @@ public class OutputController {
      */
     public void outputSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
 
-        if (schedule.getType() == ScheduleType.ACADAMIC) {
-            fileWriter = new AcademicScheduleWriter();
-        } else if (schedule.getType() == ScheduleType.STUDY_PROGRAM) {
-            fileWriter = new StudyProgramScheduleWriter();
-        } else if (schedule.getType() == ScheduleType.ROOM_INTERNAL) {
-            fileWriter = new RoomScheduleWriter();
-        } else if (schedule.getType() == ScheduleType.ROOM_EXTERNAL) {
-            fileWriter = new RoomScheduleWriter();
+        /**
+         * Anhand des Plantyps den passenden FileWriter erzeugen
+         */
+        fileWriter = OutputFileWriterFactory.getInstance(schedule.getType());
 
-        } else {
-            // @TODO: Ausgabe Fehler
-        }
-
-        fileWriter.writeSchedule(schedule, outputFormat, outputPath, outputPath);
+        /**
+         * Mittels des FileWriters den Plan im gewünschten Ausgabeformat im gegebenen Pfad
+         * ausgeben
+         */
+        fileWriter.writeSchedule(schedule, outputFormat, outputPath);
     }
 
     /**

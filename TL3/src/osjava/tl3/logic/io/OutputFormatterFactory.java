@@ -27,7 +27,7 @@ public class OutputFormatterFactory {
         
         /**
          * In Abhängigkeit des gewünschten Ausgabeformats eine Instanz des 
-         * passenden Formatierers erzeugen und zurück geben
+         * passenden Formatierers erzeugen und zurückgeben
          */
         switch (outputFormat) {
             case HTML:

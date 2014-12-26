@@ -58,7 +58,7 @@ public class RoomScheduleWriter extends OutputFileWriter {
             }
         }
 
-        return primaryNameElement == null ? "UnbekannterRaum" : primaryNameElement;
+        return primaryNameElement == null ? "Unbekannter_Raum" : primaryNameElement;
 
     }
 }

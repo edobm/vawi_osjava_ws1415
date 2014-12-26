@@ -1,6 +1,9 @@
 package osjava.tl3.logic.io;
 
+import java.util.ArrayList;
+import java.util.List;
 import osjava.tl3.model.Schedule;
+import osjava.tl3.model.ScheduleElement;
 
 /**
  * Ein Ausgabeformatierer für Planinstanzen für das CSV-Format
@@ -18,7 +21,38 @@ public class CSVOutputFormatter extends OutputFormatter {
      */
     @Override
     public StringBuilder format(Schedule schedule, String title) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final String SEMICOLON = ";";
+        final String DESCRIPTION_LINE = "Tag;Zeit;Kurs;Raum";
+        final String NEW_LINE = "\n";
+     
+        StringBuilder sb = new StringBuilder();
+        
+        // Kopfzeile ausgeben
+        sb.append(DESCRIPTION_LINE).append(NEW_LINE);
+        
+        // Zeilen ausgeben
+        String line, column1, column2, column3, column4;
+        for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
+           
+            column1 = scheduleElement.getCoordiate().getDay().toString();
+            column2 = scheduleElement.getCoordiate().getTimeSlot().toString();
+
+            if (scheduleElement.getCourse().getName() != null) {
+                column3 = scheduleElement.getCourse().getName();
+            } else {
+                column3 = "Keine Veranstaltung";
+            }
+
+            if (scheduleElement.getRoom().getName() != null) {
+                column4 = scheduleElement.getRoom().getName();
+            } else {
+                column4 = "Kein Dozent";
+            }
+
+            sb.append(column1).append(SEMICOLON).append(column2).append(SEMICOLON).append(column3).append(SEMICOLON).append(column4).append(NEW_LINE);
+        }
+        
+        return sb;
     }
 
     /**
