@@ -36,11 +36,11 @@ public class AcademicScheduleWriter extends OutputFileWriter
             String descriptionLine;
             Integer i = 2;
             
-            academicName = getFirstScheduleElement(schedule).getCourse().getAcademic().getName();
+            academicName = super.getFirstScheduleElement(schedule).getCourse().getAcademic().getName();
             nameLine = "Name des Dozenten:;" + academicName + ";" + ";";
             outputCSV.set(0, nameLine);
             
-            descriptionLine = "Tag;" + "Zeit;" + "Kurs;" + "Raum";
+            descriptionLine = "Tag;Zeit;Kurs;Raum";
             outputCSV.set(1, descriptionLine);
             
             for(ScheduleElement scheduleElement : scheduleElements){

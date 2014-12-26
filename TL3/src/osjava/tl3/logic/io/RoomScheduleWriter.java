@@ -37,11 +37,11 @@ public class RoomScheduleWriter extends OutputFileWriter
             String descriptionLine;
             Integer i = 2;
             
-            roomName = getFirstScheduleElement(schedule).getRoom().getName();
+            roomName = super.getFirstScheduleElement(schedule).getRoom().getName();
             nameLine = "Raumname:;" + roomName + ";" + ";";
             outputCSV.set(0, nameLine);
             
-            descriptionLine = "Tag;" + "Zeit;" + "Kurs;" + "Dozent";
+            descriptionLine = "Tag;Zeit;Kurs;Dozent";
             outputCSV.set(1, descriptionLine);
             
             for(ScheduleElement scheduleElement : scheduleElements){
