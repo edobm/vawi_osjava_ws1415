@@ -74,10 +74,14 @@ public class AcademicScheduleWriter extends OutputFileWriter
             outputCSV.set(i, line);
             i++;       
         }
-        super.writeCSVFile(outputCSV, outputPath);
+        super.writeFile(outputCSV, outputPath);
     }
     
     private void writeHTML (Schedule schedule, String outputPath){
         
+        ArrayList<String> outputHTML = new ArrayList<>();
+        
+        
+        super.writeFile(outputHTML, outputPath);
     }
 }

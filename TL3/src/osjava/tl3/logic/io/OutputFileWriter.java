@@ -23,12 +23,13 @@ public abstract class OutputFileWriter
     /**
      * Diese Methode erwartet als Eingabewert eine Liste von Strings.
      * Diese wird abgearbeitet und pro String wird eine Zeile in die Zieldatei
-     * für die Ausgabe der Daten geschrieben.
+     * für die Ausgabe der Daten geschrieben. Dabei entsteht je nach Format der
+     * Strings eine CSV- bzw. HTML-Datei
      * 
-     * @param outputCSV Liste aus Strings in CSV-Format, welche in die Datei geschrieben werden sollen
-     * @param outputPath Ausgabepfad
+     * @param output  Die Liste aus Strings, welche in die Datei geschrieben werden sollen
+     * @param outputPath Der Ausgabepfad
      */
-    public void writeCSVFile(ArrayList<String> outputCSV, String outputPath){
+    public void writeFile(ArrayList<String> output, String outputPath){
         
         FileWriter outputStream = null;
         BufferedWriter outputWriter = null;
@@ -37,7 +38,7 @@ public abstract class OutputFileWriter
             outputStream = new FileWriter(outputPath);
             outputWriter = new BufferedWriter(outputStream);
             
-            for (String line : outputCSV){
+            for (String line : output){
                 outputWriter.write(line);
                 outputWriter.newLine();
             }
