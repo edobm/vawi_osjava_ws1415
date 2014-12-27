@@ -14,26 +14,49 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 /**
- *
- * @author meikelbode
+ * UI Element zur anzeige eine Tabelle und Buttons zur Aufnahme von selektierten
+ * Eingabedateien und Ausgabeverzeichnis
+ * @author Meikel Bode
  */
 public class InputFilePanel extends JPanel {
-
+    
+    /**
+     * Der akzeptierte Dateityp dieser Instanz.
+     * Der Wert bestimmt den Laufzeitmodus!
+     */
     private final InputFileType acceptedInputFileType;
+    
+    /**
+     * Die Dialoginstanz, die dieses InputFilePanel anzeigt
+     */
+    private final JDialog parentDialog;
+      
+    /**
+     * TableModel, Table und ScrollPane zur Aufnahme der Dateien und Verzeichnisse
+     */
     private InputFileTableModel inputFileTableModel;
     private JTable inputFileTable;
-
     private JScrollPane scrollPane;
 
+    /**
+     * Button Leiste und Buttons
+     */
     private JPanel buttonPanelFileButtons;
     private JButton btnAddFile;
     private JButton btnRemoveFile;
     private JButton btnOk;
 
+    /**
+     * Der FileChooser für die Auswahl der Dateien und Verzeichnisse
+     */
     private JFileChooser fileChooser;
 
-    private final JDialog parentDialog;
-
+    /**
+     * Erzeugt eine neue Instanz mit dem gegebenen Dateityp und dem anzeigenden
+     * Dialog
+     * @param acceptedType 
+     * @param parentDialog 
+     */
     public InputFilePanel(InputFileType acceptedType, JDialog parentDialog) {
         this.acceptedInputFileType = acceptedType;
         this.parentDialog = parentDialog;

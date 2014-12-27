@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author meikelbode
+ * Ein Tablemodel für die Aufnahme von Eingabedateien und Ausgabeverzeichnissen
+ * in Form von Instanzen der Klasse InputFileDescriptor
+ * @author Meikel BOde
  */
 public class InputFileTableModel extends DefaultTableModel {
 
+    /**
+     * Die Liste der Dateien/Verzeichnisse
+     */
     private final ArrayList<InputFileDescriptor> inputFiles;
 
+    /**
+     * Erzeugt eine neue Instanz des TableModels
+     */
     public InputFileTableModel() {
         this.inputFiles = new ArrayList<>();
     }

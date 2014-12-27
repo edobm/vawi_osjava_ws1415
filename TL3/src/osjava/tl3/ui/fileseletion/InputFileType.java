@@ -22,7 +22,7 @@ public enum InputFileType {
     STUDYPROGRAM_FILE,
     
     /**
-     * Ein Verzeichnis, dass für die Dateiausgabe genutzt werden soll
+     * Ein Verzeichnis, das für die Dateiausgabe genutzt werden soll
      */
     OUTPUT_DIRECTORY
     

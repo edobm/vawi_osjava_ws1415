@@ -16,4 +16,5 @@ public enum OutputFormat {
      * Repräsentiert das Ausgabeformat HTML
      */
     HTML
+    
 }

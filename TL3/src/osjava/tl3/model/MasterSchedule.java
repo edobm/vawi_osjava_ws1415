@@ -77,7 +77,7 @@ public class MasterSchedule {
             studyProgrammScheduleCount += semesterPlans.size();
         }
         StrategyProtocol.log("Fachsemesterpläne initialisiert: " + studyProgrammScheduleCount);
-        
+
         StrategyProtocol.log("Gesamtplan erfolgreich initialisiert");
 
     }
@@ -330,8 +330,8 @@ public class MasterSchedule {
     }
 
     /**
-     * Ermittelt die Anzahl der Räume des gegebenen Raumtyps und kann dabei
-     * auch nur die jeweilige Anzahl unbenutzter Räume liefern.
+     * Ermittelt die Anzahl der Räume des gegebenen Raumtyps und kann dabei auch
+     * nur die jeweilige Anzahl unbenutzter Räume liefern.
      *
      * @param roomType Der Raumtyp
      * @param unusedOnly Zählt nur die nicht genutzten Räume
@@ -345,12 +345,11 @@ public class MasterSchedule {
         while (rooms.hasNext()) {
             room = rooms.next();
             if (room.getType() == roomType) {
-                
+
                 if (!unusedOnly) {
                     count++;
-                }
-                else {
-                    if(getSchedule(room).getFreeCoordinates().size() == 25) {
+                } else {
+                    if (getSchedule(room).getFreeCoordinates().size() == 25) {
                         count++;
                     }
                 }
@@ -492,5 +491,13 @@ public class MasterSchedule {
      */
     public HashMap<StudyProgram, HashMap<Semester, Schedule>> getStudyProgramSchedules() {
         return studyProgramSchedules;
+    }
+
+    /**
+     * Liefert alle Raumpläne, Dozentenpläne und Fachsemesterpläne
+     * @return Die Liste aller Pläne
+     */
+    public List<Schedule> getAllSchedules() {
+        return new ArrayList<>();
     }
 }

@@ -1,6 +1,14 @@
 package osjava.tl3;
 
+import java.io.File;
 import java.util.HashMap;
+import osjava.tl3.logic.io.CourseReader;
+import osjava.tl3.logic.io.OutputController;
+import osjava.tl3.logic.io.OutputFormat;
+import static osjava.tl3.logic.io.OutputFormat.CSV_TEXT;
+import static osjava.tl3.logic.io.OutputFormat.HTML;
+import osjava.tl3.logic.io.RoomReader;
+import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.MasterSchedule;
@@ -21,7 +29,9 @@ import osjava.tl3.ui.SchedulerUI;
  */
 public class SchedulePlanner {
 
-    private static final String[] parameterKeys = new String[]{"mode", "in", "out", "format", "strategy"};
+    private static final String[] parameterKeys = new String[]{"mode", "roomfiles","coursefiles","studyprogramfiles", 
+        "out", "format", "strategy"};
+    
     private static HashMap<String, String> parameters = new HashMap<>();
 
     /**
@@ -55,9 +65,11 @@ public class SchedulePlanner {
         sb.append(" -mode=gui|console - Laufmodus des Programms GUI oder Konsole\n\n");
         sb.append("GUI-Modus erfordert keine weiteren Parameter!\n\n");
         sb.append("Konsolenmodus erfordert folgende Parameter:\n");
-        sb.append(" -in=\"<Eingabeverzeichnis>\" - Das Verzeichnis in dem die Eingabedateien liegen\n");
+        sb.append(" -roomfiles=Datei1;Datei2...,Datein - Das Verzeichnis in dem die Raumdateien liegen\n");
+        sb.append(" -coursefiles=Datei1;Datei2...,Datein - Das Verzeichnis in dem die Raumdateien liegen\n");
+        sb.append(" -studyprogramfiles=Datei1;Datei2...,Datein - Das Verzeichnis in dem die Raumdateien liegen\n");
         sb.append(" -out=\"<Ausgabeverzeichnis>\" - Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen\n");
-        sb.append(" -format=plaintext|html - Das Format in dem die Ausgabedateien erzeugt werden sollen\n");
+        sb.append(" -format=csv|html - Das Format in dem die Ausgabedateien erzeugt werden sollen\n");
         sb.append(" -strategy=CostOptimizedStrategy - Die Planungsstrategie\n\n");
         sb.append("Pfade dürfen keine Leerzeichen enthalten!");
 
@@ -92,54 +104,50 @@ public class SchedulePlanner {
             System.exit(2);
         }
 
-//        for (String key : parameterKeys) {
-//            if (!parameters.containsKey(key)) {
-//                printExecutionHint();
-//                System.exit(2);
-//            }
-//        }
-//
-//        if (parameters.get("mode").equals("console")) {
-//            // Die Liste der Parameter überprüfen, ob alle definierten 
-//            // Parameterschlüssel tatsächlich vorhanden sind
-//            for (String key : parameterKeys) {
-//                if (key.equals("mode")) {
-//                    continue;
-//                }
-//
-//                if (key.equals("in")) {
-//                    File file = new File(parameters.get(key));
-//                    if (!file.exists()) {
-//                        System.out.println("Eingabeverzeichnis exitiert nicht!");
-//                    }
-//                }
-//
-//                if (key.equals("out")) {
-//                    File file = new File(parameters.get(key));
-//                    if (!file.exists()) {
-//                        System.out.println("Ausgabeverzeichnis exitiert nicht!");
-//                    }
-//                }
-//
-//                if (key.equals("format")) {
-//                    if (!parameters.get(key).equals("plaintext") && !parameters.get(key).equals("html")) {
-//                        System.out.println("Ausgabeformat unbekannt!");
-//                    }
-//                }
-//
-//                if (key.equals("strategy")) {
-//                    if (!parameters.get(key).equals("costoptimized")) {
-//                        System.out.println("Planungsstrategy unbekannt!");
-//                    }
-//                }
-//            }
-//        } else if (parameters.get("mode").equals("gui")) {
-//            // Überprüfung der Parameter nicht notwendig,
-//            // da die Parametrisierung der Anwedung über das GUI erfolgt
-//        } else {
-//            printExecutionHint();
-//            System.exit(2);
-//        }
+        if (parameters.get("mode").equals("console")) {
+            // Die Liste der Parameter überprüfen, ob alle definierten 
+            // Parameterschlüssel tatsächlich vorhanden sind
+            for (String key : parameterKeys) {
+                if (key.equals("mode")) {
+                    continue;
+                }
+
+                if (key.equals("out")) {
+                    File file = new File(parameters.get(key));
+                    if (!file.exists()) {
+                        System.out.println("Ausgabeverzeichnis exitiert nicht!");
+                        printExecutionHint();
+                        System.exit(100);
+                    }
+                }
+
+                if (key.equals("format")) {
+                    if(!parameters.containsKey("format")) {
+                        System.out.println("Setze Default-Format: CSV-Text");
+                        parameters.put("format", "csv");
+                    }
+                    if (!parameters.get(key).equals("csv") && !parameters.get(key).equals("html")) {
+                        System.out.println("Ausgabeformat unbekannt!");
+                        System.exit(200);
+                    }
+                }
+
+                if (key.equals("strategy")) {
+                    if (!parameters.containsKey("strategy")) {
+                        parameters.put("strategy", "CostOptimizedStrategy");
+                    }
+                    if (!parameters.get(key).equals("CostOptimized")) {
+                        System.out.println("Planungsstrategy unbekannt!");
+                    }
+                }
+            }
+        } else if (parameters.get("mode").equals("gui")) {
+            // Überprüfung der Parameter nicht notwendig,
+            // da die Parametrisierung der Anwedung über das GUI erfolgt
+        } else {
+            printExecutionHint();
+            System.exit(2);
+        }
     }
 
     /**
@@ -193,9 +201,18 @@ public class SchedulePlanner {
      */
     public void loadInputData(DataController dataController) {
 
-        // @ToDo Logik zum Laden der Eingabedateien einbauen
-        String inputDirectory = parameters.get("in");
-        dataController.load();
+        // -roomfiles=Datei1,Datei2
+        String[] roomfiles = parameters.get("roomfiles").split(";");
+        
+        RoomReader roomReader = new RoomReader();
+        roomReader.readRooms(roomfiles[0], dataController);
+      
+        CourseReader courseReader = new CourseReader();
+        courseReader.readCourses(null, dataController);
+        
+        StudyProgramReader studyProgramReader = new StudyProgramReader();
+        studyProgramReader.readStudyPrograms(null, dataController);
+       
     }
 
     /**
@@ -240,7 +257,23 @@ public class SchedulePlanner {
     private void writeOutput(MasterSchedule masterSchedule) {
 
         //
-        // @TODO Ausgabelogik integrieren
+        // TODO Ausgabelogik integrieren
         // 
+        OutputFormat outputFormat = getOutputFormat(parameters.get("format"));
+        String outputDirectory = parameters.get("out");
+        OutputController oc = new OutputController();
+        
+        oc.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputDirectory);
+        
+    }
+    
+    
+    public OutputFormat getOutputFormat(String parameterName) {
+        if (parameterName.equalsIgnoreCase("html")) {
+            return HTML;
+        }
+        else {
+            return CSV_TEXT;
+        }
     }
 }
