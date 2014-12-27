@@ -1,7 +1,5 @@
 package osjava.tl3.logic.io;
 
-import java.util.ArrayList;
-import java.util.List;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleElement;
 
@@ -31,7 +29,7 @@ public class CSVOutputFormatter extends OutputFormatter {
         sb.append(DESCRIPTION_LINE).append(NEW_LINE);
         
         // Zeilen ausgeben
-        String line, column1, column2, column3, column4;
+        String column1, column2, column3, column4;
         for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
            
             column1 = scheduleElement.getCoordiate().getDay().toString();
@@ -49,7 +47,8 @@ public class CSVOutputFormatter extends OutputFormatter {
                 column4 = "Kein Dozent";
             }
 
-            sb.append(column1).append(SEMICOLON).append(column2).append(SEMICOLON).append(column3).append(SEMICOLON).append(column4).append(NEW_LINE);
+            sb.append(column1).append(SEMICOLON).append(column2).append(SEMICOLON).append(column3)
+                    .append(SEMICOLON).append(column4).append(NEW_LINE);
         }
         
         return sb;
