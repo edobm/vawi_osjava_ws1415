@@ -71,13 +71,15 @@ public class HTMLOutputFormatter extends OutputFormatter {
             ScheduleElement scheduleElement = schedule.getScheduleElements().get(i);
 
             sb.append("<td>");
-            sb.append("Kurs ").append(scheduleElement.getCourse().getNumber()).append(" (")
-                    .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
-            sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
-            sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
-            sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
-            sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
-
+            if (scheduleElement.isBlocked()) {
+                sb.append("Kurs ");
+                sb.append(scheduleElement.getCourse().getNumber()).append(" (")
+                        .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
+                sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
+                sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
+                sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
+                sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
+            }
             sb.append("</td>");
 
             elementCount++;
@@ -94,6 +96,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
 
     /**
      * Liefert das Dateinamensuffix für HTML-Dateien
+     *
      * @return Das Suffix (HTML)
      */
     @Override

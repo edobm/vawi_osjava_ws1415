@@ -74,7 +74,7 @@ public abstract class OutputFileWriter {
          * Dateinamen erzeugen
          */
         StringBuilder fileName = new StringBuilder();
-        fileName.append(outputPath).append(File.pathSeparator);
+        fileName.append(outputPath).append(File.separator);
         fileName.append(getFileName(getPrimaryNameElement(schedule), formatter.getFileNameSuffix()));
 
         /**

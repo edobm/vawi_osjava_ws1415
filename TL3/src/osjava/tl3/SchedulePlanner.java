@@ -3,6 +3,7 @@ package osjava.tl3;
 import java.io.File;
 import java.util.HashMap;
 import osjava.tl3.logic.io.CourseReader;
+import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.io.OutputController;
 import osjava.tl3.logic.io.OutputFormat;
 import static osjava.tl3.logic.io.OutputFormat.CSV_TEXT;
@@ -189,7 +190,7 @@ public class SchedulePlanner {
         loadInputData(dataController);
 
         // Plan erzeugen
-        masterSchedule = createSchedule();
+        masterSchedule = createSchedule(dataController);
 
         // Ausgabedateien erzeugen
         writeOutput(masterSchedule);
@@ -201,24 +202,30 @@ public class SchedulePlanner {
      */
     public void loadInputData(DataController dataController) {
 
+         // Daten über Inputhelper lesen
+        InputFileHelper.loadRooms(dataController);
+        InputFileHelper.loadCourses(dataController);
+        InputFileHelper.loadStudyPrograms(dataController);
+        
         // -roomfiles=Datei1,Datei2
-        String[] roomfiles = parameters.get("roomfiles").split(";");
+//        String[] roomfiles = parameters.get("roomfiles").split(";");
         
-        RoomReader roomReader = new RoomReader();
-        roomReader.readRooms(roomfiles[0], dataController);
-      
-        CourseReader courseReader = new CourseReader();
-        courseReader.readCourses(null, dataController);
-        
-        StudyProgramReader studyProgramReader = new StudyProgramReader();
-        studyProgramReader.readStudyPrograms(null, dataController);
+        // TODO richtige Reader Logik einbauen
+//        RoomReader roomReader = new RoomReader();
+//        roomReader.readRooms(roomfiles[0], dataController);
+//      
+//        CourseReader courseReader = new CourseReader();
+//        courseReader.readCourses(null, dataController);
+//        
+//        StudyProgramReader studyProgramReader = new StudyProgramReader();
+//        studyProgramReader.readStudyPrograms(null, dataController);
        
     }
 
     /**
      * Auf Basis der Parametriesierung die Zeitplanung durchführen
      */
-    private MasterSchedule createSchedule() {
+    private MasterSchedule createSchedule(DataController dataController) {
 
         /**
          * Strategie erzeugen auf Basis Eingabedateien
@@ -233,7 +240,12 @@ public class SchedulePlanner {
          * Scheduler erzeugen
          */
         Scheduler scheduler = new Scheduler();
-
+        
+        /**
+         * DataController setzen
+         */
+        scheduler.setDataController(dataController);
+        
         /**
          * Planungsstrategie zuweisen
          */

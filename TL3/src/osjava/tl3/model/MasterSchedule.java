@@ -495,9 +495,24 @@ public class MasterSchedule {
 
     /**
      * Liefert alle Raumpläne, Dozentenpläne und Fachsemesterpläne
+     *
      * @return Die Liste aller Pläne
      */
     public List<Schedule> getAllSchedules() {
-        return new ArrayList<>();
+        List<Schedule> schedules = new ArrayList<>();
+
+        schedules.addAll(roomSchedules.values());
+        schedules.addAll(acadademicSchedules.values());
+        /**
+         * Alle Fachsemesterpläne finden
+         */
+        Iterator<StudyProgram> studyPrograms = getStudyProgramSchedules().keySet().iterator();
+        while (studyPrograms.hasNext()) {
+            StudyProgram studyProgram = studyPrograms.next();
+            schedules.addAll(studyProgramSchedules.get(studyProgram).values());
+        }
+
+        return schedules;
+
     }
 }
