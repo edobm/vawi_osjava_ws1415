@@ -101,6 +101,14 @@ public class SchedulePlanner {
             printExecutionHint();
             System.exit(2);
         }
+        
+        /**
+         * GUI Modus als Default setzen, falls keine Vorgabe vorhanden
+         */
+        if (!parameters.containsKey("mode")) {
+            parameters.put("mode", "gui");
+            System.out.println("Setze GUI-Modus als Default");
+        }
 
         if (parameters.get("mode").equals("console")) {
             // Die Liste der Parameter überprüfen, ob alle definierten 
