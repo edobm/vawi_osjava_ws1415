@@ -22,6 +22,12 @@ public class RoomScheduleWriter extends OutputFileWriter {
      */
     @Override
     public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
+        
+        /**
+         * Prefix für Ausgabedateien
+         */
+        final String fileNamePrefix = "Raumplan_";
+        
         /**
          * Prüfung der Eingabe
          */
@@ -35,7 +41,7 @@ public class RoomScheduleWriter extends OutputFileWriter {
         }
 
         /**
-         * Die Beschriftung des Dozentenplans ermitteln
+         * Die Beschriftung des Raumplans ermitteln
          */
         String title = getPrimaryNameElement(schedule);
 
@@ -43,22 +49,12 @@ public class RoomScheduleWriter extends OutputFileWriter {
          * Ausgabe des Schedules an an Vaterklasse delegieren und spezifische
          * Beschriftung übergeben
          */
-        writeSchedule(schedule, outputFormat, outputPath, title);
+        writeSchedule(schedule, outputFormat, outputPath, fileNamePrefix, title);
 
     }
 
     @Override
     public String getPrimaryNameElement(Schedule schedule) {
-        String primaryNameElement = null;
-
-        for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
-            if (scheduleElement.isBlocked()) {
-                primaryNameElement = scheduleElement.getRoom().getName();
-                break;
-            }
-        }
-
-        return primaryNameElement == null ? "Unbekannter_Raum" : primaryNameElement;
-
+        return schedule.getRoom().getName();
     }
 }

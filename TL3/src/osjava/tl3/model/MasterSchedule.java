@@ -41,12 +41,16 @@ public class MasterSchedule {
      * @param dataControler Der DataController
      */
     public void initFromDataController(DataController dataControler) {
-
+        
+        Schedule schedule = null;
+        
         /**
          * Raumpläne intialisieren
          */
         for (Room room : dataControler.getRooms()) {
-            getRoomSchedules().put(room, new Schedule(ScheduleType.ROOM_INTERNAL));
+            schedule = new Schedule(ScheduleType.ROOM_INTERNAL);
+            schedule.setRoom(room);
+            getRoomSchedules().put(room, schedule);
         }
         StrategyProtocol.log("Raumpläne initialisiert: " + getRoomSchedules().size());
 
@@ -55,7 +59,9 @@ public class MasterSchedule {
          */
         for (Course course : dataControler.getCourses()) {
             if (!acadademicSchedules.containsKey(course.getAcademic())) {
-                getAcadademicSchedules().put(course.getAcademic(), new Schedule(ScheduleType.ACADAMIC));
+                schedule = new Schedule(ScheduleType.ACADAMIC);
+                schedule.setAcademic(course.getAcademic());
+                getAcadademicSchedules().put(course.getAcademic(), schedule);
             }
         }
         StrategyProtocol.log("Dozentenpläne initialisiert: " + getAcadademicSchedules().size());
@@ -64,7 +70,7 @@ public class MasterSchedule {
          * Studiengangspläne initialisieren
          */
         int studyProgrammScheduleCount = 0;
-        Schedule schedule = null;
+        
         for (StudyProgram studyProgram : dataControler.getStudyPrograms()) {
 
             HashMap<Semester, Schedule> semesterPlans = new HashMap<>(studyProgram.getSemesters().size());
@@ -280,7 +286,8 @@ public class MasterSchedule {
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
          */
         Schedule schedule = new Schedule(ScheduleType.ROOM_EXTERNAL);
-
+        schedule.setRoom(room);
+        
         /**
          * Den externen Raum und seinen Plan zur liste der Raumpläne hinzufügen
          */

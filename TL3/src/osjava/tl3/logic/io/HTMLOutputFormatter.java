@@ -1,8 +1,11 @@
 package osjava.tl3.logic.io;
 
+import osjava.tl3.model.Day;
 import osjava.tl3.model.Schedule;
+import osjava.tl3.model.ScheduleCoordinate;
 import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.ScheduleType;
+import osjava.tl3.model.TimeSlot;
 
 /**
  * Ein Ausgabeformatierer für Planinstanzen für das HTML-Format
@@ -35,7 +38,9 @@ public class HTMLOutputFormatter extends OutputFormatter {
         if (schedule.getType() == ScheduleType.STUDY_PROGRAM) {
             sbTitle.append("Studiengangsplan: ").append(title);
         }
-
+        
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF8\" ?>");
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
         sb.append("<html>");
         sb.append("<head>");
 
@@ -55,34 +60,33 @@ public class HTMLOutputFormatter extends OutputFormatter {
         sb.append("<caption>").append(sbTitle).append("</caption>");
         sb.append("<tr><th>Zeit</th><th>Montag</th><th>Dienstag</th><th>Mittwoch</th><th>Donnerstag</th><th>Freitag</th></tr>");
 
-        int elementCount = 0;
-        for (int i = 0; i < schedule.getScheduleElements().size(); i++) {
-
-            if (elementCount == 4) {
-                sb.append("</tr>");
-                elementCount = 0;
-                continue;
-            }
-
-            if (elementCount == 0) {
-                sb.append("<tr>");
-            }
-
-            ScheduleElement scheduleElement = schedule.getScheduleElements().get(i);
+        for (int timeslot = 0; timeslot < 5; timeslot++) {
+            sb.append("<tr>");
 
             sb.append("<td>");
-            if (scheduleElement.isBlocked()) {
-                sb.append("Kurs ");
-                sb.append(scheduleElement.getCourse().getNumber()).append(" (")
-                        .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
-                sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
-                sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
-                sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
-                sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
-            }
+            sb.append(TimeSlot.valueOf(timeslot));
             sb.append("</td>");
 
-            elementCount++;
+            ScheduleCoordinate scheduleCoordinate;
+            ScheduleElement scheduleElement;
+            for (int day = 0; day < 5; day++) {
+                scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(day), TimeSlot.valueOf(timeslot));
+                scheduleElement = schedule.getScheduleElement(scheduleCoordinate);
+
+                sb.append("<td>");
+                if (scheduleElement.isBlocked()) {
+                    sb.append("Kurs ");
+                    sb.append(scheduleElement.getCourse().getNumber()).append(" (")
+                            .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br/>");
+                    sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br/>");
+                    sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br/>");
+                    sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br/>");
+                    sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
+                }
+                sb.append("</td>");
+            }
+
+            sb.append("</tr>");
         }
 
         sb.append("</table>");

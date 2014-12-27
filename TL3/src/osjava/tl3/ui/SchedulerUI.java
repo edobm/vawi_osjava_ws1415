@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -28,9 +31,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import osjava.tl3.logic.io.InputFileHelper;
+import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.OutputController;
 import osjava.tl3.logic.io.OutputFormat;
+import osjava.tl3.logic.io.RoomReader;
+import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.Strategy;
@@ -44,6 +49,7 @@ import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.ui.fileseletion.InputFileDescriptor;
 
 /**
  * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung der
@@ -65,13 +71,15 @@ public class SchedulerUI extends JFrame {
 
     private JButton btnSelectOutput = new JButton("Ausgabeverzeichnis");
     private JButton btnGenerateMasterSchedule = new JButton("Gesamtplan berechnen");
-    private JLabel labelOutputDirectory = new JLabel("Verzeichnis: n/a");
+    private JLabel labelOutputDirectory = new JLabel("");
 
     private JLabel labelStrategies = new JLabel("Planungsstrategie:");
     private JComboBox<String> comboBoxStrategies = new JComboBox<>();
 
     private JLabel labelOutputFormat = new JLabel("Ausgabeformat:");
     private JComboBox<String> comboBoxOutputFormat = new JComboBox<>();
+
+    private JButton btnOutputExecute = new JButton("Gesamtplan exportieren");
 
     private JPanel panelTop = new JPanel(new GridLayout(1, 6, 5, 5));
     private JSplitPane splitPane = new JSplitPane();
@@ -117,11 +125,14 @@ public class SchedulerUI extends JFrame {
      * erzeugt werden kann.
      */
     public SchedulerUI() throws HeadlessException {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1200, 900);
-        setTitle("VAWi OSJAVA TL3");
+        setTitle("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
         setLocationRelativeTo(null);
+        initializeWindowEvents();
         initializeComponents();
         initializeTreeEvents();
+
     }
 
     /**
@@ -141,8 +152,8 @@ public class SchedulerUI extends JFrame {
         fileButtons.add(btnSelectStudyPrograms);
 
         panelTop.add(fileButtons);
-        btnSelectRooms.addActionListener(new ActionListener() {
 
+        btnSelectRooms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dlgAddRooms.setModal(true);
@@ -150,8 +161,8 @@ public class SchedulerUI extends JFrame {
                 btnSelectRooms.setText("Räume (" + inputFilePanelRooms.getInputFiles().size() + ")");
             }
         });
-        btnSelectCourses.addActionListener(new ActionListener() {
 
+        btnSelectCourses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dlgAddCourses.setModal(true);
@@ -159,8 +170,8 @@ public class SchedulerUI extends JFrame {
                 btnSelectCourses.setText("Lehrveranstaltungen (" + inputFilePanelCourses.getInputFiles().size() + ")");
             }
         });
-        btnSelectStudyPrograms.addActionListener(new ActionListener() {
 
+        btnSelectStudyPrograms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dlgAddStudyPrograms.setModal(true);
@@ -173,46 +184,55 @@ public class SchedulerUI extends JFrame {
         cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategy.class));
         comboBoxStrategies.setModel(cbxModelStrategies);
         JPanel panelConfiguration = new JPanel(new GridLayout(4, 1));
-        panelConfiguration.setBorder(new TitledBorder("Schritt 2: Einstellungen"));
+        panelConfiguration.setBorder(new TitledBorder("Schritt 2: Planung konfigurieren"));
         panelConfiguration.add(labelStrategies);
         panelConfiguration.add(comboBoxStrategies);
         panelTop.add(panelConfiguration);
 
         JPanel panelExecution = new JPanel(new GridLayout(4, 1));
-        panelExecution.setBorder(new TitledBorder("Schritt 3: Ausführung"));
+        panelExecution.setBorder(new TitledBorder("Schritt 3: Planung ausführen"));
         panelExecution.add(btnGenerateMasterSchedule);
         panelTop.add(panelExecution);
+
+        btnGenerateMasterSchedule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                executeScheduler();
+            }
+        });
 
         ComboBoxElementModel cbxModelOutputFormats = new ComboBoxElementModel();
         cbxModelOutputFormats.addElement(new ComboxBoxElement("CSV-Text", OutputFormat.CSV_TEXT));
         cbxModelOutputFormats.addElement(new ComboxBoxElement("HTML", OutputFormat.HTML));
         comboBoxOutputFormat.setModel(cbxModelOutputFormats);
         JPanel panelOutput = new JPanel(new GridLayout(4, 1));
-        panelOutput.setBorder(new TitledBorder("Schritt 4: Ausgabe"));
-
+        panelOutput.setBorder(new TitledBorder("Schritt 4: Export konfigurieren"));
         panelOutput.add(btnSelectOutput);
         panelOutput.add(labelOutputDirectory);
-
         panelOutput.add(labelOutputFormat);
         panelOutput.add(comboBoxOutputFormat);
         panelTop.add(panelOutput);
-        btnSelectOutput.addActionListener(new ActionListener() {
 
+        btnSelectOutput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dlgAddOutputDirectory.setModal(true);
                 dlgAddOutputDirectory.setVisible(true);
                 if (inputFilePanelOutputDirectory.getInputFiles().size() == 1) {
-                    labelOutputDirectory.setText("Ausgabe: " + inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString());
+                    labelOutputDirectory.setText(inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString());
                 }
             }
         });
 
-        btnGenerateMasterSchedule.addActionListener(new ActionListener() {
+        JPanel panelOutputExecute = new JPanel(new GridLayout(4, 1));
+        panelOutputExecute.setBorder(new TitledBorder("Schritt 5: Export ausführen"));
+        panelOutputExecute.add(btnOutputExecute);
+        panelTop.add(panelOutputExecute);
 
+        btnOutputExecute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                init();
+                executeExport();
             }
         });
 
@@ -318,12 +338,37 @@ public class SchedulerUI extends JFrame {
      * (MasterSchedule) und erzeugt das TreeModel und sowie das TableModel für
      * die tabellarische Plandarstellung
      */
-    private void init() {
+    private void executeScheduler() {
+
+        if (inputFilePanelRooms.getInputFiles().isEmpty()
+                || inputFilePanelCourses.getInputFiles().isEmpty()
+                || inputFilePanelStudyPrograms.getInputFiles().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "Wählen jeweils mindestens eine Datei mit Räumen, eine mit "
+                    + "\nLehrveranstaltungen sowie eine mit Studiengangsdaten aus.",
+                    "Bitte Dateien wählen!", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
         dataController = new DataController();
-        InputFileHelper.loadCourses(dataController);
-        InputFileHelper.loadRooms(dataController);
-        InputFileHelper.loadStudyPrograms(dataController);
+
+        RoomReader roomReader = new RoomReader();
+        for (InputFileDescriptor file : inputFilePanelRooms.getInputFiles()) {
+            roomReader.readRooms(file.getFile().toString(), dataController);
+        }
+
+        CourseReader courseReader = new CourseReader();
+        for (InputFileDescriptor file : inputFilePanelCourses.getInputFiles()) {
+            courseReader.readCourses(file.getFile().toString(), dataController);
+        }
+
+        StudyProgramReader studyProgramReader = new StudyProgramReader();
+        for (InputFileDescriptor file : inputFilePanelStudyPrograms.getInputFiles()) {
+            studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
+        }
+//        InputFileHelper.loadCourses(dataController);
+//        InputFileHelper.loadRooms(dataController);
+//        InputFileHelper.loadStudyPrograms(dataController);
 
         scheduler = new Scheduler();
         scheduler.setDataController(dataController);
@@ -340,6 +385,37 @@ public class SchedulerUI extends JFrame {
 
         scheduleTableModel = new ScheduleTableModel();
         scheduleTable.setModel(scheduleTableModel);
+
+    }
+
+    /**
+     * Exportiert auf Basis der Export-Eisntellungen die aktuell ausgewählten
+     * Pläne
+     */
+    private void executeExport() {
+
+        if (masterSchedule == null) {
+            JOptionPane.showMessageDialog(this, "Erzeugen Sie zunächst den Gesamtplan",
+                    "Bitte Gesamtplan erzeugen", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (inputFilePanelOutputDirectory.getInputFiles().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Wählen Sie zunächst das Ausgabeverzeichnis aus",
+                    "Bitte Ausgabeverzeichnis wählen", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        /**
+         * Instanz des OutputControllers erzeugen
+         */
+        outputController = new OutputController();
+
+        OutputFormat outputFormat = ((ComboxBoxElement<OutputFormat>) comboBoxOutputFormat.getSelectedItem()).getElement();
+
+        String outputPath = inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString();
+
+        outputController.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputPath);
 
     }
 
@@ -562,6 +638,53 @@ public class SchedulerUI extends JFrame {
      */
     public void setMasterSchedule(MasterSchedule masterSchedule) {
         this.masterSchedule = masterSchedule;
+    }
+
+    /**
+     * Registiert grundlengde Handler für Fenster Events
+     */
+    private void initializeWindowEvents() {
+        addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int result = JOptionPane.showConfirmDialog(SchedulerUI.this, "Wirklich beenden?",
+                        "Programm beenden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 
 }

@@ -2,14 +2,11 @@ package osjava.tl3;
 
 import java.io.File;
 import java.util.HashMap;
-import osjava.tl3.logic.io.CourseReader;
 import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.io.OutputController;
 import osjava.tl3.logic.io.OutputFormat;
 import static osjava.tl3.logic.io.OutputFormat.CSV_TEXT;
 import static osjava.tl3.logic.io.OutputFormat.HTML;
-import osjava.tl3.logic.io.RoomReader;
-import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.MasterSchedule;

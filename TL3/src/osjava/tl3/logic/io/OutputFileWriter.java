@@ -2,8 +2,10 @@ package osjava.tl3.logic.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -49,9 +51,11 @@ public abstract class OutputFileWriter {
      * @param schedule Der Plan
      * @param outputFormat Das Ausgabeformat
      * @param outputPath Der Ausgabepfad
+     * @param fileNamePrefix Das Prefix das am Anfang des Dateinamens ausgegeben
+     * werden soll
      * @param title Der Bezeichner für den Plan
      */
-    protected void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath, String title) {
+    protected void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath, String fileNamePrefix, String title) {
 
         /**
          * Wenn Scheduleinstanz null ist Fehler werfen
@@ -74,7 +78,7 @@ public abstract class OutputFileWriter {
          * Dateinamen erzeugen
          */
         StringBuilder fileName = new StringBuilder();
-        fileName.append(outputPath).append(File.separator);
+        fileName.append(outputPath).append(File.separator).append(fileNamePrefix);
         fileName.append(getFileName(getPrimaryNameElement(schedule), formatter.getFileNameSuffix()));
 
         /**
@@ -124,24 +128,25 @@ public abstract class OutputFileWriter {
      */
     public void writeFile(String output, String outputPath) {
 
-        FileWriter outputStream = null;
-        BufferedWriter outputWriter = null;
+        FileOutputStream fos = null;
+        OutputStreamWriter osw = null;
 
         try {
-            outputStream = new FileWriter(outputPath);
-            outputWriter = new BufferedWriter(outputStream);
-
-            outputWriter.write(output);
-
+            fos = new FileOutputStream(outputPath);
+            osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+            osw.append(output);
+            osw.flush();
+            fos.flush();
+            
         } catch (IOException ex) {
             Logger.getLogger(OutputFileWriter.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                outputWriter.close();
+                osw.close();
             } catch (Exception e) {
             }
             try {
-                outputStream.close();
+                fos.close();
             } catch (Exception e) {
             }
 

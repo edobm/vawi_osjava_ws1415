@@ -34,9 +34,19 @@ public class Schedule {
     private final List<ScheduleElement> scheduleElements;
 
     /**
-     * Falls dieser Plan ein Fachsemesterplan ist folgedes Attribut gefüllt
+     * Falls dieser Plan ein Fachsemesterplan sein sollte, ist folgedes Attribut gefüllt
      */
     private Semester semester;
+    
+    /**
+     * Falls dieser Plan ein Raumplan sein sollte, ist folgedes Attribut gefüllt
+     */
+    private Room room;
+    
+    /**
+     * Falls dieser Plan ein Dozentenplan sein sollte, ist dieses Attribut gefüllt
+     */
+    private Academic academic;
     
     /**
      * Erzeugt einen neuen Plan vom gegebenen Typ
@@ -144,6 +154,38 @@ public class Schedule {
      */
     public void setSemester(Semester semester) {
         this.semester = semester;
+    }
+
+    /**
+     * Liefert den Raum falls dieser Plan ein Raumplan ist
+     * @return Der Raum
+     */
+    public Room getRoom() {
+        return room;
+    }
+
+    /**
+     * Setzt den Raum, falls dies ein Studiengangsplan ist
+     * @param room Der Raum
+     */
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    /**
+     * Liefer tden Dozenten, falls dieser Plan ein Dozentenplan ist
+     * @return Der Dozent
+     */
+    public Academic getAcademic() {
+        return academic;
+    }
+
+    /**
+     * Setzt den Dozenten, falls dieser Plan ein Dozentenplan ist
+     * @param academic Der Dozent
+     */
+    public void setAcademic(Academic academic) {
+        this.academic = academic;
     }
 
 }

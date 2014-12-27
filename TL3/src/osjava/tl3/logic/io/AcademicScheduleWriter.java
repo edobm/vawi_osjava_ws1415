@@ -23,6 +23,10 @@ public class AcademicScheduleWriter extends OutputFileWriter
      */
     @Override
     public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath){
+        /**
+         * Prefix für Ausgabedateien
+         */
+        final String fileNamePrefix = "Dozentenplan_";
         
         /**
          * Prüfung der Eingabe
@@ -42,7 +46,7 @@ public class AcademicScheduleWriter extends OutputFileWriter
         /**
          * Ausgabe des Schedules an an Vaterklasse delegieren und spezifische Beschriftung übergeben
          */
-        writeSchedule(schedule, outputFormat, outputPath, title);
+        writeSchedule(schedule, outputFormat, outputPath, fileNamePrefix, title);
         
     }
 
@@ -53,18 +57,7 @@ public class AcademicScheduleWriter extends OutputFileWriter
      */
     @Override
     public String getPrimaryNameElement(Schedule schedule) {
-        
-        String primaryNameElement = null;
-        
-        for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
-            if (scheduleElement.isBlocked()) {
-                primaryNameElement = scheduleElement.getCourse().getAcademic().getName();
-                break;
-            }
-        }
-        
-        return primaryNameElement == null ? "Unbekannter_Dozent" : primaryNameElement;
-
+        return schedule.getAcademic().getName();
     }
    
 }
