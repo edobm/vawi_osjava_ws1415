@@ -50,13 +50,13 @@ public class CSVOutputFormatter extends OutputFormatter {
                     column1 = scheduleElement.getCoordiate().getDay().toString();
                     column2 = scheduleElement.getCoordiate().getTimeSlot().toString();
 
-                    if (scheduleElement.getCourse().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column3 = scheduleElement.getCourse().getName();
                     } else {
                         column3 = "Keine Veranstaltung";
                     }
 
-                    if (scheduleElement.getRoom().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column4 = scheduleElement.getRoom().getName();
                     } else {
                         column4 = "Kein Raum";
@@ -82,13 +82,13 @@ public class CSVOutputFormatter extends OutputFormatter {
                     column5 = scheduleElement.getCoordiate().getDay().toString();
                     column6 = scheduleElement.getCoordiate().getTimeSlot().toString();
 
-                    if (scheduleElement.getCourse().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column7 = scheduleElement.getCourse().getName();
                     } else {
                         column7 = "Keine Veranstaltung";
                     }
 
-                    if (scheduleElement.getCourse().getAcademic().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column8 = scheduleElement.getCourse().getAcademic().getName();
                     } else {
                         column8 = "Kein Dozent";
@@ -113,19 +113,19 @@ public class CSVOutputFormatter extends OutputFormatter {
                     column9 = scheduleElement.getCoordiate().getDay().toString();
                     column10 = scheduleElement.getCoordiate().getTimeSlot().toString();
 
-                    if (scheduleElement.getCourse().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column11 = scheduleElement.getCourse().getName();
                     } else {
                         column11 = "Keine Veranstaltung";
                     }
                     
-                    if (scheduleElement.getRoom().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column12 = scheduleElement.getRoom().getName();
                     } else {
                         column12 = "Kein Raum";
                     }
 
-                    if (scheduleElement.getCourse().getAcademic().getName() != null) {
+                    if (scheduleElement.isBlocked()) {
                         column13 = scheduleElement.getCourse().getAcademic().getName();
                     } else {
                         column13 = "Kein Dozent";
