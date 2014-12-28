@@ -4,6 +4,7 @@ import java.io.File;
 
 /**
  * Stellt eine Eingabedatei eines bestimmten Typs dar
+ * 
  * @author Meikel Bode
  */
 public class InputFileDescriptor implements Comparable<InputFileDescriptor>{
@@ -29,19 +30,27 @@ public class InputFileDescriptor implements Comparable<InputFileDescriptor>{
     }
 
     /**
-     * @return the fileType
+     * Liefert den Typ der Datei
+     * @return Der Typ der Datei
      */
     public InputFileType getFileType() {
         return fileType;
     }
 
     /**
-     * @return the file
+     * Liefert die Datei
+     * @return Die Datei
      */
     public File getFile() {
         return file;
     }
 
+    /**
+     * Vergleicht einen InputFileDescriptor mit einem anderen auf Basis
+     * des absoluten Dateipfades
+     * @param other Die andere Instanz
+     * @return Das Vergleichsergebnis
+     */
     @Override
     public int compareTo(InputFileDescriptor other) {
         return file.getName().compareTo(other.getFile().getName());

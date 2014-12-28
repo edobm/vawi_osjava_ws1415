@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import osjava.tl3.logic.io.InputFileHelper;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
+import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -219,7 +220,7 @@ public class MasterScheduleTest {
          
          Scheduler scheduler = new Scheduler();
          scheduler.setDataController(dataController);
-         scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
+         scheduler.setStrategy(StrategyFactory.getInstanceByClassName("CostOptimizedStrategy"));
          scheduler.executeStrategy(null);
          
          instance = scheduler.getMasterSchedule();
@@ -235,7 +236,7 @@ public class MasterScheduleTest {
          
          Scheduler scheduler = new Scheduler();
          scheduler.setDataController(dataController);
-         scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
+         scheduler.setStrategy(StrategyFactory.getInstanceByClassName("CostOptimizedStrategy"));
          scheduler.executeStrategy(null);
          
          instance = scheduler.getMasterSchedule();

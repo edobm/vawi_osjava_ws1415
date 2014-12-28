@@ -15,6 +15,17 @@ import osjava.tl3.model.TimeSlot;
 public class HTMLOutputFormatter extends OutputFormatter {
 
     /**
+     * Liefert das Dateinamensuffix für HTML-Dateien
+     *
+     * @return Das Suffix (HTML)
+     */
+    @Override
+    public String getFileNameSuffix() {
+        final String suffix = "html";
+        return suffix;
+    }
+
+    /**
      * Erzeugt für den eigegebenen Plan die HTML Ausgabe
      *
      * @param schedule Der auszugebende Plan
@@ -39,11 +50,10 @@ public class HTMLOutputFormatter extends OutputFormatter {
             sbTitle.append("Studiengangsplan: ").append(title);
         }
         
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF8\" ?>");
-        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("<head>");
-
+        sb.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>");
         sb.append("<style>");
         sb.append("table, th, td { border: 1px solid black; border-collapse: collapse; } ");
         sb.append("th, td { padding: 5px; text-align: left; }");
@@ -96,17 +106,6 @@ public class HTMLOutputFormatter extends OutputFormatter {
         sb.append("</html>");
 
         return sb;
-    }
-
-    /**
-     * Liefert das Dateinamensuffix für HTML-Dateien
-     *
-     * @return Das Suffix (HTML)
-     */
-    @Override
-    public String getFileNameSuffix() {
-        final String suffix = "html";
-        return suffix;
     }
 
 }

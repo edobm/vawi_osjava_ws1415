@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
-import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
@@ -119,33 +118,6 @@ public abstract class Strategy {
          * Die Liste zurück geben
          */
         return matchingRooms;
-    }
-
-    /**
-     * Erzeugt eine Instanz der angegebenen Planungsstrategie Klasse
-     * @param className Der Name der Klasse 
-     * @return Die Instanz der Klasse oder null, wenn diese nicht gefunden werden konnte
-     */
-    public static final Strategy getStrategyInstanceByClassName(String className) {
-
-        final String packagePath = Strategy.class.getName().substring(0, Strategy.class.getName().lastIndexOf("."));
-
-        try {
-            Class<?> cls = Class.forName(packagePath + "." + className);
-
-            if (Strategy.class.isAssignableFrom(cls)) {
-                StrategyProtocol.log("Strategie geladen: " + cls.getName());
-                return (Strategy) cls.newInstance();
-            } else {
-                StrategyProtocol.log("Strategie konnte nicht geladen werden: " + packagePath + "." + className);
-                return null;
-            }
-
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            StrategyProtocol.log("Strategie konnte nicht geladden werden: " + packagePath + "." + className);
-            ex.printStackTrace();
-            return null;
-        }
     }
 
 }

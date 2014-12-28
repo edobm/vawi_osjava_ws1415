@@ -11,6 +11,17 @@ import osjava.tl3.model.ScheduleElement;
 public class CSVOutputFormatter extends OutputFormatter {
 
     /**
+     * Liefert das Dateinamensuffix für CSV-Dateien
+     *
+     * @return Das Suffix (csv)
+     */
+    @Override
+    public String getFileNameSuffix() {
+        final String suffix = "csv";
+        return suffix;
+    }
+
+    /**
      * Erzeugt für den eigegebenen Plan die CSV Ausgabe
      *
      * @param schedule Der auszugebende Plan
@@ -52,17 +63,6 @@ public class CSVOutputFormatter extends OutputFormatter {
         }
         
         return sb;
-    }
-
-    /**
-     * Liefert das Dateinamensuffix für CSV-Dateien
-     *
-     * @return Das Suffix (csv)
-     */
-    @Override
-    public String getFileNameSuffix() {
-        final String suffix = "csv";
-        return suffix;
     }
 
 }

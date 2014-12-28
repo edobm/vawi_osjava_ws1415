@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,10 +26,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -38,7 +40,8 @@ import osjava.tl3.logic.io.RoomReader;
 import osjava.tl3.logic.io.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
-import osjava.tl3.logic.planning.strategies.Strategy;
+import osjava.tl3.logic.planning.strategies.StrategyFactory;
+import osjava.tl3.Protocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
@@ -60,61 +63,89 @@ import osjava.tl3.ui.fileseletion.InputFileDescriptor;
  * mittels JTree und Darstellung aller im Gesamtplan (MasterSchedule)
  * enthaltenen Plane (Schedule) in tabellarischer Form (JTable) bereit.
  *
- * @author Christian Müller
+ * @author Meikel Bode
  */
 public class SchedulerUI extends JFrame {
 
-    private JButton btnOpenProtocol = new JButton("Protokoll anzeigen");
-    private JButton btnSelectRooms = new JButton("Räume (0)");
-    private JButton btnSelectCourses = new JButton("Lehrveranstaltungen (0)");
-    private JButton btnSelectStudyPrograms = new JButton("Studiengänge (0)");
+    /**
+     * Swing Komponenten für Fensterstruktur
+     */
+    private final JPanel panelTopButtons = new JPanel(new GridLayout(1, 6, 5, 5));
+    private final JSplitPane splitPane = new JSplitPane();
+    private final JScrollPane scrollPaneTree = new JScrollPane();
+    private final JScrollPane scrollPaneTable = new JScrollPane();
+    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+    private final LoggingPanel loggingPanel = new LoggingPanel();
+    private final JTree treeMasterSchedule = new JTree();
+    private final JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten", SwingConstants.CENTER);
 
-    private JButton btnSelectOutput = new JButton("Ausgabeverzeichnis");
-    private JButton btnGenerateMasterSchedule = new JButton("Gesamtplan berechnen");
-    private JLabel labelOutputDirectory = new JLabel("");
+    /**
+     * Swing Tabelle und Model für Plandarstellung
+     */
+    private final ScheduleTableModel scheduleTableModel = new ScheduleTableModel();
+    private final ScheduleTable scheduleTable = new ScheduleTable(scheduleTableModel);
 
-    private JLabel labelStrategies = new JLabel("Planungsstrategie:");
-    private JComboBox<String> comboBoxStrategies = new JComboBox<>();
-
-    private JLabel labelOutputFormat = new JLabel("Ausgabeformat:");
-    private JComboBox<String> comboBoxOutputFormat = new JComboBox<>();
-
-    private JButton btnOutputExecute = new JButton("Gesamtplan exportieren");
-
-    private JPanel panelTop = new JPanel(new GridLayout(1, 6, 5, 5));
-    private JSplitPane splitPane = new JSplitPane();
-    private JScrollPane scrollPaneTree = new JScrollPane();
-    private JScrollPane scrollPaneTable = new JScrollPane();
-
-    private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-    private JPanel panelLogging = new JPanel(new BorderLayout());
-    private JScrollPane scrollPaneLogging = new JScrollPane();
-    private JTextArea textAreaLog = new JTextArea();
-
-    private JTree treeMasterSchedule = new JTree();
-
-    private DataController dataController;
-    private OutputController outputController;
-    private Scheduler scheduler;
-    private MasterSchedule masterSchedule;
-
-    private ScheduleTable scheduleTable = new ScheduleTable();
-
-    private ScheduleTableModel scheduleTableModel;
-
-    private JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten", SwingConstants.CENTER);
-
+    /**
+     * Swing Komponenten für Raumselektion
+     */
+    private final JButton btnSelectRooms = new JButton("Räume (0)");
+    private final JButton btnSelectCourses = new JButton("Lehrveranstaltungen (0)");
+    private final JButton btnSelectStudyPrograms = new JButton("Studiengänge (0)");
     private JDialog dlgAddRooms;
     private InputFilePanel inputFilePanelRooms;
-
     private JDialog dlgAddCourses;
     private InputFilePanel inputFilePanelCourses;
-
     private JDialog dlgAddStudyPrograms;
     private InputFilePanel inputFilePanelStudyPrograms;
 
+    /**
+     * Swing Komponenten für Konfiguration der Planberechnung
+     */
+    private final JLabel labelStrategies = new JLabel("Planungsstrategie:");
+    private final JComboBox<String> comboBoxStrategies = new JComboBox<>();
+    private final JLabel labelCosts = new JLabel("Kosten pro externem Platz:");
+    private final JFormattedTextField textFieldCosts = new JFormattedTextField(new DecimalFormat("#,##"));
+
+    /**
+     * Swing Komponenten für die Ausführung der Planberechnung
+     */
+    private final JButton btnGenerateMasterSchedule = new JButton("Gesamtplan berechnen");
+
+    /**
+     * Swing Komponenten für Konfiguration der Dateiausgabe
+     */
+    private final JButton btnSelectOutput = new JButton("Ausgabeverzeichnis");
+    private final JLabel labelOutputDirectory = new JLabel();
+    private final JLabel labelOutputFormat = new JLabel("Ausgabeformat:");
+    private final JComboBox<String> comboBoxOutputFormat = new JComboBox<>();
     private JDialog dlgAddOutputDirectory;
     private InputFilePanel inputFilePanelOutputDirectory;
+
+    /**
+     * Swing Komponenten für Ausführung der Dateiausgabe
+     */
+    private final JButton btnOutputExecute = new JButton("Gesamtplan exportieren");
+
+    /**
+     * Instanz des DataControllers für Zugriff auf Entitäten
+     */
+    private DataController dataController;
+
+    /**
+     * Instanz des Planerstellungslogik
+     */
+    private Scheduler scheduler;
+
+    /**
+     * Instanz des Gesamtplans
+     */
+    private MasterSchedule masterSchedule;
+
+    /**
+     * Instanz des OutputControllers für die Dateiausgabe der erzeugten
+     * Plandanten
+     */
+    private OutputController outputController;
 
     /**
      * Erzeugt eine neue Instanz der Klasse ScheduleGUI und nimmt dabei
@@ -125,14 +156,35 @@ public class SchedulerUI extends JFrame {
      * erzeugt werden kann.
      */
     public SchedulerUI() throws HeadlessException {
+
+        /**
+         * Grundlegende Fensterkonfiguration vornehmen
+         */
+        setTitle("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1200, 900);
-        setTitle("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
         setLocationRelativeTo(null);
+
+        /**
+         * Grundlegende Fensterevents registrieren
+         */
         initializeWindowEvents();
+
+        /**
+         * Swing Komponenten erzeugen und Konfigurieren
+         */
         initializeComponents();
+
+        /**
+         * Events für den Planstrukturbaum registrieren
+         */
         initializeTreeEvents();
 
+        /**
+         * Meldung ausgeben
+         */
+        Protocol.log("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
+        Protocol.log("Programm initialisiert");
     }
 
     /**
@@ -140,19 +192,27 @@ public class SchedulerUI extends JFrame {
      */
     private void initializeComponents() {
 
+        /**
+         * Grundlegendes Fensterlayout festlegen auf BorderLayout
+         */
         setLayout(new BorderLayout());
 
-        getContentPane().add(panelTop, BorderLayout.NORTH);
+        /**
+         * Buttonleiste oben platzieren
+         */
+        getContentPane().add(panelTopButtons, BorderLayout.NORTH);
 
+        /**
+         * Swing Komponenten für die Dateiauswahl
+         */
         JPanel fileButtons = new JPanel(new GridLayout(4, 1));
+        panelTopButtons.add(fileButtons);
         fileButtons.setBorder(new TitledBorder("Schritt 1: Dateien wählen"));
 
+        /**
+         * Button für Raumselektion
+         */
         fileButtons.add(btnSelectRooms);
-        fileButtons.add(btnSelectCourses);
-        fileButtons.add(btnSelectStudyPrograms);
-
-        panelTop.add(fileButtons);
-
         btnSelectRooms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -162,6 +222,10 @@ public class SchedulerUI extends JFrame {
             }
         });
 
+        /**
+         * Button für Kursselektion
+         */
+        fileButtons.add(btnSelectCourses);
         btnSelectCourses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -171,6 +235,10 @@ public class SchedulerUI extends JFrame {
             }
         });
 
+        /**
+         * Button für Studiengangselektion
+         */
+        fileButtons.add(btnSelectStudyPrograms);
         btnSelectStudyPrograms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,19 +248,29 @@ public class SchedulerUI extends JFrame {
             }
         });
 
-        ComboBoxElementModel cbxModelStrategies = new ComboBoxElementModel();
-        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategy.class));
-        comboBoxStrategies.setModel(cbxModelStrategies);
+        /**
+         * Swing Komponenten für die Konfiguration der Planerstellung
+         */
         JPanel panelConfiguration = new JPanel(new GridLayout(4, 1));
+        panelTopButtons.add(panelConfiguration);
         panelConfiguration.setBorder(new TitledBorder("Schritt 2: Planung konfigurieren"));
         panelConfiguration.add(labelStrategies);
         panelConfiguration.add(comboBoxStrategies);
-        panelTop.add(panelConfiguration);
+        ComboBoxElementModel cbxModelStrategies = new ComboBoxElementModel();
+        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategy.class));
+        comboBoxStrategies.setModel(cbxModelStrategies);
+        panelConfiguration.add(labelCosts);
+        panelConfiguration.add(textFieldCosts);
+        textFieldCosts.setHorizontalAlignment(JFormattedTextField.RIGHT);
+        textFieldCosts.setValue(10);
 
+        /**
+         * Swing Komponenten für die Ausführung der Planerstellung
+         */
         JPanel panelExecution = new JPanel(new GridLayout(4, 1));
         panelExecution.setBorder(new TitledBorder("Schritt 3: Planung ausführen"));
         panelExecution.add(btnGenerateMasterSchedule);
-        panelTop.add(panelExecution);
+        panelTopButtons.add(panelExecution);
 
         btnGenerateMasterSchedule.addActionListener(new ActionListener() {
             @Override
@@ -201,17 +279,20 @@ public class SchedulerUI extends JFrame {
             }
         });
 
-        ComboBoxElementModel cbxModelOutputFormats = new ComboBoxElementModel();
-        cbxModelOutputFormats.addElement(new ComboxBoxElement("CSV-Text", OutputFormat.CSV_TEXT));
-        cbxModelOutputFormats.addElement(new ComboxBoxElement("HTML", OutputFormat.HTML));
-        comboBoxOutputFormat.setModel(cbxModelOutputFormats);
+        /**
+         * Swing Komponenten für die Konfiguration des Dateiexports
+         */
         JPanel panelOutput = new JPanel(new GridLayout(4, 1));
+        panelTopButtons.add(panelOutput);
         panelOutput.setBorder(new TitledBorder("Schritt 4: Export konfigurieren"));
         panelOutput.add(btnSelectOutput);
         panelOutput.add(labelOutputDirectory);
         panelOutput.add(labelOutputFormat);
         panelOutput.add(comboBoxOutputFormat);
-        panelTop.add(panelOutput);
+        ComboBoxElementModel cbxModelOutputFormats = new ComboBoxElementModel();
+        cbxModelOutputFormats.addElement(new ComboxBoxElement("CSV-Text", OutputFormat.CSV_TEXT));
+        cbxModelOutputFormats.addElement(new ComboxBoxElement("HTML", OutputFormat.HTML));
+        comboBoxOutputFormat.setModel(cbxModelOutputFormats);
 
         btnSelectOutput.addActionListener(new ActionListener() {
             @Override
@@ -224,10 +305,13 @@ public class SchedulerUI extends JFrame {
             }
         });
 
+        /**
+         * Swing Komponenten für die Ausführung des Dateiexports
+         */
         JPanel panelOutputExecute = new JPanel(new GridLayout(4, 1));
         panelOutputExecute.setBorder(new TitledBorder("Schritt 5: Export ausführen"));
         panelOutputExecute.add(btnOutputExecute);
-        panelTop.add(panelOutputExecute);
+        panelTopButtons.add(panelOutputExecute);
 
         btnOutputExecute.addActionListener(new ActionListener() {
             @Override
@@ -236,26 +320,39 @@ public class SchedulerUI extends JFrame {
             }
         });
 
+        /**
+         * Splitpane platzieren und konfigurieren
+         */
         getContentPane().add(splitPane, BorderLayout.CENTER);
-
         splitPane.setDividerLocation(200);
 
+        /**
+         * Baum für Planstruktur in ScrollPane platzieren und konfigurieren
+         */
         splitPane.add(scrollPaneTree, JSplitPane.LEFT);
         scrollPaneTree.setViewportView(treeMasterSchedule);
+        treeMasterSchedule.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Gesamtplan")));
 
+        /**
+         * Tabelle für Plandarstellung in ScrollPane platzieren
+         */
         splitPane.add(scrollPaneTable, JSplitPane.RIGHT);
         scrollPaneTable.setViewportView(lSelectNode);
 
+        /**
+         * LogginPanel konfigurieren und in TabbedPane platzieren
+         */
+        Protocol.getInstance().addObserver(loggingPanel);
         getContentPane().add(tabbedPane, BorderLayout.SOUTH);
-
-        scrollPaneLogging.setViewportView(textAreaLog);
-        panelLogging.add(scrollPaneLogging, BorderLayout.CENTER);
-        panelLogging.setSize(100, 280);
-        tabbedPane.add("Ausgabe", panelLogging);
+        tabbedPane.add("Ausgabe", loggingPanel);
         tabbedPane.setPreferredSize(new Dimension(100, 250));
         tabbedPane.setMinimumSize(new Dimension(100, 250));
 
+        /**
+         * Dialog für Raumdateiselektion erzeugen und konfigurieren
+         */
         dlgAddRooms = new JDialog(this);
+        dlgAddRooms.setModal(true);
         dlgAddRooms.setLayout(new BorderLayout());
         dlgAddRooms.setSize(640, 480);
         dlgAddRooms.setLocationRelativeTo(null);
@@ -263,7 +360,11 @@ public class SchedulerUI extends JFrame {
         inputFilePanelRooms = new InputFilePanel(InputFileType.ROOM_FILE, dlgAddRooms);
         dlgAddRooms.getContentPane().add(inputFilePanelRooms, BorderLayout.CENTER);
 
+        /**
+         * Dialog für Kursdateiselektion erzeugen und konfigurieren
+         */
         dlgAddCourses = new JDialog(this);
+        dlgAddCourses.setModal(true);
         dlgAddCourses.setLayout(new BorderLayout());
         dlgAddCourses.setSize(640, 480);
         dlgAddCourses.setLocationRelativeTo(null);
@@ -271,7 +372,11 @@ public class SchedulerUI extends JFrame {
         inputFilePanelCourses = new InputFilePanel(InputFileType.COURSE_FILE, dlgAddCourses);
         dlgAddCourses.getContentPane().add(inputFilePanelCourses, BorderLayout.CENTER);
 
+        /**
+         * Dialog für Studiengangsdateiselektion erzeugen und konfigurieren
+         */
         dlgAddStudyPrograms = new JDialog(this);
+        dlgAddStudyPrograms.setModal(true);
         dlgAddStudyPrograms.setLayout(new BorderLayout());
         dlgAddStudyPrograms.setSize(640, 480);
         dlgAddStudyPrograms.setLocationRelativeTo(null);
@@ -279,7 +384,11 @@ public class SchedulerUI extends JFrame {
         inputFilePanelStudyPrograms = new InputFilePanel(InputFileType.ROOM_FILE, dlgAddStudyPrograms);
         dlgAddStudyPrograms.getContentPane().add(inputFilePanelStudyPrograms, BorderLayout.CENTER);
 
+        /**
+         * Dialog für Ausgabeverzeichnisselektion erzeugen und konfigurieren
+         */
         dlgAddOutputDirectory = new JDialog(this);
+        dlgAddOutputDirectory.setModal(true);
         dlgAddOutputDirectory.setLayout(new BorderLayout());
         dlgAddOutputDirectory.setSize(640, 480);
         dlgAddOutputDirectory.setLocationRelativeTo(null);
@@ -287,7 +396,6 @@ public class SchedulerUI extends JFrame {
         inputFilePanelOutputDirectory = new InputFilePanel(InputFileType.OUTPUT_DIRECTORY, dlgAddOutputDirectory);
         dlgAddOutputDirectory.getContentPane().add(inputFilePanelOutputDirectory, BorderLayout.CENTER);
 
-        treeMasterSchedule.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Gesamtplan")));
     }
 
     /**
@@ -295,37 +403,76 @@ public class SchedulerUI extends JFrame {
      */
     private void initializeTreeEvents() {
 
-        treeMasterSchedule.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+        /**
+         * Listener für Selektionen auf dem Planstrukturbaum registrieren
+         */
+        treeMasterSchedule.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 final int timeSlotWidth = 25;
 
+                /**
+                 * Wurde ein Knoten ohne direkten Planbezug selektiert statt der
+                 * Tabelle ein Label mit dem Hinweis zur Selektion eines
+                 * Baumknotens anzeigen und Folgenverarbeite abbrechen
+                 */
                 if (treeMasterSchedule.getLastSelectedPathComponent() == null) {
                     scrollPaneTable.setViewportView(lSelectNode);
                     return;
                 }
 
-                DefaultMutableTreeNode n = (DefaultMutableTreeNode) treeMasterSchedule.getLastSelectedPathComponent();
+                /**
+                 * Selektierten Knoten holen
+                 */
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) treeMasterSchedule.getLastSelectedPathComponent();
 
-                if (n.getUserObject() instanceof Room) {
-                    Schedule schedule = masterSchedule.getSchedule((Room) n.getUserObject());
+                /**
+                 * Spezifische Behandlung des Knotens für Benutzerobjekt
+                 * festlegen
+                 */
+                if (selectedNode.getUserObject() instanceof Room) {
+
+                    /**
+                     * Knoten hält eine Instanz von Room: Passenden Plan aus dem
+                     * Masterschedule holen und an Tabellenmodell übergen und
+                     * Tabelle anzeigen
+                     */
+                    Schedule schedule = masterSchedule.getSchedule((Room) selectedNode.getUserObject());
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                } else if (n.getUserObject() instanceof Academic) {
-                    Schedule schedule = masterSchedule.getSchedule((Academic) n.getUserObject());
+
+                } else if (selectedNode.getUserObject() instanceof Academic) {
+
+                    /**
+                     * Knoten hält eine Instanz von Academic: Passenden Plan aus
+                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * und Tabelle anzeigen
+                     */
+                    Schedule schedule = masterSchedule.getSchedule((Academic) selectedNode.getUserObject());
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                } else if (n.getUserObject() instanceof Semester) {
-                    Semester semester = (Semester) n.getUserObject();
+
+                } else if (selectedNode.getUserObject() instanceof Semester) {
+
+                    /**
+                     * Knoten hält eine Instanz von Semester: Passenden Plan aus
+                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * und Tabelle anzeigen
+                     */
+                    Semester semester = (Semester) selectedNode.getUserObject();
                     Schedule schedule = masterSchedule.getSchedule(semester.getStudyProgram(), semester);
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                } else if (n.getUserObject() instanceof String && n.getUserObject().toString().equals("Gesamtplan")) {
-                    // scrollPaneTable.setViewportView(panelMasterScheduleStatus);
+
                 } else {
+
+                    /**
+                     * Statt Tabelle ein Label mit dem Hinweis zur Selektion
+                     * eines Baumknotens anzeigen
+                     */
                     scrollPaneTable.setViewportView(lSelectNode);
                 }
 
@@ -340,83 +487,140 @@ public class SchedulerUI extends JFrame {
      */
     private void executeScheduler() {
 
+        Protocol.log("Gesamtplanberechnung gestartet");
+
+        /**
+         * Prüfen ob alle notwendigen Einstellungen vorgenommen wurden
+         */
         if (inputFilePanelRooms.getInputFiles().isEmpty()
                 || inputFilePanelCourses.getInputFiles().isEmpty()
                 || inputFilePanelStudyPrograms.getInputFiles().isEmpty()) {
 
-            JOptionPane.showMessageDialog(this, "Wählen jeweils mindestens eine Datei mit Räumen, eine mit "
+            /**
+             * Im Fehlerfalls Meldung ausgeben und Folgeverarbeitung abbrechen
+             */
+            JOptionPane.showMessageDialog(this, "Wählen Sie jeweils mindestens eine Datei mit Räumen, eine mit "
                     + "\nLehrveranstaltungen sowie eine mit Studiengangsdaten aus.",
                     "Bitte Dateien wählen!", JOptionPane.INFORMATION_MESSAGE);
+            Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
             return;
         }
 
+        /**
+         * DataController erzeugen
+         */
         dataController = new DataController();
 
+        /**
+         * Raumdateien, Kursdateien und Studiengangsdateien einlesen
+         */
         RoomReader roomReader = new RoomReader();
         for (InputFileDescriptor file : inputFilePanelRooms.getInputFiles()) {
             roomReader.readRooms(file.getFile().toString(), dataController);
         }
+        Protocol.log("Raumdateien eingelesen: " + inputFilePanelRooms.getInputFiles().size());
+        Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
 
         CourseReader courseReader = new CourseReader();
         for (InputFileDescriptor file : inputFilePanelCourses.getInputFiles()) {
             courseReader.readCourses(file.getFile().toString(), dataController);
         }
+        Protocol.log("Kursdateien eingelesen: " + inputFilePanelCourses.getInputFiles().size());
+        Protocol.log("Kurse insgesamt: " + dataController.getCourses().size());
 
         StudyProgramReader studyProgramReader = new StudyProgramReader();
         for (InputFileDescriptor file : inputFilePanelStudyPrograms.getInputFiles()) {
             studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
         }
-//        InputFileHelper.loadCourses(dataController);
-//        InputFileHelper.loadRooms(dataController);
-//        InputFileHelper.loadStudyPrograms(dataController);
+        Protocol.log("Studiengangsdateien eingelesen: " + inputFilePanelStudyPrograms.getInputFiles().size());
+        Protocol.log("Studiengänge insgesamt: " + dataController.getStudyPrograms().size());
 
+        /**
+         * Selektierte Planungsstrategie holen
+         */
+        String strategyName = ((ComboxBoxElement<Class>) comboBoxStrategies.getSelectedItem()).getElement().getSimpleName();
+
+        /**
+         * Scheduler erzeugen und konfigurieren
+         */
         scheduler = new Scheduler();
         scheduler.setDataController(dataController);
-        scheduler.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
-        scheduler.executeStrategy(null);
+        scheduler.setStrategy(StrategyFactory.getInstanceByClassName(strategyName));
 
+        /**
+         * Selektierte Planungsstrategie auf Basis der Eingabedaten ausführen
+         * und erzeugten Gesamtplan holen
+         */
+        scheduler.executeStrategy(null);
         masterSchedule = scheduler.getMasterSchedule();
 
-        initMasterScheduleInfos(masterSchedule);
-
+        /**
+         * Modell für Planstrukturbaum auf Basis des Gesamtplans erzeugen und
+         * der JTree Komponente zuweisen
+         */
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
-
         treeMasterSchedule.setModel(treeModel);
 
-        scheduleTableModel = new ScheduleTableModel();
-        scheduleTable.setModel(scheduleTableModel);
+        Protocol.log("Gesamtplanberechnung beendet");
 
     }
 
     /**
-     * Exportiert auf Basis der Export-Eisntellungen die aktuell ausgewählten
+     * Exportiert auf Basis der Export-Einstellungen die aktuell ausgewählten
      * Pläne
      */
     private void executeExport() {
-
+        
+        Protocol.log("Dateiexport gestartet");
+        
+        /**
+         * Prüfen ob ein Gesamtplan erzeugt wurde
+         */
         if (masterSchedule == null) {
+
+            /**
+             * Im Fehlerfall Meldung ausgeben und Folgeverarbeitung abbrechen
+             */
             JOptionPane.showMessageDialog(this, "Erzeugen Sie zunächst den Gesamtplan",
                     "Bitte Gesamtplan erzeugen", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        if (inputFilePanelOutputDirectory.getInputFiles().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Wählen Sie zunächst das Ausgabeverzeichnis aus",
-                    "Bitte Ausgabeverzeichnis wählen", JOptionPane.INFORMATION_MESSAGE);
+            Protocol.log("Dateiexport abgebrochen wegen fehlendem Gesamtplan");
             return;
         }
 
         /**
-         * Instanz des OutputControllers erzeugen
+         * Prüfen ob ein Ausgabeverzeichnis selektiert wurde
+         */
+        if (inputFilePanelOutputDirectory.getInputFiles().isEmpty()) {
+
+            /**
+             * Im Fehlerfall Meldung ausgeben und Folgeverarbeitung abbrechen
+             */
+            JOptionPane.showMessageDialog(this, "Wählen Sie zunächst das Ausgabeverzeichnis aus",
+                    "Bitte Ausgabeverzeichnis wählen", JOptionPane.INFORMATION_MESSAGE);
+            Protocol.log("Dateiexport abgebrochen wegen nicht selektiertem Ausgabeverzeichnis");
+            return;
+        }
+
+        /**
+         * Selektiertes Ausgabeformat holen
+         */
+        OutputFormat outputFormat = ((ComboxBoxElement<OutputFormat>) comboBoxOutputFormat.getSelectedItem()).getElement();
+        Protocol.log("Dateiexport Ausgabeformat: " + outputFormat);
+        
+        /**
+         * Selektiertes Ausgabeverzeichnis holen
+         */
+        String outputPath = inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString();
+        Protocol.log("Dateiexport Ausgabeverzeichnis: " + outputPath);
+        
+        /**
+         * Instanz des OutputControllers erzeugen und alle Pläne des Gesamtplans
+         * im angegebenen Ausgabeformat in das Ausgabeverzeichnis exportieren
          */
         outputController = new OutputController();
-
-        OutputFormat outputFormat = ((ComboxBoxElement<OutputFormat>) comboBoxOutputFormat.getSelectedItem()).getElement();
-
-        String outputPath = inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString();
-
         outputController.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputPath);
-
+        Protocol.log("Dateiexport abgeschlossen");
+        
     }
 
     /**
@@ -424,9 +628,21 @@ public class SchedulerUI extends JFrame {
      * mithilfe von verknüpften DefaultMutableTreeNodes
      */
     private TreeNode buildTreeModel() {
+
+        /**
+         * Root-Knoten erzeugen
+         */
         DefaultMutableTreeNode rMasterSchedule = new DefaultMutableTreeNode("Gesamtplan");
+
+        /**
+         * Knoten für Raumpläne erzeugen und an Root-Knoten anhängen
+         */
         DefaultMutableTreeNode rRooms = new DefaultMutableTreeNode("Raumpläne");
         rMasterSchedule.add(rRooms);
+
+        /**
+         * Knoten für Pläne interner Räume erzeugen und an Raumknoten anhängen
+         */
         DefaultMutableTreeNode rRoomsInternal = new DefaultMutableTreeNode("Interne Räume");
         List<Room> rooms = masterSchedule.getRooms(RoomType.INTERNAL);
         Collections.sort(rooms);
@@ -435,6 +651,9 @@ public class SchedulerUI extends JFrame {
         }
         rRooms.add(rRoomsInternal);
 
+        /**
+         * Knoten für Pläne externer Räume erzeugen und an Raumknoten anhängen
+         */
         DefaultMutableTreeNode rRoomsExternal = new DefaultMutableTreeNode("Externe Räume");
         rooms = masterSchedule.getRooms(RoomType.EXTERNAL);
         Collections.sort(rooms);
@@ -443,6 +662,9 @@ public class SchedulerUI extends JFrame {
         }
         rRooms.add(rRoomsExternal);
 
+        /**
+         * Knoten für Dozentenpläne erzeugen und an Root-Knoten anhängen
+         */
         DefaultMutableTreeNode rAcademics = new DefaultMutableTreeNode("Dozentenpläne");
         List<Academic> academics = dataController.getAcademics();
         Collections.sort(academics);
@@ -451,6 +673,10 @@ public class SchedulerUI extends JFrame {
         }
         rMasterSchedule.add(rAcademics);
 
+        /**
+         * Knoten für Studiengangspläne und Fachsemester erzeugen und an
+         * Root-Knoten anhängen
+         */
         DefaultMutableTreeNode rStudyPrograms = new DefaultMutableTreeNode("Studiengangspläne");
         List<StudyProgram> studyPrograms = dataController.getStudyPrograms();
         Collections.sort(studyPrograms);
@@ -464,17 +690,27 @@ public class SchedulerUI extends JFrame {
         rMasterSchedule.add(rStudyPrograms);
 
         /**
-         * Pläne pro Kurs ausgeben
+         * Knoten für alle Pläne in denen ein Kurs vorkommt erzeugen
          */
         DefaultMutableTreeNode rCourses = new DefaultMutableTreeNode("Pläne pro Kurs");
         rMasterSchedule.add(rCourses);
-
         List<Course> courses = dataController.getCourses();
         Collections.sort(courses);
+
+        /**
+         * Alle Kurse durchlaufen
+         */
         for (Course course : courses) {
+
+            /**
+             * Knoten für Kurs erzeugen
+             */
             DefaultMutableTreeNode rCourse = new DefaultMutableTreeNode(course);
             rCourses.add(rCourse);
 
+            /**
+             * Knoten für Raumpläne erzeugen in denen der Kurs vorkommt
+             */
             DefaultMutableTreeNode rCourseRooms = new DefaultMutableTreeNode("Räume");
             rCourse.add(rCourseRooms);
             List<Room> relevantRooms = new ArrayList<>();
@@ -493,6 +729,9 @@ public class SchedulerUI extends JFrame {
                 rCourseRooms.add(new DefaultMutableTreeNode(room));
             }
 
+            /**
+             * Knoten für Dozentenpläne erzeugen in denen der Kurs vorkommt
+             */
             DefaultMutableTreeNode rCourseAcadmic = new DefaultMutableTreeNode("Dozent");
             rCourse.add(rCourseAcadmic);
             List<Academic> relevantAcademics = new ArrayList<>();
@@ -512,6 +751,10 @@ public class SchedulerUI extends JFrame {
                 rCourseAcadmic.add(new DefaultMutableTreeNode(academic));
             }
 
+            /**
+             * Knoten für Studiengangspläne und Fachsemester erzeugen in denen
+             * der Kurs vorkommt
+             */
             DefaultMutableTreeNode rCourseStudyPrograms = new DefaultMutableTreeNode("Studiengänge");
             rCourse.add(rCourseStudyPrograms);
             List<StudyProgram> relevantStudyPrograms = new ArrayList<>();
@@ -539,105 +782,10 @@ public class SchedulerUI extends JFrame {
 
         }
 
+        /**
+         * Das erzeugte Tree Modell zurückgeben
+         */
         return rMasterSchedule;
-    }
-
-    /**
-     * Erzeugt mithilfe des Gesamtplans eine Ausgabe der wichtigsten Rahmendaten
-     * zum Plan
-     *
-     * @param masterSchedule Der MasterSchedule des Rahmendaten ausgegeben
-     * werden sollen
-     */
-    private void initMasterScheduleInfos(MasterSchedule masterSchedule) {
-//        lRoomsInternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, false)));
-//        lRoomsInternalUsed.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.INTERNAL, true)));
-//        lRoomsExternal.setText(String.valueOf(masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
-//        lCoursesScheduledIntern.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL)));
-//        lCoursesScheduledExternal.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
-//
-//        double percentInternal = masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) * 100 / (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL));
-//        lPercentCoursesInternal.setText(String.valueOf(Math.rint(percentInternal)));
-//
-//        lSeatsInternalBlocked.setText(String.valueOf(masterSchedule.getInternallyScheduledSeats()));
-//        lSeatsExternal.setText(String.valueOf(masterSchedule.getExternallyScheduledSeats()));
-//
-//        percentInternal = masterSchedule.getInternallyScheduledSeats() * 100 / (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats());
-//        lPercentInternal.setText(String.valueOf(Math.rint(percentInternal)));
-//
-//        lBlocksCount.setText(String.valueOf(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
-    }
-
-    /**
-     * Liefert den DatenController
-     *
-     * @return the dataController
-     */
-    public DataController getDataController() {
-        return dataController;
-    }
-
-    /**
-     * Setzt den DatenController
-     *
-     * @param dataController the dataController to set
-     */
-    public void setDataController(DataController dataController) {
-        this.dataController = dataController;
-    }
-
-    /**
-     * Liefert den OutputController
-     *
-     * @return the outputController
-     */
-    public OutputController getOutputController() {
-        return outputController;
-    }
-
-    /**
-     * Setzt den OutputController
-     *
-     * @param outputController the outputController to set
-     */
-    public void setOutputController(OutputController outputController) {
-        this.outputController = outputController;
-    }
-
-    /**
-     * Liefert den Scheduler
-     *
-     * @return the scheduler
-     */
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
-
-    /**
-     * Setzt den Scheduler
-     *
-     * @param scheduler the scheduler to set
-     */
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
-    /**
-     * Liefert den MasterSchedule
-     *
-     * @return the masterSchedule
-     */
-    public MasterSchedule getMasterSchedule() {
-        return masterSchedule;
-    }
-
-    /**
-     * Setzt den MasterSchedule
-     *
-     * @param masterSchedule the masterSchedule to set
-     */
-    public void setMasterSchedule(MasterSchedule masterSchedule) {
-        this.masterSchedule = masterSchedule;
     }
 
     /**
@@ -655,6 +803,7 @@ public class SchedulerUI extends JFrame {
             public void windowClosing(WindowEvent e) {
                 int result = JOptionPane.showConfirmDialog(SchedulerUI.this, "Wirklich beenden?",
                         "Programm beenden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                
                 if (result == JOptionPane.NO_OPTION) {
                     return;
                 }

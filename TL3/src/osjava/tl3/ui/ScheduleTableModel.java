@@ -11,10 +11,14 @@ import osjava.tl3.model.TimeSlot;
 /**
  * Ein auf Instanzen der Klasse Schedule spezialisiertes TableModel.
  * Diese Klasse erweiter die Klasse DefaultTableModel
- * @author Christian Müller
+ * 
+ * @author Meikel Bode
  */
 public class ScheduleTableModel extends DefaultTableModel  {
 
+    /**
+     * Die Planinstanz auf der dieses TableModel operiert
+     */
     private Schedule schedule = new Schedule(ScheduleType.ACADAMIC);
 
     /**

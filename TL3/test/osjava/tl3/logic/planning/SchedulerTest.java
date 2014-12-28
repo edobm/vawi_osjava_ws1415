@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import osjava.tl3.logic.planning.strategies.Strategy;
+import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -54,7 +55,7 @@ public class SchedulerTest {
 
         Scheduler instance = new Scheduler();
         instance.setDataController(dataController);
-        instance.setStrategy(Strategy.getStrategyInstanceByClassName("CostOptimizedStrategy"));
+        instance.setStrategy(StrategyFactory.getInstanceByClassName("CostOptimizedStrategy"));
 
         instance.executeStrategy(parameters);
 

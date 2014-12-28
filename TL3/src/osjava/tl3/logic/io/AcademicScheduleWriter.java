@@ -1,7 +1,6 @@
 package osjava.tl3.logic.io;
 
 import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.ScheduleType;
 
 /**

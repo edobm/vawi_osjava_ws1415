@@ -43,6 +43,7 @@ public abstract class InputFileReader {
             while (bufferedReader.ready()) {
                 String value = bufferedReader.readLine().trim();
                 if (value.length() != 0) {
+
                     data.add(value);
                 }
             }

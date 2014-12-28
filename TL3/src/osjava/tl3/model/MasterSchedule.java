@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
+import osjava.tl3.Protocol;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -52,7 +52,7 @@ public class MasterSchedule {
             schedule.setRoom(room);
             getRoomSchedules().put(room, schedule);
         }
-        StrategyProtocol.log("Raumpläne initialisiert: " + getRoomSchedules().size());
+        Protocol.log("Raumpläne initialisiert: " + getRoomSchedules().size());
 
         /**
          * Dozentenpläne initialisieren
@@ -64,7 +64,7 @@ public class MasterSchedule {
                 getAcadademicSchedules().put(course.getAcademic(), schedule);
             }
         }
-        StrategyProtocol.log("Dozentenpläne initialisiert: " + getAcadademicSchedules().size());
+        Protocol.log("Dozentenpläne initialisiert: " + getAcadademicSchedules().size());
 
         /**
          * Studiengangspläne initialisieren
@@ -82,9 +82,9 @@ public class MasterSchedule {
             getStudyProgramSchedules().put(studyProgram, semesterPlans);
             studyProgrammScheduleCount += semesterPlans.size();
         }
-        StrategyProtocol.log("Fachsemesterpläne initialisiert: " + studyProgrammScheduleCount);
+        Protocol.log("Fachsemesterpläne initialisiert: " + studyProgrammScheduleCount);
 
-        StrategyProtocol.log("Gesamtplan erfolgreich initialisiert");
+        Protocol.log("Gesamtplan erfolgreich initialisiert");
 
     }
 

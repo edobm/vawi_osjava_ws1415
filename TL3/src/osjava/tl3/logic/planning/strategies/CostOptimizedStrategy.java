@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
-import osjava.tl3.logic.planning.strategies.helpers.StrategyProtocol;
+import osjava.tl3.Protocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
@@ -29,7 +29,7 @@ public class CostOptimizedStrategy extends Strategy {
      */
     public CostOptimizedStrategy() {
         super("Kostenoptimiert");
-        StrategyProtocol.log("Strategie: " + getName());
+        Protocol.log("Strategie: " + getName());
     }
 
     /**
@@ -80,7 +80,7 @@ public class CostOptimizedStrategy extends Strategy {
         /**
          * Protokoll fortschreiben
          */
-        StrategyProtocol.log("Kurse zu planen: " + courseQueue.size());
+        Protocol.log("Kurse zu planen: " + courseQueue.size());
 
         /**
          * Liste für Kurse, die nicht eingeplant werden konnten Gründe dafür
@@ -119,7 +119,7 @@ public class CostOptimizedStrategy extends Strategy {
             /**
              * Protokoll fortschreiben
              */
-            StrategyProtocol.log("Plane Kurs: " + course);
+            Protocol.log("Plane Kurs: " + course);
 
             /**
              * Prüfen ob der Dozent noch freie Termine hat un wenn nicht, den
@@ -127,7 +127,7 @@ public class CostOptimizedStrategy extends Strategy {
              */
             freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
             if (freeCoordinatesAcademic.isEmpty()) {
-                StrategyProtocol.log("\tFehler: Kurs nicht einplanbar. Dozent hat keine Slots mehr frei: " + course);
+                Protocol.log("\tFehler: Kurs nicht einplanbar. Dozent hat keine Slots mehr frei: " + course);
                 coursesNotPlanned.add(course);
                 continue;
             }
@@ -139,7 +139,7 @@ public class CostOptimizedStrategy extends Strategy {
              */
             freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
             if (freeCoordinatesStudyPrograms.isEmpty()) {
-                StrategyProtocol.log("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
+                Protocol.log("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
                 coursesNotPlanned.add(course);
                 continue;
             }
@@ -169,7 +169,7 @@ public class CostOptimizedStrategy extends Strategy {
                  * nicht, zum nächsten Raum gehen
                  */
                 if (freeIntersection.isEmpty()) {
-                    StrategyProtocol.log("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
+                    Protocol.log("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
                     continue;
                 }
 
@@ -185,7 +185,7 @@ public class CostOptimizedStrategy extends Strategy {
                  */
                 coursePlanned = true;
 
-                StrategyProtocol.log("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                Protocol.log("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                 /**
                  * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -230,7 +230,7 @@ public class CostOptimizedStrategy extends Strategy {
                      * Wenn nicht, zum nächsten Raum gehen.
                      */
                     if (freeIntersection.isEmpty()) {
-                        StrategyProtocol.log("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
+                        Protocol.log("\tKeine Koordinate frei: " + room + " [" + room.getRoomId() + "]");
                         continue;
                     }
 
@@ -250,7 +250,7 @@ public class CostOptimizedStrategy extends Strategy {
                     /**
                      * Protokoll fortschreiben
                      */
-                    StrategyProtocol.log("\tExtern eingeplant (bestehender Raum): " 
+                    Protocol.log("\tExtern eingeplant (bestehender Raum): " 
                             + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
 
                     /**
@@ -294,7 +294,7 @@ public class CostOptimizedStrategy extends Strategy {
                  * Wenn nicht, dann ist der Kurs endgültig nicht einplanbar!
                  */
                 if (freeIntersection.isEmpty()) {
-                    StrategyProtocol.log("\tKeine Koordinate frei: Kurs konnte nicht eingeplant werden!");
+                    Protocol.log("\tKeine Koordinate frei: Kurs konnte nicht eingeplant werden!");
                     coursesNotPlanned.add(course);
                     continue;
                 }
@@ -307,7 +307,7 @@ public class CostOptimizedStrategy extends Strategy {
                 /**
                  * Protokoll fortschreiben
                  */
-                StrategyProtocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() 
+                Protocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() 
                         + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
 
             }
@@ -316,7 +316,7 @@ public class CostOptimizedStrategy extends Strategy {
         /**
          * Protokoll fortschreiben
          */
-        StrategyProtocol.log("Nicht einplanbare Kurse: " + coursesNotPlanned);
+        Protocol.log("Nicht einplanbare Kurse: " + coursesNotPlanned);
     }
 
 }

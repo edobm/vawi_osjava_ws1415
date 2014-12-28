@@ -13,7 +13,7 @@ import osjava.tl3.model.TimeSlot;
  * Dieser Renderer kann Instanzen der Klassen ScheduleElement und TimeSlot ausgeben.
  * Die Klasse erweitert die Klasse DefaultTableCellRenderer
  * 
- * @author Christian Müller
+ * @author Meikel Bode
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
 

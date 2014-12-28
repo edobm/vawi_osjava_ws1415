@@ -16,6 +16,7 @@ import javax.swing.JTable;
 /**
  * UI Element zur anzeige eine Tabelle und Buttons zur Aufnahme von selektierten
  * Eingabedateien und Ausgabeverzeichnis
+ * 
  * @author Meikel Bode
  */
 public class InputFilePanel extends JPanel {
@@ -63,6 +64,9 @@ public class InputFilePanel extends JPanel {
         initLayout();
     }
 
+    /**
+     * Initialisiert das Layout
+     */
     private void initLayout() {
         setLayout(new BorderLayout());
 

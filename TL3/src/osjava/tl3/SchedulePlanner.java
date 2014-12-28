@@ -9,6 +9,7 @@ import static osjava.tl3.logic.io.OutputFormat.CSV_TEXT;
 import static osjava.tl3.logic.io.OutputFormat.HTML;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
+import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.ui.SchedulerUI;
@@ -235,7 +236,7 @@ public class SchedulePlanner {
         /**
          * Strategie erzeugen auf Basis Eingabedateien
          */
-        Strategy strategy = Strategy.getStrategyInstanceByClassName(parameters.get("strategy"));
+        Strategy strategy = StrategyFactory.getInstanceByClassName(parameters.get("strategy"));
         if (strategy == null) {
             System.out.println("Unbekannte Planungsstrategie: " + parameters.get("strategy"));
             System.exit(2);

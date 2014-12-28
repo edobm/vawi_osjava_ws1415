@@ -1,6 +1,5 @@
 package osjava.tl3.logic.io;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -137,9 +136,9 @@ public abstract class OutputFileWriter {
             osw.append(output);
             osw.flush();
             fos.flush();
-            
+
         } catch (IOException ex) {
-            Logger.getLogger(OutputFileWriter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OutputFileWriter.class.getName()).log(Level.SEVERE, "Fehler bei der Dateiausgabe", ex);
         } finally {
             try {
                 osw.close();

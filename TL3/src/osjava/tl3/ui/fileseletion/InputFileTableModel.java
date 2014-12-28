@@ -6,7 +6,8 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Ein Tablemodel für die Aufnahme von Eingabedateien und Ausgabeverzeichnissen
  * in Form von Instanzen der Klasse InputFileDescriptor
- * @author Meikel BOde
+ * 
+ * @author Meikel Bode
  */
 public class InputFileTableModel extends DefaultTableModel {
 
