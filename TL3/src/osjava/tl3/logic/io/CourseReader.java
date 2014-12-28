@@ -2,6 +2,7 @@ package osjava.tl3.logic.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import osjava.tl3.Protocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.CourseType;
@@ -27,28 +28,40 @@ public class CourseReader extends InputFileReader {
      * @param dataController DataController-Instanz zur Ablage der Daten
      */
     public void readCourses(String fileName, DataController dataController) {
-        ArrayList<String> courseData = readFile(fileName);
+        ArrayList<String> courseRecords = readFile(fileName);
 
-        for (String courseDataRecord : courseData) {
-            dataController.getCourses().add(getCourse(courseDataRecord, dataController));
+        String courseRecord;
+        for (int i = 0; i < courseRecords.size(); i++) {
+            courseRecord = courseRecords.get(i);
+
+            if (courseRecord == null || courseRecord.length() == 0) {
+
+                Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ": Zeile wird ignoriert");
+            }
+
+            try {
+                dataController.getCourses().add(getCourse(i + 1, courseRecord, dataController));
+            } catch (InputFileReaderException e) {
+                Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ":" + e.getMessage() + ": Zeile wird ignoriert");
+            }
         }
 
     }
 
     /**
-     * Hilfsmethode für das erzeugen von Kurs-Objekten
+     * Hilfsmethode für die Erzeugung von Kurs-Objekten
      *
      * @param courseDataRecord
      * @return Kurs-Objekt
      */
-    private Course getCourse(String courseDataRecord, DataController dataController) {
+    private Course getCourse(int rowNumber, String courseDataRecord, DataController dataController) throws InputFileReaderException {
 
         Course course = new Course();
 
         // 1;"Mathematik 1";"Vorlesung";"Frey";800;"Tafel, Mikrofonanlage";
-        String[] courseData = courseDataRecord.split(";");
+        String[] courseData = validateRecord(rowNumber, courseDataRecord);
 
-        //Setzen von Kursnummer und Kursname
+        //Setzen von Kursnummer und Kursname 
         course.setNumber(courseData[0]);
         course.setName(removeQuotationMarks(courseData[1]));
 
@@ -84,6 +97,86 @@ public class CourseReader extends InputFileReader {
         }
 
         return course;
+    }
+
+    @Override
+    protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
+
+        /**
+         * Spaltentrenner
+         */
+        final String delimiter = ";";
+
+        /**
+         * Zeile zerlegen
+         */
+        String[] record = recordLine.split(delimiter);
+
+        /**
+         * Beispielzeilen 78;"Projektilphysik";"Vorlesung";"Voss";50;"Beamer,
+         * DozentenPC"; 79;"Diplomatie";"Uebung";"Westerwelle";60;;
+         */
+        /**
+         * Es werden 2 oder 3 Spalten pro Raumdatensatz erwartet:
+         *
+         * 2 Spalten: Name und Anzahl Sitzplätze aber kein Equipment 3 Spalte:
+         * Wie 2 und zusätzlich Equipment
+         *
+         */
+        if (record.length > 7) {
+            throw new InputFileReaderException("Ungültige Spaltenanzahl für Datensatz. Erwartet: 7, Ist: " + record.length, null, recordLine, rowNumber);
+        }
+
+        /**
+         * Prüfung Spalte KursID (Index 0):
+         */
+        InputValidator.validateInteger("KursID", record[0], recordLine, rowNumber);
+
+        /**
+         * Prüfung Spalte Kurname (Index 1)
+         */
+        InputValidator.validateEmpty("Kursname", record[1], recordLine, rowNumber);
+        InputValidator.validateStardEndsWithBraces("Kursname", record[1], recordLine, rowNumber);
+
+        /**
+         * Prüfung Spalte Kurstyp (Index 2)
+         */
+        InputValidator.validateEmpty("Kurstyp", record[2], recordLine, rowNumber);
+        InputValidator.validateStardEndsWithBraces("Kurstyp", record[2], recordLine, rowNumber);
+
+        /**
+         * Prüfung Spalte Dozent (Index 3)
+         */
+        InputValidator.validateEmpty("Dozent", record[3], recordLine, rowNumber);
+        InputValidator.validateStardEndsWithBraces("Dozent", record[3], recordLine, rowNumber);
+
+        /**
+         * Prüfung Spalte Teilnehmerzahl (Index 4)
+         */
+        InputValidator.validateEmpty("Teilnehmerzahl", record[4], recordLine, rowNumber);
+        InputValidator.validateInteger("Teilnehmerzahl", record[4], recordLine, rowNumber);
+
+        /**
+         * Prüfung Spalte Ausstattung (Index 6)
+         */
+        if (record.length == 6) {
+            if (record[5] != null && record[5].length() > 2) {
+                InputValidator.validateEquipment("Austattung", record[5], recordLine, rowNumber);
+            }
+        }
+
+        /**
+         * Prüfung Spalte Frequenz (Index 7)
+         */
+        if (record.length == 7) {
+            InputValidator.validateEmpty("Frequenz", record[6], recordLine, rowNumber);
+            InputValidator.validateStardEndsWithBraces("Frequenz", record[6], recordLine, rowNumber);
+        }
+
+        /**
+         * Datensatz zurückgeben
+         */
+        return record;
     }
 
 }

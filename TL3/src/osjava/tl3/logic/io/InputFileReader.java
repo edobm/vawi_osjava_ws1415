@@ -106,4 +106,14 @@ public abstract class InputFileReader {
             return "";
         }
     }
+    
+    /**
+     * Validatiert einen Datensatz des jeweiligen Implemntierungstyps
+     * @param rowNumber Die aktuelle Zeilenzahl
+     * @param recordLine Die aktuelle Zeile aus der Datei
+     * @return Der Datensatz zerlegt in Spalten
+     * @throws InputFileReaderException Wenn ein Validierungsfehler auftritt
+     */
+    protected abstract String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException;
+  
 }

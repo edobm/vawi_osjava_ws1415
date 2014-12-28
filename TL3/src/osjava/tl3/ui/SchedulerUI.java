@@ -492,20 +492,20 @@ public class SchedulerUI extends JFrame {
         /**
          * Prüfen ob alle notwendigen Einstellungen vorgenommen wurden
          */
-        if (inputFilePanelRooms.getInputFiles().isEmpty()
-                || inputFilePanelCourses.getInputFiles().isEmpty()
+        if (inputFilePanelCourses.getInputFiles().isEmpty()
                 || inputFilePanelStudyPrograms.getInputFiles().isEmpty()) {
 
             /**
              * Im Fehlerfalls Meldung ausgeben und Folgeverarbeitung abbrechen
              */
-            JOptionPane.showMessageDialog(this, "Wählen Sie jeweils mindestens eine Datei mit Räumen, eine mit "
-                    + "\nLehrveranstaltungen sowie eine mit Studiengangsdaten aus.",
+            JOptionPane.showMessageDialog(this, "Wählen Sie jeweils mindestens eine Datei mit Lehrveranstaltungen\n"
+                    + "sowie eine mit Studiengangsdaten aus.\n"
+                    + "Wird keine Raumdatei selektiert, werden alle Lehrveranstaltungen extern eingeplant.",
                     "Bitte Dateien wählen!", JOptionPane.INFORMATION_MESSAGE);
             Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
             return;
         }
-
+        
         /**
          * DataController erzeugen
          */
@@ -518,23 +518,42 @@ public class SchedulerUI extends JFrame {
         for (InputFileDescriptor file : inputFilePanelRooms.getInputFiles()) {
             roomReader.readRooms(file.getFile().toString(), dataController);
         }
-        Protocol.log("Raumdateien eingelesen: " + inputFilePanelRooms.getInputFiles().size());
-        Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
+        Protocol.log("Raumdateien selektiert: " + inputFilePanelRooms.getInputFiles().size());
+        Protocol.log("Räume eingelesen: " + dataController.getRooms().size());
 
         CourseReader courseReader = new CourseReader();
         for (InputFileDescriptor file : inputFilePanelCourses.getInputFiles()) {
             courseReader.readCourses(file.getFile().toString(), dataController);
         }
-        Protocol.log("Kursdateien eingelesen: " + inputFilePanelCourses.getInputFiles().size());
-        Protocol.log("Kurse insgesamt: " + dataController.getCourses().size());
+        Protocol.log("Kursdateien selektiert: " + inputFilePanelCourses.getInputFiles().size());
+        Protocol.log("Kurse eingelesen: " + dataController.getCourses().size());
 
         StudyProgramReader studyProgramReader = new StudyProgramReader();
         for (InputFileDescriptor file : inputFilePanelStudyPrograms.getInputFiles()) {
             studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
         }
-        Protocol.log("Studiengangsdateien eingelesen: " + inputFilePanelStudyPrograms.getInputFiles().size());
-        Protocol.log("Studiengänge insgesamt: " + dataController.getStudyPrograms().size());
+        Protocol.log("Studiengangsdateien selektiert: " + inputFilePanelStudyPrograms.getInputFiles().size());
+        Protocol.log("Studiengänge eingelesen: " + dataController.getStudyPrograms().size());
 
+        /**
+         * Prüfen ob mindestens 1 Kurs, 1 Raum und ein Studiengang in
+         * dem DataController geladen wurden
+         */
+         if (dataController.getCourses().isEmpty()
+                || dataController.getStudyPrograms().isEmpty()) {
+
+            /**
+             * Im Fehlerfalls Meldung ausgeben und Folgeverarbeitung abbrechen
+             */
+            JOptionPane.showMessageDialog(this, "Aus den selektierten Eingabedateien konnten\n"
+                    + "nicht alle revanten Daten gelesen werden. Es muss mindestens jeweils\n"
+                    + "ein Kurs und ein Studiengang geladen worden sein!\n"
+                    + "Werden keine Räume eingelesen werden alle Veranstaltungen extern eingeplant.",
+                    "Bitte alle notwendingen Dateien einlesen", JOptionPane.INFORMATION_MESSAGE);
+            Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
+            return;
+        }
+        
         /**
          * Selektierte Planungsstrategie holen
          */
@@ -561,14 +580,14 @@ public class SchedulerUI extends JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
 
-        Protocol.log("Räume insgesamt: " + (masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
+        Protocol.log("Räume insgesamt: " + (int)(masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
         Protocol.log("Räume intern: " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
         Protocol.log("Räume extern: " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
-        Protocol.log("Anzahl Termine: " + (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
-        Protocol.log("Sitzplätze benötigt: " + (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
+        Protocol.log("Anzahl Termine: " + (int)(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
+        Protocol.log("Sitzplätze benötigt: " + (int)(masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
         Protocol.log("Sitzplätze intern besetzt: " + masterSchedule.getInternallyScheduledSeats());
         Protocol.log("Sitzplätze extnern besetzt: " + masterSchedule.getExternallyScheduledSeats());
-        Protocol.log("Gesamtkosten: " + (masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
+        Protocol.log("Gesamtkosten: " + (int)(masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
         
         Protocol.log("Gesamtplanberechnung beendet");
 

@@ -14,7 +14,6 @@ import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.ScheduleCoordinate;
 import osjava.tl3.model.controller.DataController;
-import osjava.tl3.model.helpers.MasterScheduleConsoleWriter;
 
 /**
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
@@ -49,10 +48,6 @@ public class CostOptimizedStrategy extends Strategy {
          * Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
          */
         createSchedule();
-
-        // Statistiken zum erzeugten Plan auf der Konsole ausgeben
-        MasterScheduleConsoleWriter consoleWriter = new MasterScheduleConsoleWriter(masterSchedule);
-        consoleWriter.printCoreStats();
 
         /**
          * Den erzeugten Gesamtplan zurück geben

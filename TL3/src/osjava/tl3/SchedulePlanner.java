@@ -11,6 +11,7 @@ import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.model.MasterSchedule;
+import osjava.tl3.model.RoomType;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.ui.SchedulerUI;
 
@@ -28,9 +29,9 @@ import osjava.tl3.ui.SchedulerUI;
  */
 public class SchedulePlanner {
 
-    private static final String[] parameterKeys = new String[]{"mode", "roomfiles","coursefiles","studyprogramfiles", 
+    private static final String[] parameterKeys = new String[]{"mode", "roomfiles", "coursefiles", "studyprogramfiles",
         "out", "format", "strategy"};
-    
+
     private static HashMap<String, String> parameters = new HashMap<>();
 
     /**
@@ -102,7 +103,7 @@ public class SchedulePlanner {
             printExecutionHint();
             System.exit(2);
         }
-        
+
         /**
          * GUI Modus als Default setzen, falls keine Vorgabe vorhanden
          */
@@ -129,7 +130,7 @@ public class SchedulePlanner {
                 }
 
                 if (key.equals("format")) {
-                    if(!parameters.containsKey("format")) {
+                    if (!parameters.containsKey("format")) {
                         System.out.println("Setze Default-Format: CSV-Text");
                         parameters.put("format", "csv");
                     }
@@ -197,25 +198,28 @@ public class SchedulePlanner {
 
         // Plan erzeugen
         masterSchedule = createSchedule(dataController);
-
+        
+        // Statistiken zum Gesamtplan ausgeben
+        printCoreStats(masterSchedule);
+        
         // Ausgabedateien erzeugen
         writeOutput(masterSchedule);
     }
 
     /**
      * Laden der Eingabedaten
+     *
      * @param dataController Der DataController der die Eingabedaten puffert
      */
     public void loadInputData(DataController dataController) {
 
-         // Daten über Inputhelper lesen
+        // Daten über Inputhelper lesen
         InputFileHelper.loadRooms(dataController);
         InputFileHelper.loadCourses(dataController);
         InputFileHelper.loadStudyPrograms(dataController);
-        
+
         // -roomfiles=Datei1,Datei2
 //        String[] roomfiles = parameters.get("roomfiles").split(";");
-        
         // TODO richtige Reader Logik einbauen
 //        RoomReader roomReader = new RoomReader();
 //        roomReader.readRooms(roomfiles[0], dataController);
@@ -225,7 +229,6 @@ public class SchedulePlanner {
 //        
 //        StudyProgramReader studyProgramReader = new StudyProgramReader();
 //        studyProgramReader.readStudyPrograms(null, dataController);
-       
     }
 
     /**
@@ -246,12 +249,12 @@ public class SchedulePlanner {
          * Scheduler erzeugen
          */
         Scheduler scheduler = new Scheduler();
-        
+
         /**
          * DataController setzen
          */
         scheduler.setDataController(dataController);
-        
+
         /**
          * Planungsstrategie zuweisen
          */
@@ -280,18 +283,30 @@ public class SchedulePlanner {
         OutputFormat outputFormat = getOutputFormat(parameters.get("format"));
         String outputDirectory = parameters.get("out");
         OutputController oc = new OutputController();
-        
+
         oc.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputDirectory);
-        
+
     }
-    
-    
+
     public OutputFormat getOutputFormat(String parameterName) {
         if (parameterName.equalsIgnoreCase("html")) {
             return HTML;
-        }
-        else {
+        } else {
             return CSV_TEXT;
         }
+    }
+
+    /**
+     * Gibt zentrale Statistiken aus
+     *
+     * @param masterSchedule Der Gesamtplan für den Statistiken ausgegeben
+     * werden sollen
+     */
+    public void printCoreStats(MasterSchedule masterSchedule) {
+        System.out.println("Räume (intern)     : " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
+        System.out.println("Räume (extern)     : " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
+        System.out.println("Interne Sitzplätze : " + masterSchedule.getInternallyScheduledSeats());
+        System.out.println("Externe Sitzplätze : " + masterSchedule.getExternallyScheduledSeats());
+        System.out.println("Anzahl Termine     : " + (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
     }
 }

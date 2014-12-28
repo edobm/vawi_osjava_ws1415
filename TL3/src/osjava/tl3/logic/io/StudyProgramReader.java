@@ -1,7 +1,7 @@
 package osjava.tl3.logic.io;
 
 import java.util.ArrayList;
-import java.util.List;
+import osjava.tl3.Protocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
@@ -29,39 +29,71 @@ public class StudyProgramReader extends InputFileReader {
      * @param dataController DataController-Instanz zur Ablage der Daten
      */
     public void readStudyPrograms(String fileName, DataController dataController) {
-        
+
         boolean firstRecord = true;
         ArrayList<String> studyProgramDataRecords = super.readFile(fileName);
-        
-        StudyProgram studyProgram = new StudyProgram();
+        try {
+            StudyProgram studyProgram = new StudyProgram();
+            String record;
+            for (int i = 0; i < studyProgramDataRecords.size(); i++) {
+                record = studyProgramDataRecords.get(i);
 
-        for (String s : studyProgramDataRecords) {
+                String[] columns = record.split(";");
+                
+                if (firstRecord) {
+                    InputValidator.validateEmpty("Studiengangsname", columns[0], record, i);
+                    InputValidator.validateStardEndsWithBraces("Studiengangsname", columns[0], record, i);
 
-            String[] columns = s.split(";");
+                    firstRecord = false;
+                    studyProgram.setName(InputFileHelper.removeQuotationMarks(columns[0]));
+                } else {
 
-            if (firstRecord) {
-                firstRecord = false;
-                studyProgram.setName(InputFileHelper.removeQuotationMarks(columns[0]));
-            } else {
+                    if (columns.length < 2) {
+                        InputValidator.validateInteger("Dem Fachsemester sind keine Kurse zugeordnet", columns[0], record, i);
+                    }
+                    InputValidator.validateInteger("Fachsemester", columns[0], record, i);
 
-                Semester semester = new Semester();
-                semester.setStudyProgram(studyProgram);
-                semester.setName("Semester " + columns[0]);
-
-                for (int i = 1; i < columns.length; i++) {
-                    for (Course course : dataController.getCourses()) {
-                        if (course.getName().equals(removeQuotationMarks(columns[i]).trim())) {
-                            semester.getCourses().add(course);
+                    Semester semester = new Semester();
+                    semester.setStudyProgram(studyProgram);
+                    semester.setName("Semester " + columns[0]);
+                    String courseName;
+                    for (int y = 1; y < columns.length; y++) {
+                        courseName = removeQuotationMarks(columns[y]).trim();
+                        boolean added = false;
+                        for (Course course : dataController.getCourses()) {
+                            if (course.getName().equals(courseName)) {
+                                semester.getCourses().add(course);
+                                added = true;
+                            }
+                        }
+                        if (!added) {
+                            throw new InputFileReaderException("Der Studiegang " + studyProgram.getName()
+                                    + " bezieht sich in " + semester.getName() + " auf den unbekannten Kurs " + courseName, null, record, i);
                         }
                     }
-                }
 
-                studyProgram.getSemesters().add(semester);
+                    studyProgram.getSemesters().add(semester);
+
+                }
 
             }
 
-        }
+            dataController.getStudyPrograms().add(studyProgram);
 
-        dataController.getStudyPrograms().add(studyProgram);
+        } catch (InputFileReaderException ex) {
+            Protocol.log("Fehler in Studiengangsdatei: " + fileName + " auf Zeile " + ex.getRow() + ": " + ex.getMessage() + ": Datei wird ignoriert");
+        }
     }
+
+    @Override
+    protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
+       /**
+        * Die Methode wird nicht verwendet!!
+        * Die Validierung findet aufgrund des Dateaufbaus innerhalb der Methode readStudyProgramm statt
+        */
+        
+        return null;
+    }
+
+   
 }

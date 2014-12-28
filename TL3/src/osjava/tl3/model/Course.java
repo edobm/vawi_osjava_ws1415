@@ -49,6 +49,11 @@ public class Course implements Comparable<Course> {
     private int students;
 
     /**
+     * Die Frenquenz in der der Kurs stattfindet
+     */
+    private String frequency;
+    
+    /**
      * Liefert den Typ des Kurses
      *
      * @return Der Typ
@@ -206,6 +211,22 @@ public class Course implements Comparable<Course> {
     @Override
     public String toString() {
         return name + "(" + number + ";" + academic.getName() + ";" + students + ")";
+    }
+
+    /**
+     * Liefert die Frequenz des Kurses
+     * @return Die Frequenz
+     */
+    public String getFrequency() {
+        return frequency;
+    }
+
+    /**
+     * Setzt die Frequenz des Kurses
+     * @param frequency Die Frequenz
+     */
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 
 }

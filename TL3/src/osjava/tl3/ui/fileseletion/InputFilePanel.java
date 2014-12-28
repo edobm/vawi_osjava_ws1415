@@ -97,7 +97,7 @@ public class InputFilePanel extends JPanel {
 
         switch (acceptedInputFileType) {
             case COURSE_FILE:
-                fileChooser.setDialogTitle("Kursdateien auswählen");
+                fileChooser.setDialogTitle("Lehrveranstaltungsdateien auswählen");
                 break;
             case ROOM_FILE:
                 fileChooser.setDialogTitle("Raumdateien auswählen");
