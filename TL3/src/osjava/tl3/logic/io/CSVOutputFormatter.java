@@ -31,6 +31,9 @@ public class CSVOutputFormatter extends OutputFormatter {
     @Override
     public StringBuilder format(Schedule schedule, String title) {
         final String SEMICOLON = ";";
+        final String DESCRIPTION_LINE_ACADEMIC = "Tag;Zeit;Kurs;Raum";
+        final String DESCRIPTION_LINE_ROOM = "Tag;Zeit;Kurs;Dozent";
+        final String DESCRIPTION_LINE_STUDYPROGRAM = "Tag;Zeit;Kurs;Raum;Dozent";
         final String NEW_LINE = "\n";
      
         StringBuilder sb = new StringBuilder();
@@ -38,7 +41,6 @@ public class CSVOutputFormatter extends OutputFormatter {
         
         switch (schedule.getType()){
             case ACADAMIC:
-                final String DESCRIPTION_LINE_ACADEMIC = "Tag;Zeit;Kurs;Raum";
                 
                 // Kopfzeile ausgeben
                 sb.append(DESCRIPTION_LINE_ACADEMIC).append(NEW_LINE);
@@ -70,7 +72,6 @@ public class CSVOutputFormatter extends OutputFormatter {
                 
             case ROOM_EXTERNAL:
             case ROOM_INTERNAL:
-                final String DESCRIPTION_LINE_ROOM = "Tag;Zeit;Kurs;Dozent";
                 
                 // Kopfzeile ausgeben
                 sb.append(DESCRIPTION_LINE_ROOM).append(NEW_LINE);
@@ -101,7 +102,6 @@ public class CSVOutputFormatter extends OutputFormatter {
                 break;
                 
             case STUDY_PROGRAM:
-                final String DESCRIPTION_LINE_STUDYPROGRAM = "Tag;Zeit;Kurs;Raum;Dozent";
                 
                 // Kopfzeile ausgeben
                 sb.append(DESCRIPTION_LINE_STUDYPROGRAM).append(NEW_LINE);
