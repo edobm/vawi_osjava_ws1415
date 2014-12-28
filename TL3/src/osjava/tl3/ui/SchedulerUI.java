@@ -561,6 +561,15 @@ public class SchedulerUI extends JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
 
+        Protocol.log("Räume insgesamt: " + (masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
+        Protocol.log("Räume intern: " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
+        Protocol.log("Räume extern: " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
+        Protocol.log("Anzahl Termine: " + (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
+        Protocol.log("Sitzplätze benötigt: " + (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
+        Protocol.log("Sitzplätze intern besetzt: " + masterSchedule.getInternallyScheduledSeats());
+        Protocol.log("Sitzplätze extnern besetzt: " + masterSchedule.getExternallyScheduledSeats());
+        Protocol.log("Gesamtkosten: " + (masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
+        
         Protocol.log("Gesamtplanberechnung beendet");
 
     }
