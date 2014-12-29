@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,7 +99,6 @@ public class SchedulerUI extends JFrame {
     private InputFileDialog dialogAddRooms;
     private InputFileDialog dialogAddCourses;
     private InputFileDialog dialogAddStudyPrograms;
-    
 
     /**
      * Swing Komponenten für Konfiguration der Planberechnung
@@ -121,7 +121,7 @@ public class SchedulerUI extends JFrame {
     private final JLabel labelOutputFormat = new JLabel("Ausgabeformat:");
     private final JComboBox<String> comboBoxOutputFormat = new JComboBox<>();
     private InputFileDialog dialogAddOutputDirectory;
-   
+
     /**
      * Swing Komponenten für Ausführung der Dateiausgabe
      */
@@ -345,14 +345,14 @@ public class SchedulerUI extends JFrame {
         tabbedPane.setMinimumSize(new Dimension(100, 250));
 
         /**
-         * Dialoge für Selektion von Räumen, Kursen, Studiengängen
-         * und Ausgabeverzeichnis erzeugen
+         * Dialoge für Selektion von Räumen, Kursen, Studiengängen und
+         * Ausgabeverzeichnis erzeugen
          */
         dialogAddRooms = new InputFileDialog(this, "Raumdateien für Planerstellung", InputFileType.ROOM_FILE);
         dialogAddCourses = new InputFileDialog(this, "Kursdateien für Planerstellung", InputFileType.COURSE_FILE);
         dialogAddStudyPrograms = new InputFileDialog(this, "Studiengangsdateien für Planerstellung", InputFileType.STUDYPROGRAM_FILE);
         dialogAddOutputDirectory = new InputFileDialog(this, "Ausgabeverzeichnisse für Plandateien", InputFileType.OUTPUT_DIRECTORY);
-      
+
     }
 
     /**
@@ -777,7 +777,7 @@ public class SchedulerUI extends JFrame {
      * Registiert grundlengde Handler für Fenster Events
      */
     private void initializeWindowEvents() {
-        
+
         /**
          * Window Adapter registrieren
          */
@@ -785,7 +785,7 @@ public class SchedulerUI extends JFrame {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                
+
                 /**
                  * Entscheidungsdialog anzeigen
                  */
@@ -793,14 +793,15 @@ public class SchedulerUI extends JFrame {
                         "Programm beenden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
                 /**
-                 * Fenster schließen wenn der Benutzer sich für die Ja-Option entscheidet
+                 * Fenster schließen wenn der Benutzer sich für die Ja-Option
+                 * entscheidet
                  */
                 if (result == JOptionPane.YES_OPTION) {
                     SchedulerUI.this.setVisible(false);
                     System.exit(0);
                 }
             }
-       });
+        });
 
     }
 

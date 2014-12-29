@@ -16,24 +16,25 @@ import javax.swing.JTable;
 /**
  * UI Element zur anzeige eine Tabelle und Buttons zur Aufnahme von selektierten
  * Eingabedateien und Ausgabeverzeichnis
- * 
+ *
  * @author Meikel Bode
  */
 public class InputFilePanel extends JPanel {
-    
+
     /**
-     * Der akzeptierte Dateityp dieser Instanz.
-     * Der Wert bestimmt den Laufzeitmodus!
+     * Der akzeptierte Dateityp dieser Instanz. Der Wert bestimmt den
+     * Laufzeitmodus!
      */
     private final InputFileType acceptedInputFileType;
-    
+
     /**
      * Die Dialoginstanz, die dieses InputFilePanel anzeigt
      */
     private final JDialog parentDialog;
-      
+
     /**
-     * TableModel, Table und ScrollPane zur Aufnahme der Dateien und Verzeichnisse
+     * TableModel, Table und ScrollPane zur Aufnahme der Dateien und
+     * Verzeichnisse
      */
     private InputFileTableModel inputFileTableModel;
     private JTable inputFileTable;
@@ -55,8 +56,9 @@ public class InputFilePanel extends JPanel {
     /**
      * Erzeugt eine neue Instanz mit dem gegebenen Dateityp und dem anzeigenden
      * Dialog
-     * @param acceptedType 
-     * @param parentDialog 
+     *
+     * @param acceptedType
+     * @param parentDialog
      */
     public InputFilePanel(InputFileType acceptedType, JDialog parentDialog) {
         this.acceptedInputFileType = acceptedType;
@@ -87,6 +89,7 @@ public class InputFilePanel extends JPanel {
          * FileChooser erzeugen und initialisieren
          */
         fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
         if (acceptedInputFileType != InputFileType.OUTPUT_DIRECTORY) {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setMultiSelectionEnabled(true);
@@ -152,21 +155,32 @@ public class InputFilePanel extends JPanel {
      */
     protected void addFileAction() {
 
-        int result = -1;
+        /**
+         * Dateiselektionsdialog zeigen
+         */
+        int result = fileChooser.showDialog(this, "Auswählen");
 
-        if (acceptedInputFileType == InputFileType.OUTPUT_DIRECTORY) {
-            result = fileChooser.showSaveDialog(this);
-        } else {
-            result = fileChooser.showOpenDialog(this);
-        }
-
+        /**
+         * Dialogrückgabe behandeln
+         */
         if (result == JFileChooser.APPROVE_OPTION) {
+            
+            /**
+             * Je nach akzeptiertem Eingabedateityp reagieren
+             */
             InputFileDescriptor fileDescriptor;
             if (acceptedInputFileType == InputFileType.OUTPUT_DIRECTORY) {
+                /**
+                 * Modus: Verzeichnis wählen
+                 */
                 inputFileTableModel.clear();
-                fileDescriptor = new InputFileDescriptor(acceptedInputFileType, fileChooser.getSelectedFile());
+                File directory = fileChooser.getSelectedFile();
+                fileDescriptor = new InputFileDescriptor(acceptedInputFileType, directory.exists() ? directory : directory.getParentFile());
                 inputFileTableModel.addInputFile(fileDescriptor);
             } else {
+                /**
+                 * Modus: Daitei(n) wählen
+                 */
                 for (File file : fileChooser.getSelectedFiles()) {
                     fileDescriptor = new InputFileDescriptor(acceptedInputFileType, file);
                     inputFileTableModel.addInputFile(fileDescriptor);
