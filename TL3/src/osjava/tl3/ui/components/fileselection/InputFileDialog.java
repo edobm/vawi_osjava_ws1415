@@ -1,4 +1,4 @@
-package osjava.tl3.ui.fileseletion;
+package osjava.tl3.ui.components.fileselection;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;

@@ -1,4 +1,4 @@
-package osjava.tl3.ui;
+package osjava.tl3.ui.components.schedule;
 
 import javax.swing.table.DefaultTableModel;
 import osjava.tl3.model.Day;

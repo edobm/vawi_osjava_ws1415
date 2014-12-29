@@ -1,4 +1,4 @@
-package osjava.tl3.ui.fileseletion;
+package osjava.tl3.ui.components.fileselection;
 
 /**
  * Stellt eine zu importierende Dateitype dar

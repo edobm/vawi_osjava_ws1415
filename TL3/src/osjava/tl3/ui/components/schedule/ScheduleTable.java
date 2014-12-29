@@ -1,4 +1,4 @@
-package osjava.tl3.ui;
+package osjava.tl3.ui.components.schedule;
 
 import java.awt.Color;
 import javax.swing.JTable;

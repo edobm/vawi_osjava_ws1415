@@ -1,6 +1,11 @@
 package osjava.tl3.ui;
 
-import osjava.tl3.ui.fileseletion.InputFileType;
+import osjava.tl3.ui.components.schedule.ScheduleTableModel;
+import osjava.tl3.ui.components.schedule.ScheduleTable;
+import osjava.tl3.ui.components.combobox.ComboxBoxElement;
+import osjava.tl3.ui.components.combobox.ComboBoxElementModel;
+import osjava.tl3.ui.components.logging.LoggingPanel;
+import osjava.tl3.ui.components.fileselection.InputFileType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -50,8 +55,8 @@ import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
-import osjava.tl3.ui.fileseletion.InputFileDescriptor;
-import osjava.tl3.ui.fileseletion.InputFileDialog;
+import osjava.tl3.ui.components.fileselection.InputFileDescriptor;
+import osjava.tl3.ui.components.fileselection.InputFileDialog;
 
 /**
  * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung der

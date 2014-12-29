@@ -1,4 +1,4 @@
-package osjava.tl3.ui;
+package osjava.tl3.ui.components.combobox;
 
 /**
  * Hilfsklasse zur Abbildung von ComboBoxModel Einträgen
