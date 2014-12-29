@@ -2,11 +2,10 @@ package osjava.tl3;
 
 import java.io.File;
 import java.util.HashMap;
-import osjava.tl3.logic.io.InputFileHelper;
-import osjava.tl3.logic.io.OutputController;
-import osjava.tl3.logic.io.OutputFormat;
-import static osjava.tl3.logic.io.OutputFormat.CSV_TEXT;
-import static osjava.tl3.logic.io.OutputFormat.HTML;
+import osjava.tl3.logic.io.output.OutputController;
+import osjava.tl3.logic.io.output.OutputFormat;
+import static osjava.tl3.logic.io.output.OutputFormat.CSV_TEXT;
+import static osjava.tl3.logic.io.output.OutputFormat.HTML;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
@@ -212,11 +211,6 @@ public class SchedulePlanner {
      * @param dataController Der DataController der die Eingabedaten puffert
      */
     public void loadInputData(DataController dataController) {
-
-        // Daten über Inputhelper lesen
-        InputFileHelper.loadRooms(dataController);
-        InputFileHelper.loadCourses(dataController);
-        InputFileHelper.loadStudyPrograms(dataController);
 
         // -roomfiles=Datei1,Datei2
 //        String[] roomfiles = parameters.get("roomfiles").split(";");

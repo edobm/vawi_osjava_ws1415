@@ -1,5 +1,7 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.input;
 
+import osjava.tl3.logic.io.output.OutputFileWriter;
+import osjava.tl3.logic.io.output.OutputFormat;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleType;
 

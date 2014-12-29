@@ -1,4 +1,5 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.input;
+
 
 import java.util.ArrayList;
 import osjava.tl3.Protocol;
@@ -45,7 +46,7 @@ public class StudyProgramReader extends InputFileReader {
                     InputValidator.validateStardEndsWithBraces("Studiengangsname", columns[0], record, i);
 
                     firstRecord = false;
-                    studyProgram.setName(InputFileHelper.removeQuotationMarks(columns[0]));
+                    studyProgram.setName(removeQuotationMarks(columns[0]));
                 } else {
 
                     if (columns.length < 2) {

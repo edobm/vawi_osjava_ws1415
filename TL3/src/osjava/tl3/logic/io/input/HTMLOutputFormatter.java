@@ -1,5 +1,6 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.input;
 
+import osjava.tl3.logic.io.output.OutputFormatter;
 import osjava.tl3.model.Day;
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleCoordinate;

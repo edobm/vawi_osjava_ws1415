@@ -1,4 +1,4 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.output;
 
 import osjava.tl3.model.Schedule;
 import osjava.tl3.model.ScheduleElement;

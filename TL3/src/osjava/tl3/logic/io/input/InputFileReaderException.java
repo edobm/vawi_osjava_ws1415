@@ -1,4 +1,4 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.input;
 
 /**
  * Wird ausgelöst, wenn ein Reader nicht beim Einlesen einer Datei 

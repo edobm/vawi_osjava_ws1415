@@ -1,5 +1,8 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.output;
 
+import osjava.tl3.logic.io.input.InputValidator;
+import osjava.tl3.logic.io.input.InputFileReaderException;
+import osjava.tl3.logic.io.input.InputFileReader;
 import java.util.ArrayList;
 import java.util.List;
 import osjava.tl3.Protocol;

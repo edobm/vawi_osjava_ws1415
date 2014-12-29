@@ -1,6 +1,6 @@
 package osjava.tl3.logic.planning;
 
-import osjava.tl3.logic.io.InputFileHelper;
+import osjava.tl3.model.InputFileHelper;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;

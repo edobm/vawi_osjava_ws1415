@@ -1,4 +1,4 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.input;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

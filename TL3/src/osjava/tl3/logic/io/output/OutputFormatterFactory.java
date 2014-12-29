@@ -1,4 +1,7 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.logic.io.output;
+
+import osjava.tl3.logic.io.input.HTMLOutputFormatter;
+import osjava.tl3.logic.io.input.CSVOutputFormatter;
 
 /**
  * Erzeugt eine Instanz des angerforderten Ausgabeformatierers.

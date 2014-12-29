@@ -2,9 +2,9 @@ package osjava.tl3.model.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import osjava.tl3.logic.io.CourseReader;
-import osjava.tl3.logic.io.RoomReader;
-import osjava.tl3.logic.io.StudyProgramReader;
+import osjava.tl3.logic.io.output.CourseReader;
+import osjava.tl3.logic.io.input.RoomReader;
+import osjava.tl3.logic.io.input.StudyProgramReader;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Equipment;

@@ -1,4 +1,4 @@
-package osjava.tl3.logic.io;
+package osjava.tl3.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
