@@ -1,6 +1,5 @@
 package osjava.tl3.ui;
 
-import osjava.tl3.ui.fileseletion.InputFilePanel;
 import osjava.tl3.ui.fileseletion.InputFileType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -8,8 +7,8 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,6 +51,7 @@ import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.ui.fileseletion.InputFileDescriptor;
+import osjava.tl3.ui.fileseletion.InputFileDialog;
 
 /**
  * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung der
@@ -91,12 +90,10 @@ public class SchedulerUI extends JFrame {
     private final JButton btnSelectRooms = new JButton("Räume (0)");
     private final JButton btnSelectCourses = new JButton("Lehrveranstaltungen (0)");
     private final JButton btnSelectStudyPrograms = new JButton("Studiengänge (0)");
-    private JDialog dlgAddRooms;
-    private InputFilePanel inputFilePanelRooms;
-    private JDialog dlgAddCourses;
-    private InputFilePanel inputFilePanelCourses;
-    private JDialog dlgAddStudyPrograms;
-    private InputFilePanel inputFilePanelStudyPrograms;
+    private InputFileDialog dialogAddRooms;
+    private InputFileDialog dialogAddCourses;
+    private InputFileDialog dialogAddStudyPrograms;
+    
 
     /**
      * Swing Komponenten für Konfiguration der Planberechnung
@@ -118,9 +115,8 @@ public class SchedulerUI extends JFrame {
     private final JLabel labelOutputDirectory = new JLabel();
     private final JLabel labelOutputFormat = new JLabel("Ausgabeformat:");
     private final JComboBox<String> comboBoxOutputFormat = new JComboBox<>();
-    private JDialog dlgAddOutputDirectory;
-    private InputFilePanel inputFilePanelOutputDirectory;
-
+    private InputFileDialog dialogAddOutputDirectory;
+   
     /**
      * Swing Komponenten für Ausführung der Dateiausgabe
      */
@@ -161,7 +157,7 @@ public class SchedulerUI extends JFrame {
          * Grundlegende Fensterkonfiguration vornehmen
          */
         setTitle("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(1200, 900);
         setLocationRelativeTo(null);
 
@@ -216,9 +212,8 @@ public class SchedulerUI extends JFrame {
         btnSelectRooms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgAddRooms.setModal(true);
-                dlgAddRooms.setVisible(true);
-                btnSelectRooms.setText("Räume (" + inputFilePanelRooms.getInputFiles().size() + ")");
+                dialogAddRooms.setVisible(true);
+                btnSelectRooms.setText("Räume (" + dialogAddRooms.getSelectedFiles().size() + ")");
             }
         });
 
@@ -229,9 +224,8 @@ public class SchedulerUI extends JFrame {
         btnSelectCourses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgAddCourses.setModal(true);
-                dlgAddCourses.setVisible(true);
-                btnSelectCourses.setText("Lehrveranstaltungen (" + inputFilePanelCourses.getInputFiles().size() + ")");
+                dialogAddCourses.setVisible(true);
+                btnSelectCourses.setText("Lehrveranstaltungen (" + dialogAddCourses.getSelectedFiles().size() + ")");
             }
         });
 
@@ -242,9 +236,8 @@ public class SchedulerUI extends JFrame {
         btnSelectStudyPrograms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgAddStudyPrograms.setModal(true);
-                dlgAddStudyPrograms.setVisible(true);
-                btnSelectStudyPrograms.setText("Studiengänge (" + inputFilePanelStudyPrograms.getInputFiles().size() + ")");
+                dialogAddStudyPrograms.setVisible(true);
+                btnSelectStudyPrograms.setText("Studiengänge (" + dialogAddStudyPrograms.getSelectedFiles().size() + ")");
             }
         });
 
@@ -297,10 +290,9 @@ public class SchedulerUI extends JFrame {
         btnSelectOutput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgAddOutputDirectory.setModal(true);
-                dlgAddOutputDirectory.setVisible(true);
-                if (inputFilePanelOutputDirectory.getInputFiles().size() == 1) {
-                    labelOutputDirectory.setText(inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString());
+                dialogAddOutputDirectory.setVisible(true);
+                if (dialogAddOutputDirectory.getSelectedFiles().size() == 1) {
+                    labelOutputDirectory.setText(dialogAddOutputDirectory.getSelectedFiles().get(0).getFile().toString());
                 }
             }
         });
@@ -309,9 +301,9 @@ public class SchedulerUI extends JFrame {
          * Swing Komponenten für die Ausführung des Dateiexports
          */
         JPanel panelOutputExecute = new JPanel(new GridLayout(4, 1));
+        panelTopButtons.add(panelOutputExecute);
         panelOutputExecute.setBorder(new TitledBorder("Schritt 5: Export ausführen"));
         panelOutputExecute.add(btnOutputExecute);
-        panelTopButtons.add(panelOutputExecute);
 
         btnOutputExecute.addActionListener(new ActionListener() {
             @Override
@@ -342,60 +334,20 @@ public class SchedulerUI extends JFrame {
         /**
          * LogginPanel konfigurieren und in TabbedPane platzieren
          */
-        Protocol.getInstance().addObserver(loggingPanel);
         getContentPane().add(tabbedPane, BorderLayout.SOUTH);
         tabbedPane.add("Ausgabe", loggingPanel);
         tabbedPane.setPreferredSize(new Dimension(100, 250));
         tabbedPane.setMinimumSize(new Dimension(100, 250));
 
         /**
-         * Dialog für Raumdateiselektion erzeugen und konfigurieren
+         * Dialoge für Selektion von Räumen, Kursen, Studiengängen
+         * und Ausgabeverzeichnis erzeugen
          */
-        dlgAddRooms = new JDialog(this);
-        dlgAddRooms.setModal(true);
-        dlgAddRooms.setLayout(new BorderLayout());
-        dlgAddRooms.setSize(640, 480);
-        dlgAddRooms.setLocationRelativeTo(null);
-        dlgAddRooms.setTitle("Raumdateien für Planerstellung");
-        inputFilePanelRooms = new InputFilePanel(InputFileType.ROOM_FILE, dlgAddRooms);
-        dlgAddRooms.getContentPane().add(inputFilePanelRooms, BorderLayout.CENTER);
-
-        /**
-         * Dialog für Kursdateiselektion erzeugen und konfigurieren
-         */
-        dlgAddCourses = new JDialog(this);
-        dlgAddCourses.setModal(true);
-        dlgAddCourses.setLayout(new BorderLayout());
-        dlgAddCourses.setSize(640, 480);
-        dlgAddCourses.setLocationRelativeTo(null);
-        dlgAddCourses.setTitle("Kursdateien für Planerstellung");
-        inputFilePanelCourses = new InputFilePanel(InputFileType.COURSE_FILE, dlgAddCourses);
-        dlgAddCourses.getContentPane().add(inputFilePanelCourses, BorderLayout.CENTER);
-
-        /**
-         * Dialog für Studiengangsdateiselektion erzeugen und konfigurieren
-         */
-        dlgAddStudyPrograms = new JDialog(this);
-        dlgAddStudyPrograms.setModal(true);
-        dlgAddStudyPrograms.setLayout(new BorderLayout());
-        dlgAddStudyPrograms.setSize(640, 480);
-        dlgAddStudyPrograms.setLocationRelativeTo(null);
-        dlgAddStudyPrograms.setTitle("Studiengangsdateien für Planerstellung");
-        inputFilePanelStudyPrograms = new InputFilePanel(InputFileType.ROOM_FILE, dlgAddStudyPrograms);
-        dlgAddStudyPrograms.getContentPane().add(inputFilePanelStudyPrograms, BorderLayout.CENTER);
-
-        /**
-         * Dialog für Ausgabeverzeichnisselektion erzeugen und konfigurieren
-         */
-        dlgAddOutputDirectory = new JDialog(this);
-        dlgAddOutputDirectory.setModal(true);
-        dlgAddOutputDirectory.setLayout(new BorderLayout());
-        dlgAddOutputDirectory.setSize(640, 480);
-        dlgAddOutputDirectory.setLocationRelativeTo(null);
-        dlgAddOutputDirectory.setTitle("Ausgabeverzeichnisse für Plandateien");
-        inputFilePanelOutputDirectory = new InputFilePanel(InputFileType.OUTPUT_DIRECTORY, dlgAddOutputDirectory);
-        dlgAddOutputDirectory.getContentPane().add(inputFilePanelOutputDirectory, BorderLayout.CENTER);
-
+        dialogAddRooms = new InputFileDialog(this, "Raumdateien für Planerstellung", InputFileType.ROOM_FILE);
+        dialogAddCourses = new InputFileDialog(this, "Kursdateien für Planerstellung", InputFileType.COURSE_FILE);
+        dialogAddStudyPrograms = new InputFileDialog(this, "Studiengangsdateien für Planerstellung", InputFileType.STUDYPROGRAM_FILE);
+        dialogAddOutputDirectory = new InputFileDialog(this, "Ausgabeverzeichnisse für Plandateien", InputFileType.OUTPUT_DIRECTORY);
+      
     }
 
     /**
@@ -492,8 +444,8 @@ public class SchedulerUI extends JFrame {
         /**
          * Prüfen ob alle notwendigen Einstellungen vorgenommen wurden
          */
-        if (inputFilePanelCourses.getInputFiles().isEmpty()
-                || inputFilePanelStudyPrograms.getInputFiles().isEmpty()) {
+        if (dialogAddCourses.getSelectedFiles().isEmpty()
+                || dialogAddStudyPrograms.getSelectedFiles().isEmpty()) {
 
             /**
              * Im Fehlerfalls Meldung ausgeben und Folgeverarbeitung abbrechen
@@ -505,7 +457,7 @@ public class SchedulerUI extends JFrame {
             Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
             return;
         }
-        
+
         /**
          * DataController erzeugen
          */
@@ -515,31 +467,31 @@ public class SchedulerUI extends JFrame {
          * Raumdateien, Kursdateien und Studiengangsdateien einlesen
          */
         RoomReader roomReader = new RoomReader();
-        for (InputFileDescriptor file : inputFilePanelRooms.getInputFiles()) {
+        for (InputFileDescriptor file : dialogAddRooms.getSelectedFiles()) {
             roomReader.readRooms(file.getFile().toString(), dataController);
         }
-        Protocol.log("Raumdateien selektiert: " + inputFilePanelRooms.getInputFiles().size());
+        Protocol.log("Raumdateien selektiert: " + dialogAddRooms.getSelectedFiles().size());
         Protocol.log("Räume eingelesen: " + dataController.getRooms().size());
 
         CourseReader courseReader = new CourseReader();
-        for (InputFileDescriptor file : inputFilePanelCourses.getInputFiles()) {
+        for (InputFileDescriptor file : dialogAddCourses.getSelectedFiles()) {
             courseReader.readCourses(file.getFile().toString(), dataController);
         }
-        Protocol.log("Kursdateien selektiert: " + inputFilePanelCourses.getInputFiles().size());
+        Protocol.log("Kursdateien selektiert: " + dialogAddCourses.getSelectedFiles().size());
         Protocol.log("Kurse eingelesen: " + dataController.getCourses().size());
 
         StudyProgramReader studyProgramReader = new StudyProgramReader();
-        for (InputFileDescriptor file : inputFilePanelStudyPrograms.getInputFiles()) {
+        for (InputFileDescriptor file : dialogAddStudyPrograms.getSelectedFiles()) {
             studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
         }
-        Protocol.log("Studiengangsdateien selektiert: " + inputFilePanelStudyPrograms.getInputFiles().size());
+        Protocol.log("Studiengangsdateien selektiert: " + dialogAddStudyPrograms.getSelectedFiles().size());
         Protocol.log("Studiengänge eingelesen: " + dataController.getStudyPrograms().size());
 
         /**
-         * Prüfen ob mindestens 1 Kurs, 1 Raum und ein Studiengang in
-         * dem DataController geladen wurden
+         * Prüfen ob mindestens 1 Kurs, 1 Raum und ein Studiengang in dem
+         * DataController geladen wurden
          */
-         if (dataController.getCourses().isEmpty()
+        if (dataController.getCourses().isEmpty()
                 || dataController.getStudyPrograms().isEmpty()) {
 
             /**
@@ -553,7 +505,7 @@ public class SchedulerUI extends JFrame {
             Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
             return;
         }
-        
+
         /**
          * Selektierte Planungsstrategie holen
          */
@@ -580,15 +532,15 @@ public class SchedulerUI extends JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
 
-        Protocol.log("Räume insgesamt: " + (int)(masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
+        Protocol.log("Räume insgesamt: " + (int) (masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
         Protocol.log("Räume intern: " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
         Protocol.log("Räume extern: " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
-        Protocol.log("Anzahl Termine: " + (int)(masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
-        Protocol.log("Sitzplätze benötigt: " + (int)(masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
+        Protocol.log("Anzahl Termine: " + (int) (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
+        Protocol.log("Sitzplätze benötigt: " + (int) (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
         Protocol.log("Sitzplätze intern besetzt: " + masterSchedule.getInternallyScheduledSeats());
         Protocol.log("Sitzplätze extnern besetzt: " + masterSchedule.getExternallyScheduledSeats());
-        Protocol.log("Gesamtkosten: " + (int)(masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
-        
+        Protocol.log("Gesamtkosten: " + (int) (masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
+
         Protocol.log("Gesamtplanberechnung beendet");
 
     }
@@ -598,9 +550,9 @@ public class SchedulerUI extends JFrame {
      * Pläne
      */
     private void executeExport() {
-        
+
         Protocol.log("Dateiexport gestartet");
-        
+
         /**
          * Prüfen ob ein Gesamtplan erzeugt wurde
          */
@@ -618,7 +570,7 @@ public class SchedulerUI extends JFrame {
         /**
          * Prüfen ob ein Ausgabeverzeichnis selektiert wurde
          */
-        if (inputFilePanelOutputDirectory.getInputFiles().isEmpty()) {
+        if (dialogAddOutputDirectory.getSelectedFiles().isEmpty()) {
 
             /**
              * Im Fehlerfall Meldung ausgeben und Folgeverarbeitung abbrechen
@@ -634,13 +586,13 @@ public class SchedulerUI extends JFrame {
          */
         OutputFormat outputFormat = ((ComboxBoxElement<OutputFormat>) comboBoxOutputFormat.getSelectedItem()).getElement();
         Protocol.log("Dateiexport Ausgabeformat: " + outputFormat);
-        
+
         /**
          * Selektiertes Ausgabeverzeichnis holen
          */
-        String outputPath = inputFilePanelOutputDirectory.getInputFiles().get(0).getFile().toString();
+        String outputPath = dialogAddOutputDirectory.getSelectedFiles().get(0).getFile().toString();
         Protocol.log("Dateiexport Ausgabeverzeichnis: " + outputPath);
-        
+
         /**
          * Instanz des OutputControllers erzeugen und alle Pläne des Gesamtplans
          * im angegebenen Ausgabeformat in das Ausgabeverzeichnis exportieren
@@ -648,7 +600,7 @@ public class SchedulerUI extends JFrame {
         outputController = new OutputController();
         outputController.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputPath);
         Protocol.log("Dateiexport abgeschlossen");
-        
+
     }
 
     /**
@@ -820,48 +772,31 @@ public class SchedulerUI extends JFrame {
      * Registiert grundlengde Handler für Fenster Events
      */
     private void initializeWindowEvents() {
-        addWindowListener(new WindowListener() {
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
+        
+        /**
+         * Window Adapter registrieren
+         */
+        addWindowListener(new WindowAdapter() {
 
             @Override
             public void windowClosing(WindowEvent e) {
+                
+                /**
+                 * Entscheidungsdialog anzeigen
+                 */
                 int result = JOptionPane.showConfirmDialog(SchedulerUI.this, "Wirklich beenden?",
                         "Programm beenden", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                
-                if (result == JOptionPane.NO_OPTION) {
-                    return;
+
+                /**
+                 * Fenster schließen wenn der Benutzer sich für die Ja-Option entscheidet
+                 */
+                if (result == JOptionPane.YES_OPTION) {
+                    SchedulerUI.this.setVisible(false);
+                    System.exit(0);
                 }
             }
+       });
 
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
     }
 
 }

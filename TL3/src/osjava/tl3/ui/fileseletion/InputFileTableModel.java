@@ -10,24 +10,31 @@ import javax.swing.table.DefaultTableModel;
  * @author Meikel Bode
  */
 public class InputFileTableModel extends DefaultTableModel {
-
+    
+    /**
+     * Der Typ der Eingabedateien
+     */
+    private final InputFileType inputFileType;
+    
     /**
      * Die Liste der Dateien/Verzeichnisse
      */
-    private final ArrayList<InputFileDescriptor> inputFiles;
+    private final ArrayList<InputFileDescriptor> selectedFiles;
 
     /**
      * Erzeugt eine neue Instanz des TableModels
+     * @param inputFileType Der Typ der Eingabedateien
      */
-    public InputFileTableModel() {
-        this.inputFiles = new ArrayList<>();
+    public InputFileTableModel(InputFileType inputFileType) {
+        this.selectedFiles = new ArrayList<>();
+        this.inputFileType = inputFileType;
     }
 
     /**
      * Löscht alle Inputfiles
      */
     public void clear() {
-        inputFiles.clear();
+        selectedFiles.clear();
         fireTableDataChanged();
     }
     
@@ -38,23 +45,23 @@ public class InputFileTableModel extends DefaultTableModel {
      */
     public void addInputFile(InputFileDescriptor inputFile) {
 
-        for (InputFileDescriptor ifd : inputFiles) {
+        for (InputFileDescriptor ifd : selectedFiles) {
             if (ifd.getFile().equals(inputFile.getFile())) {
                 System.out.println("Datei bereits hinzugefügt: " + inputFile.getFile().toString());
                 return;
             }
         }
-        inputFiles.add(inputFile);
+        selectedFiles.add(inputFile);
         fireTableDataChanged();
     }
 
     public void removeSelectedFiles(int[] selectedFiles) {
         ArrayList<InputFileDescriptor> files = new ArrayList<>(selectedFiles.length);
         for (int idx : selectedFiles) {
-            files.add(inputFiles.get(idx));
+            files.add(this.selectedFiles.get(idx));
         }
         
-        inputFiles.removeAll(files);
+        this.selectedFiles.removeAll(files);
         fireTableDataChanged();
     }
 
@@ -64,7 +71,7 @@ public class InputFileTableModel extends DefaultTableModel {
      * @param inputFile Die Datei die entfernt werden soll
      */
     public void removeInputFile(InputFileDescriptor inputFile) {
-        inputFiles.remove(inputFile);
+        selectedFiles.remove(inputFile);
         fireTableDataChanged();
     }
 
@@ -75,10 +82,10 @@ public class InputFileTableModel extends DefaultTableModel {
      */
     @Override
     public int getRowCount() {
-        if (inputFiles == null || inputFiles.isEmpty()) {
+        if (selectedFiles == null || selectedFiles.isEmpty()) {
             return 0;
         } else {
-            return inputFiles.size();
+            return selectedFiles.size();
         }
     }
 
@@ -103,7 +110,7 @@ public class InputFileTableModel extends DefaultTableModel {
         switch (columnIndex) {
             case 0:
             default:
-                return "Datei/Verzeichnis";
+                return inputFileType == InputFileType.OUTPUT_DIRECTORY ? "Verzeichnis" : "Datei";
         }
     }
 
@@ -141,10 +148,10 @@ public class InputFileTableModel extends DefaultTableModel {
     @Override
     public Object getValueAt(int row, int col) {
 
-        if (getInputFiles().isEmpty() || row >= getInputFiles().size()) {
+        if (getSelectedFiles().isEmpty() || row >= getSelectedFiles().size()) {
             return "";
         } else {
-            return getInputFiles().get(row).getFile();
+            return getSelectedFiles().get(row).getFile();
         }
     }
 
@@ -153,7 +160,7 @@ public class InputFileTableModel extends DefaultTableModel {
      *
      * @return Die Eingabedateien
      */
-    public ArrayList<InputFileDescriptor> getInputFiles() {
-        return inputFiles;
+    public ArrayList<InputFileDescriptor> getSelectedFiles() {
+        return selectedFiles;
     }
 }

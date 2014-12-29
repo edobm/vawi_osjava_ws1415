@@ -15,7 +15,7 @@ public class ComboxBoxElement<E> {
     private final String text;
     
     /**
-     * Der Wert den dieses ComboxBox Element halten soll
+     * Der Wert den dieses ComboxBox Element halten soll vom generischen Typ E
      */
     private final E element;
 

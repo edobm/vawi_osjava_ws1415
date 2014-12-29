@@ -9,8 +9,8 @@ import osjava.tl3.Protocol;
 import osjava.tl3.model.controller.DataController;
 
 /**
- * Diese Klasse repräsentiert den Gesamtplan. Er basiert auf allen Raumplänen,
- * Dozentenplänen sowie Studiengangsplänen.
+ * Diese Klasse repräsentiert den Gesamtplan. 
+ * Er basiert auf allen Raumplänen, Dozentenplänen sowie Studiengangsplänen.
  *
  * Der Gesamtplan stellt verschiedene Methoden bereit um einfach auf
  * Plankoordinaten der Unterpläne zugreifen zu können.

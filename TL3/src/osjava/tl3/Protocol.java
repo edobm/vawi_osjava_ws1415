@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Observable;
 
 /**
- * Sammelt Daten über die Strategieausführung und den erzeugten Gesamtplan
- * Die Klasse ist als Singleton implementiert.
+ * Sammelt Daten über die Strategieausführung und den erzeugten Gesamtplan.
+ * Intern hält die Klasse eine Instanz von sich selbst. Über statische Methoden
+ * können Log-Nachrichten an die intern gehaltene Instanz übertragen werden.
+ * 
+ * Die Klasse implementiert das Observer-Pattern und erweitert aus diesem 
+ * Grund die Klasse Observable. Damit können Sich das Interface Observer 
+ * implementierende Klasse bei dieser Klasse registrieren.
  * 
  * @author Meikel Bode
  */

@@ -79,7 +79,7 @@ public class InputFilePanel extends JPanel {
         /**
          * Tabellenmodel und Tabelle erzeugen und der ScrollPane hinzufügen
          */
-        inputFileTableModel = new InputFileTableModel();
+        inputFileTableModel = new InputFileTableModel(acceptedInputFileType);
         inputFileTable = new JTable(inputFileTableModel);
         scrollPane.setViewportView(inputFileTable);
 
@@ -150,7 +150,7 @@ public class InputFilePanel extends JPanel {
     /**
      * Fügt Dateien der Liste hinzu
      */
-    private void addFileAction() {
+    protected void addFileAction() {
 
         int result = -1;
 
@@ -203,8 +203,8 @@ public class InputFilePanel extends JPanel {
      *
      * @return Die Dateien
      */
-    public ArrayList<InputFileDescriptor> getInputFiles() {
-        return inputFileTableModel.getInputFiles();
+    public ArrayList<InputFileDescriptor> getSelectedFiles() {
+        return inputFileTableModel.getSelectedFiles();
     }
 
 }
