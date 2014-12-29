@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
-import osjava.tl3.Protocol;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;

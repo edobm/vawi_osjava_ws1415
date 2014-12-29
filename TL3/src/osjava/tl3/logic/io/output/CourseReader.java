@@ -5,7 +5,7 @@ import osjava.tl3.logic.io.input.InputFileReaderException;
 import osjava.tl3.logic.io.input.InputFileReader;
 import java.util.ArrayList;
 import java.util.List;
-import osjava.tl3.Protocol;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.CourseType;

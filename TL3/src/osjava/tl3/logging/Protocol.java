@@ -1,4 +1,4 @@
-package osjava.tl3;
+package osjava.tl3.logging;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
-import osjava.tl3.Protocol;
+import osjava.tl3.logging.Protocol;
 
 /**
  * Stellt Logausgaben bereit und implementiert das Interface Observer, um bei

@@ -2,7 +2,7 @@ package osjava.tl3.logic.planning.strategies;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import osjava.tl3.Protocol;
+import osjava.tl3.logging.Protocol;
 
 /**
  * Erzeugt Instanzen von Planungsstrategien

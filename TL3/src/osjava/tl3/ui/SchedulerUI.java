@@ -44,7 +44,7 @@ import osjava.tl3.logic.io.input.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
-import osjava.tl3.Protocol;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.MasterSchedule;
