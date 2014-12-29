@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -165,7 +164,7 @@ public class SchedulerUI extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(1200, 900);
         setLocationRelativeTo(null);
-
+       
         /**
          * Grundlegende Fensterevents registrieren
          */
@@ -269,7 +268,7 @@ public class SchedulerUI extends JFrame {
         panelExecution.setBorder(new TitledBorder("Schritt 3: Planung ausführen"));
         panelExecution.add(btnGenerateMasterSchedule);
         panelTopButtons.add(panelExecution);
-
+        
         btnGenerateMasterSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -291,7 +290,7 @@ public class SchedulerUI extends JFrame {
         cbxModelOutputFormats.addElement(new ComboxBoxElement("CSV-Text", OutputFormat.CSV_TEXT));
         cbxModelOutputFormats.addElement(new ComboxBoxElement("HTML", OutputFormat.HTML));
         comboBoxOutputFormat.setModel(cbxModelOutputFormats);
-
+        
         btnSelectOutput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -309,7 +308,7 @@ public class SchedulerUI extends JFrame {
         panelTopButtons.add(panelOutputExecute);
         panelOutputExecute.setBorder(new TitledBorder("Schritt 5: Export ausführen"));
         panelOutputExecute.add(btnOutputExecute);
-
+        
         btnOutputExecute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -352,7 +351,7 @@ public class SchedulerUI extends JFrame {
         dialogAddCourses = new InputFileDialog(this, "Kursdateien für Planerstellung", InputFileType.COURSE_FILE);
         dialogAddStudyPrograms = new InputFileDialog(this, "Studiengangsdateien für Planerstellung", InputFileType.STUDYPROGRAM_FILE);
         dialogAddOutputDirectory = new InputFileDialog(this, "Ausgabeverzeichnisse für Plandateien", InputFileType.OUTPUT_DIRECTORY);
-
+        
     }
 
     /**
@@ -398,7 +397,7 @@ public class SchedulerUI extends JFrame {
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-
+                    
                 } else if (selectedNode.getUserObject() instanceof Academic) {
 
                     /**
@@ -410,7 +409,7 @@ public class SchedulerUI extends JFrame {
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-
+                    
                 } else if (selectedNode.getUserObject() instanceof Semester) {
 
                     /**
@@ -423,7 +422,7 @@ public class SchedulerUI extends JFrame {
                     scheduleTableModel.setSchedule(schedule);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-
+                    
                 } else {
 
                     /**
@@ -432,7 +431,7 @@ public class SchedulerUI extends JFrame {
                      */
                     scrollPaneTable.setViewportView(lSelectNode);
                 }
-
+                
             }
         });
     }
@@ -443,7 +442,7 @@ public class SchedulerUI extends JFrame {
      * die tabellarische Plandarstellung
      */
     private void executeScheduler() {
-
+        
         Protocol.log("Gesamtplanberechnung gestartet");
 
         /**
@@ -477,14 +476,14 @@ public class SchedulerUI extends JFrame {
         }
         Protocol.log("Raumdateien selektiert: " + dialogAddRooms.getSelectedFiles().size());
         Protocol.log("Räume eingelesen: " + dataController.getRooms().size());
-
+        
         CourseReader courseReader = new CourseReader();
         for (InputFileDescriptor file : dialogAddCourses.getSelectedFiles()) {
             courseReader.readCourses(file.getFile().toString(), dataController);
         }
         Protocol.log("Kursdateien selektiert: " + dialogAddCourses.getSelectedFiles().size());
         Protocol.log("Kurse eingelesen: " + dataController.getCourses().size());
-
+        
         StudyProgramReader studyProgramReader = new StudyProgramReader();
         for (InputFileDescriptor file : dialogAddStudyPrograms.getSelectedFiles()) {
             studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
@@ -536,7 +535,7 @@ public class SchedulerUI extends JFrame {
          */
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
-
+        
         Protocol.log("Räume insgesamt: " + (int) (masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
         Protocol.log("Räume intern: " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
         Protocol.log("Räume extern: " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
@@ -545,9 +544,9 @@ public class SchedulerUI extends JFrame {
         Protocol.log("Sitzplätze intern besetzt: " + masterSchedule.getInternallyScheduledSeats());
         Protocol.log("Sitzplätze extnern besetzt: " + masterSchedule.getExternallyScheduledSeats());
         Protocol.log("Gesamtkosten: " + (int) (masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
-
+        
         Protocol.log("Gesamtplanberechnung beendet");
-
+        
     }
 
     /**
@@ -555,7 +554,7 @@ public class SchedulerUI extends JFrame {
      * Pläne
      */
     private void executeExport() {
-
+        
         Protocol.log("Dateiexport gestartet");
 
         /**
@@ -605,7 +604,7 @@ public class SchedulerUI extends JFrame {
         outputController = new OutputController();
         outputController.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputPath);
         Protocol.log("Dateiexport abgeschlossen");
-
+        
     }
 
     /**
@@ -699,7 +698,7 @@ public class SchedulerUI extends JFrame {
             DefaultMutableTreeNode rCourseRooms = new DefaultMutableTreeNode("Räume");
             rCourse.add(rCourseRooms);
             List<Room> relevantRooms = new ArrayList<>();
-
+            
             Iterator<Room> roomSchedules = masterSchedule.getRoomSchedules().keySet().iterator();
             while (roomSchedules.hasNext()) {
                 Room room = roomSchedules.next();
@@ -720,7 +719,7 @@ public class SchedulerUI extends JFrame {
             DefaultMutableTreeNode rCourseAcadmic = new DefaultMutableTreeNode("Dozent");
             rCourse.add(rCourseAcadmic);
             List<Academic> relevantAcademics = new ArrayList<>();
-
+            
             Iterator<Academic> academicSchedules = masterSchedule.getAcadademicSchedules().keySet().iterator();
             while (academicSchedules.hasNext()) {
                 Academic academic = academicSchedules.next();
@@ -743,15 +742,15 @@ public class SchedulerUI extends JFrame {
             DefaultMutableTreeNode rCourseStudyPrograms = new DefaultMutableTreeNode("Studiengänge");
             rCourse.add(rCourseStudyPrograms);
             List<StudyProgram> relevantStudyPrograms = new ArrayList<>();
-
+            
             Iterator<StudyProgram> studyProgrammSchedules = masterSchedule.getStudyProgramSchedules().keySet().iterator();
             while (studyProgrammSchedules.hasNext()) {
                 StudyProgram studyProgram = studyProgrammSchedules.next();
-
+                
                 if (studyProgram.containsCourse(course)) {
                     relevantStudyPrograms.add(studyProgram);
                 }
-
+                
             }
             Collections.sort(relevantStudyPrograms);
             for (StudyProgram studyProgram : relevantStudyPrograms) {
@@ -762,9 +761,9 @@ public class SchedulerUI extends JFrame {
                         rCourseStudyProgram.add(new DefaultMutableTreeNode(semester));
                     }
                 }
-
+                
             }
-
+            
         }
 
         /**
@@ -782,7 +781,7 @@ public class SchedulerUI extends JFrame {
          * Window Adapter registrieren
          */
         addWindowListener(new WindowAdapter() {
-
+            
             @Override
             public void windowClosing(WindowEvent e) {
 
@@ -802,7 +801,7 @@ public class SchedulerUI extends JFrame {
                 }
             }
         });
-
+        
     }
-
+    
 }
