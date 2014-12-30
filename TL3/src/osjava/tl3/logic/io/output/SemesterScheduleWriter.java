@@ -1,15 +1,16 @@
 package osjava.tl3.logic.io.output;
 
 import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewSemester;
 import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 
 /**
- * Diese Klasse erzeugt die Pläne für einen Studiengang
+ * Diese Klasse erzeugt die Pläne für ein Fachsemester
  *
  * @author Fabian Simon
  * @version 1.0
  */
-public class StudyProgramScheduleWriter extends OutputFileWriter {
+public class SemesterScheduleWriter extends OutputFileWriter {
 
     @Override
     public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
@@ -17,7 +18,7 @@ public class StudyProgramScheduleWriter extends OutputFileWriter {
         /**
          * Prefix für Ausgabedateien
          */
-        final String fileNamePrefix = "Studiengangsplan_";
+        final String fileNamePrefix = "Fachsemesterplan_";
         
         /**
          * Prüfung der Eingabe
@@ -38,10 +39,24 @@ public class StudyProgramScheduleWriter extends OutputFileWriter {
         writeSchedule(scheduleView, outputFormat, outputPath, fileNamePrefix, title);
 
     }
-
+    
+    /**
+     * Liefert das primäre Namenselement für die Plansicht
+     * @param scheduleView Die Plansicht
+     * @return Das primäre Namenslement
+     */
     @Override
     public String getPrimaryNameElement(ScheduleView scheduleView) {
-        return ((ScheduleViewStudyProgram)scheduleView).getStudyProgramm().getName();
+        
+        ScheduleViewSemester viewSemester = (ScheduleViewSemester)scheduleView;
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(viewSemester.getSemester().getStudyProgram().getName());
+        sb.append("_");
+        sb.append(viewSemester.getSemester().getName());
+        
+        return sb.toString();
     }
 
     

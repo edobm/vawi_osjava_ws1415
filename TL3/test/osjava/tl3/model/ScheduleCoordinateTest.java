@@ -1,5 +1,6 @@
 package osjava.tl3.model;
 
+import osjava.tl3.model.schedule.ScheduleCoordinate;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;

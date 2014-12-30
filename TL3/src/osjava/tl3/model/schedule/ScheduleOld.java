@@ -1,7 +1,12 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import osjava.tl3.model.Academic;
+import osjava.tl3.model.Day;
+import osjava.tl3.model.Room;
+import osjava.tl3.model.Semester;
+import osjava.tl3.model.TimeSlot;
 
 /**
  * Diese Klasse repräsentiert die Entität Terminplan.
@@ -21,7 +26,7 @@ import java.util.List;
  * @author Meikel Bode
  * @version 1.0
  */
-public class Schedule {
+public class ScheduleOld {
 
     /**
      * Der Typ des Plans
@@ -53,7 +58,7 @@ public class Schedule {
      *
      * @param type Der Typ des Plans
      */
-    public Schedule(ScheduleType type) {
+    public ScheduleOld(ScheduleType type) {
         this.type = type;
         this.scheduleElements = new ArrayList<>(25);
         initSchedule();

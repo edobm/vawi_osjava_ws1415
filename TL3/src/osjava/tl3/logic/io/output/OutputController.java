@@ -1,7 +1,7 @@
 package osjava.tl3.logic.io.output;
 
 import java.util.List;
-import osjava.tl3.model.Schedule;
+import osjava.tl3.model.schedule.ScheduleView;
 
 /**
  * Steuert die Erzeugung von Plandaten als Dateien.
@@ -15,33 +15,33 @@ public class OutputController {
     /**
      * Gibt einen Schedule im gegebenen Ausgabeformat in den gegebenen Pfad aus
      *
-     * @param schedule Der Plan
+     * @param scheduleView Die Plansicht
      * @param outputFormat Das Format
      * @param outputPath Das Ausgabeverzeichnis
      */
-    public void outputSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
+    public void outputSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
 
         /**
          * Anhand des Plantyps den passenden FileWriter erzeugen
          */
-        fileWriter = OutputFileWriterFactory.getInstance(schedule.getType());
+        fileWriter = OutputFileWriterFactory.getInstance(scheduleView);
 
         /**
          * Mittels des FileWriters den Plan im gewünschten Ausgabeformat im gegebenen Pfad
          * ausgeben
          */
-        fileWriter.writeSchedule(schedule, outputFormat, outputPath);
+        fileWriter.writeSchedule(scheduleView, outputFormat, outputPath);
     }
 
     /**
      * Gibt eine Liste von Plänen aus
      *
-     * @param schedules Die Pläne
-     * @param outputFormat
-     * @param outputPath
+     * @param scheduleViews Die auszugebenen Plansichten
+     * @param outputFormat Das Ausgabeformat
+     * @param outputPath der Ausgabepfad
      */
-    public void outputSchedules(List<Schedule> schedules, OutputFormat outputFormat, String outputPath) {
-        for (Schedule schedule : schedules) {
+    public void outputSchedules(List<ScheduleView> scheduleViews, OutputFormat outputFormat, String outputPath) {
+        for (ScheduleView schedule : scheduleViews) {
             outputSchedule(schedule, outputFormat, outputPath);
         }
     }

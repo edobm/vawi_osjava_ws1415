@@ -1,4 +1,4 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import osjava.tl3.logging.Protocol;
+import osjava.tl3.model.Academic;
+import osjava.tl3.model.Course;
+import osjava.tl3.model.Day;
+import osjava.tl3.model.Equipment;
+import osjava.tl3.model.Room;
+import osjava.tl3.model.RoomType;
+import osjava.tl3.model.Semester;
+import osjava.tl3.model.StudyProgram;
+import osjava.tl3.model.TimeSlot;
 import osjava.tl3.model.controller.DataController;
 
 /**
@@ -22,17 +31,17 @@ public class MasterSchedule {
     /**
      * Die Raumpläne
      */
-    private final HashMap<Room, Schedule> roomSchedules = new HashMap<>();
+    private final HashMap<Room, ScheduleOld> roomSchedules = new HashMap<>();
 
     /**
      * Die Dozentenpläne
      */
-    private final HashMap<Academic, Schedule> acadademicSchedules = new HashMap<>();
+    private final HashMap<Academic, ScheduleOld> acadademicSchedules = new HashMap<>();
 
     /**
      * Die Studienganspläne pro Fachsemester
      */
-    private final HashMap<StudyProgram, HashMap<Semester, Schedule>> studyProgramSchedules = new HashMap<>();
+    private final HashMap<StudyProgram, HashMap<Semester, ScheduleOld>> studyProgramSchedules = new HashMap<>();
 
     /**
      * Auf Basis der Informationen des DataControllers den Gesamtplan
@@ -42,13 +51,13 @@ public class MasterSchedule {
      */
     public void initFromDataController(DataController dataControler) {
         
-        Schedule schedule = null;
+        ScheduleOld schedule = null;
         
         /**
          * Raumpläne intialisieren
          */
         for (Room room : dataControler.getRooms()) {
-            schedule = new Schedule(ScheduleType.ROOM_INTERNAL);
+            schedule = new ScheduleOld(ScheduleType.ROOM_INTERNAL);
             schedule.setRoom(room);
             getRoomSchedules().put(room, schedule);
         }
@@ -59,7 +68,7 @@ public class MasterSchedule {
          */
         for (Course course : dataControler.getCourses()) {
             if (!acadademicSchedules.containsKey(course.getAcademic())) {
-                schedule = new Schedule(ScheduleType.ACADAMIC);
+                schedule = new ScheduleOld(ScheduleType.ACADAMIC);
                 schedule.setAcademic(course.getAcademic());
                 getAcadademicSchedules().put(course.getAcademic(), schedule);
             }
@@ -73,9 +82,9 @@ public class MasterSchedule {
         
         for (StudyProgram studyProgram : dataControler.getStudyPrograms()) {
 
-            HashMap<Semester, Schedule> semesterPlans = new HashMap<>(studyProgram.getSemesters().size());
+            HashMap<Semester, ScheduleOld> semesterPlans = new HashMap<>(studyProgram.getSemesters().size());
             for (Semester semester : studyProgram.getSemesters()) {
-                schedule = new Schedule(ScheduleType.STUDY_PROGRAM);
+                schedule = new ScheduleOld(ScheduleType.STUDY_PROGRAM);
                 schedule.setSemester(semester);
                 semesterPlans.put(semester, schedule);
             }
@@ -94,7 +103,7 @@ public class MasterSchedule {
      * @param schedule Der zu durchsuchende Plan
      * @return Die freien Koordinaten des Plans
      */
-    public List<ScheduleCoordinate> getFreeCoordinates(Schedule schedule) {
+    public List<ScheduleCoordinate> getFreeCoordinates(ScheduleOld schedule) {
 
         List<ScheduleCoordinate> freeCordinates = new ArrayList<>();
 
@@ -194,7 +203,7 @@ public class MasterSchedule {
             if (studyProgram.containsCourse(course)) {
 
                 Semester semester = studyProgram.getSemesterByCourse(course);
-                Schedule semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
+                ScheduleOld semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
 
                 freeCordinates.removeAll(semesterSchedule.getBlockedCoordinates());
             }
@@ -257,7 +266,7 @@ public class MasterSchedule {
             if (studyProgram.containsCourse(course)) {
 
                 Semester semester = studyProgram.getSemesterByCourse(course);
-                Schedule semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
+                ScheduleOld semesterSchedule = getStudyProgramSchedules().get(studyProgram).get(semester);
 
                 semesterSchedule.getScheduleElement(coordinate).assignRoom(room).assignCourse(course);
             }
@@ -285,7 +294,7 @@ public class MasterSchedule {
         /**
          * Einen Plan für den externen Raum erzeugen und Raum und Kurs zuweisen
          */
-        Schedule schedule = new Schedule(ScheduleType.ROOM_EXTERNAL);
+        ScheduleOld schedule = new ScheduleOld(ScheduleType.ROOM_EXTERNAL);
         schedule.setRoom(room);
         
         /**
@@ -305,7 +314,7 @@ public class MasterSchedule {
         int seats = 0;
 
         for (Room room : getRooms(RoomType.EXTERNAL)) {
-            Schedule schedule = getSchedule(room);
+            ScheduleOld schedule = getSchedule(room);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.isBlocked()) {
                     seats += scheduleElement.getCourse().getStudents();
@@ -325,7 +334,7 @@ public class MasterSchedule {
         int seats = 0;
 
         for (Room room : getRooms(RoomType.INTERNAL)) {
-            Schedule schedule = getSchedule(room);
+            ScheduleOld schedule = getSchedule(room);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.isBlocked()) {
                     seats += scheduleElement.getCourse().getStudents();
@@ -392,7 +401,7 @@ public class MasterSchedule {
      * @param room Der Raum
      * @return Der Raumplan
      */
-    public Schedule getSchedule(Room room) {
+    public ScheduleOld getSchedule(Room room) {
         return getRoomSchedules().get(room);
     }
 
@@ -402,8 +411,8 @@ public class MasterSchedule {
      * @param course Der Kurs dessen Einplanungen gesucht sind
      * @return Die Liste der Pläne
      */
-    public List<Schedule> getSchedules(Course course) {
-        List<Schedule> schedules = new ArrayList<>();
+    public List<ScheduleOld> getSchedules(Course course) {
+        List<ScheduleOld> schedules = new ArrayList<>();
 
         /**
          * Alle Raumpläne finden
@@ -411,7 +420,7 @@ public class MasterSchedule {
         Iterator<Room> rooms = getRoomSchedules().keySet().iterator();
         while (rooms.hasNext()) {
             Room r = rooms.next();
-            Schedule schedule = getRoomSchedules().get(r);
+            ScheduleOld schedule = getRoomSchedules().get(r);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                     schedules.add(schedule);
@@ -425,7 +434,7 @@ public class MasterSchedule {
         Iterator<Academic> academics = getAcadademicSchedules().keySet().iterator();
         while (academics.hasNext()) {
             Academic a = academics.next();
-            Schedule schedule = getAcadademicSchedules().get(a);
+            ScheduleOld schedule = getAcadademicSchedules().get(a);
             for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                 if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                     schedules.add(schedule);
@@ -440,7 +449,7 @@ public class MasterSchedule {
         while (studyPrograms.hasNext()) {
             StudyProgram studyProgram = studyPrograms.next();
             for (Semester semester : studyProgram.getSemesters()) {
-                Schedule schedule = getStudyProgramSchedules().get(studyProgram).get(semester);
+                ScheduleOld schedule = getStudyProgramSchedules().get(studyProgram).get(semester);
                 for (ScheduleElement scheduleElement : schedule.getScheduleElements()) {
                     if (scheduleElement.getCourse() != null && scheduleElement.getCourse().equals(course)) {
                         schedules.add(schedule);
@@ -458,7 +467,7 @@ public class MasterSchedule {
      * @param academic Der Dozent
      * @return Der Dozentenplan
      */
-    public Schedule getSchedule(Academic academic) {
+    public ScheduleOld getSchedule(Academic academic) {
         return getAcadademicSchedules().get(academic);
     }
 
@@ -469,7 +478,7 @@ public class MasterSchedule {
      * @param semester Das Fachsemesters des Studienganges
      * @return Der Semesterplan
      */
-    public Schedule getSchedule(StudyProgram studyProgram, Semester semester) {
+    public ScheduleOld getSchedule(StudyProgram studyProgram, Semester semester) {
         return getStudyProgramSchedules().get(studyProgram).get(semester);
     }
 
@@ -478,7 +487,7 @@ public class MasterSchedule {
      *
      * @return Die Raumpläne
      */
-    public HashMap<Room, Schedule> getRoomSchedules() {
+    public HashMap<Room, ScheduleOld> getRoomSchedules() {
         return roomSchedules;
     }
 
@@ -487,7 +496,7 @@ public class MasterSchedule {
      *
      * @return Die Dozentenpläne
      */
-    public HashMap<Academic, Schedule> getAcadademicSchedules() {
+    public HashMap<Academic, ScheduleOld> getAcadademicSchedules() {
         return acadademicSchedules;
     }
 
@@ -496,7 +505,7 @@ public class MasterSchedule {
      *
      * @return Die Studiengs-/Fachsemesterpläne
      */
-    public HashMap<StudyProgram, HashMap<Semester, Schedule>> getStudyProgramSchedules() {
+    public HashMap<StudyProgram, HashMap<Semester, ScheduleOld>> getStudyProgramSchedules() {
         return studyProgramSchedules;
     }
 
@@ -505,8 +514,8 @@ public class MasterSchedule {
      *
      * @return Die Liste aller Pläne
      */
-    public List<Schedule> getAllSchedules() {
-        List<Schedule> schedules = new ArrayList<>();
+    public List<ScheduleOld> getAllSchedules() {
+        List<ScheduleOld> schedules = new ArrayList<>();
 
         schedules.addAll(roomSchedules.values());
         schedules.addAll(acadademicSchedules.values());

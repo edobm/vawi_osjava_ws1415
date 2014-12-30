@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -36,7 +35,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import osjava.tl3.logic.io.output.CourseReader;
+import osjava.tl3.logic.io.input.CourseReader;
 import osjava.tl3.logic.io.output.OutputController;
 import osjava.tl3.logic.io.output.OutputFormat;
 import osjava.tl3.logic.io.input.RoomReader;
@@ -45,16 +44,23 @@ import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.logging.Protocol;
+import osjava.tl3.logic.planning.strategies.CostOptimizedStrategyNew;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
-import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.model.schedule.ScheduleAppointment;
+import osjava.tl3.model.schedule.ScheduleElementNew;
+import osjava.tl3.model.schedule.ScheduleNew;
+import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewAcademic;
+import osjava.tl3.model.schedule.ScheduleViewCourse;
+import osjava.tl3.model.schedule.ScheduleViewRoom;
+import osjava.tl3.model.schedule.ScheduleViewSemester;
+import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 import osjava.tl3.ui.components.fileselection.InputFileDescriptor;
 import osjava.tl3.ui.components.fileselection.InputFileDialog;
 
@@ -139,7 +145,7 @@ public class SchedulerUI extends JFrame {
     /**
      * Instanz des Gesamtplans
      */
-    private MasterSchedule masterSchedule;
+    private ScheduleNew schedule;
 
     /**
      * Instanz des OutputControllers für die Dateiausgabe der erzeugten
@@ -164,7 +170,7 @@ public class SchedulerUI extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setSize(1200, 900);
         setLocationRelativeTo(null);
-       
+
         /**
          * Grundlegende Fensterevents registrieren
          */
@@ -254,7 +260,7 @@ public class SchedulerUI extends JFrame {
         panelConfiguration.add(labelStrategies);
         panelConfiguration.add(comboBoxStrategies);
         ComboBoxElementModel cbxModelStrategies = new ComboBoxElementModel();
-        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategy.class));
+        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategyNew.class));
         comboBoxStrategies.setModel(cbxModelStrategies);
         panelConfiguration.add(labelCosts);
         panelConfiguration.add(textFieldCosts);
@@ -268,7 +274,7 @@ public class SchedulerUI extends JFrame {
         panelExecution.setBorder(new TitledBorder("Schritt 3: Planung ausführen"));
         panelExecution.add(btnGenerateMasterSchedule);
         panelTopButtons.add(panelExecution);
-        
+
         btnGenerateMasterSchedule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -290,7 +296,7 @@ public class SchedulerUI extends JFrame {
         cbxModelOutputFormats.addElement(new ComboxBoxElement("CSV-Text", OutputFormat.CSV_TEXT));
         cbxModelOutputFormats.addElement(new ComboxBoxElement("HTML", OutputFormat.HTML));
         comboBoxOutputFormat.setModel(cbxModelOutputFormats);
-        
+
         btnSelectOutput.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -308,7 +314,7 @@ public class SchedulerUI extends JFrame {
         panelTopButtons.add(panelOutputExecute);
         panelOutputExecute.setBorder(new TitledBorder("Schritt 5: Export ausführen"));
         panelOutputExecute.add(btnOutputExecute);
-        
+
         btnOutputExecute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -351,7 +357,7 @@ public class SchedulerUI extends JFrame {
         dialogAddCourses = new InputFileDialog(this, "Kursdateien für Planerstellung", InputFileType.COURSE_FILE);
         dialogAddStudyPrograms = new InputFileDialog(this, "Studiengangsdateien für Planerstellung", InputFileType.STUDYPROGRAM_FILE);
         dialogAddOutputDirectory = new InputFileDialog(this, "Ausgabeverzeichnisse für Plandateien", InputFileType.OUTPUT_DIRECTORY);
-        
+
     }
 
     /**
@@ -393,11 +399,11 @@ public class SchedulerUI extends JFrame {
                      * Masterschedule holen und an Tabellenmodell übergen und
                      * Tabelle anzeigen
                      */
-                    Schedule schedule = masterSchedule.getSchedule((Room) selectedNode.getUserObject());
-                    scheduleTableModel.setSchedule(schedule);
+                    ScheduleView scheduleView = new ScheduleViewRoom((Room) selectedNode.getUserObject(), schedule);
+                    scheduleTableModel.setSchedule(scheduleView);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                    
+
                 } else if (selectedNode.getUserObject() instanceof Academic) {
 
                     /**
@@ -405,11 +411,22 @@ public class SchedulerUI extends JFrame {
                      * dem Masterschedule holen und an Tabellenmodell übergen
                      * und Tabelle anzeigen
                      */
-                    Schedule schedule = masterSchedule.getSchedule((Academic) selectedNode.getUserObject());
-                    scheduleTableModel.setSchedule(schedule);
+                    ScheduleView scheduleView = new ScheduleViewAcademic((Academic) selectedNode.getUserObject(), schedule);
+                    scheduleTableModel.setSchedule(scheduleView);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                    
+
+                } else if (selectedNode.getUserObject() instanceof StudyProgram) {
+
+                    /**
+                     * Knoten hält eine Instanz von Semester: Passenden Plan aus
+                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * und Tabelle anzeigen
+                     */
+                    ScheduleView scheduleView = new ScheduleViewStudyProgram((StudyProgram) selectedNode.getUserObject(), schedule);
+                    scheduleTableModel.setSchedule(scheduleView);
+                    scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
+                    scrollPaneTable.setViewportView(scheduleTable);
                 } else if (selectedNode.getUserObject() instanceof Semester) {
 
                     /**
@@ -417,12 +434,11 @@ public class SchedulerUI extends JFrame {
                      * dem Masterschedule holen und an Tabellenmodell übergen
                      * und Tabelle anzeigen
                      */
-                    Semester semester = (Semester) selectedNode.getUserObject();
-                    Schedule schedule = masterSchedule.getSchedule(semester.getStudyProgram(), semester);
-                    scheduleTableModel.setSchedule(schedule);
+                    ScheduleView scheduleView = new ScheduleViewSemester((Semester) selectedNode.getUserObject(), schedule);
+                    scheduleTableModel.setSchedule(scheduleView);
                     scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
                     scrollPaneTable.setViewportView(scheduleTable);
-                    
+
                 } else {
 
                     /**
@@ -431,7 +447,7 @@ public class SchedulerUI extends JFrame {
                      */
                     scrollPaneTable.setViewportView(lSelectNode);
                 }
-                
+
             }
         });
     }
@@ -442,7 +458,7 @@ public class SchedulerUI extends JFrame {
      * die tabellarische Plandarstellung
      */
     private void executeScheduler() {
-        
+
         Protocol.log("Gesamtplanberechnung gestartet");
 
         /**
@@ -476,14 +492,14 @@ public class SchedulerUI extends JFrame {
         }
         Protocol.log("Raumdateien selektiert: " + dialogAddRooms.getSelectedFiles().size());
         Protocol.log("Räume eingelesen: " + dataController.getRooms().size());
-        
+
         CourseReader courseReader = new CourseReader();
         for (InputFileDescriptor file : dialogAddCourses.getSelectedFiles()) {
             courseReader.readCourses(file.getFile().toString(), dataController);
         }
         Protocol.log("Kursdateien selektiert: " + dialogAddCourses.getSelectedFiles().size());
         Protocol.log("Kurse eingelesen: " + dataController.getCourses().size());
-        
+
         StudyProgramReader studyProgramReader = new StudyProgramReader();
         for (InputFileDescriptor file : dialogAddStudyPrograms.getSelectedFiles()) {
             studyProgramReader.readStudyPrograms(file.getFile().toString(), dataController);
@@ -527,7 +543,7 @@ public class SchedulerUI extends JFrame {
          * und erzeugten Gesamtplan holen
          */
         scheduler.executeStrategy(null);
-        masterSchedule = scheduler.getMasterSchedule();
+        schedule = scheduler.getSchedule();
 
         /**
          * Modell für Planstrukturbaum auf Basis des Gesamtplans erzeugen und
@@ -535,18 +551,18 @@ public class SchedulerUI extends JFrame {
          */
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
-        
-        Protocol.log("Räume insgesamt: " + (int) (masterSchedule.getRoomCount(RoomType.INTERNAL, false) + masterSchedule.getRoomCount(RoomType.EXTERNAL, false)));
-        Protocol.log("Räume intern: " + masterSchedule.getRoomCount(RoomType.INTERNAL, false));
-        Protocol.log("Räume extern: " + masterSchedule.getRoomCount(RoomType.EXTERNAL, false));
-        Protocol.log("Anzahl Termine: " + (int) (masterSchedule.getTotalRoomBlocks(RoomType.INTERNAL) + masterSchedule.getTotalRoomBlocks(RoomType.EXTERNAL)));
-        Protocol.log("Sitzplätze benötigt: " + (int) (masterSchedule.getInternallyScheduledSeats() + masterSchedule.getExternallyScheduledSeats()));
-        Protocol.log("Sitzplätze intern besetzt: " + masterSchedule.getInternallyScheduledSeats());
-        Protocol.log("Sitzplätze extnern besetzt: " + masterSchedule.getExternallyScheduledSeats());
-        Protocol.log("Gesamtkosten: " + (int) (masterSchedule.getExternallyScheduledSeats() * Integer.parseInt(textFieldCosts.getText())) + " EUR");
-        
+
+        Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
+        Protocol.log("Räume intern: " + dataController.getRooms(RoomType.INTERNAL).size());
+        Protocol.log("Räume extern: " + dataController.getRooms(RoomType.EXTERNAL).size());
+        Protocol.log("Anzahl Termine: " + schedule.getAppointmentCount());
+        Protocol.log("Sitzplätze benötigt: " + (int) (schedule.getStudentsCount(RoomType.INTERNAL) + schedule.getStudentsCount(RoomType.EXTERNAL)));
+        Protocol.log("Sitzplätze intern besetzt: " + schedule.getStudentsCount(RoomType.INTERNAL));
+        Protocol.log("Sitzplätze extnern besetzt: " + schedule.getStudentsCount(RoomType.EXTERNAL));
+        Protocol.log("Gesamtkosten: " + (int) (schedule.getStudentsCount(RoomType.EXTERNAL) * Integer.parseInt(textFieldCosts.getText())) + " EUR");
+
         Protocol.log("Gesamtplanberechnung beendet");
-        
+
     }
 
     /**
@@ -554,13 +570,13 @@ public class SchedulerUI extends JFrame {
      * Pläne
      */
     private void executeExport() {
-        
+
         Protocol.log("Dateiexport gestartet");
 
         /**
          * Prüfen ob ein Gesamtplan erzeugt wurde
          */
-        if (masterSchedule == null) {
+        if (schedule == null) {
 
             /**
              * Im Fehlerfall Meldung ausgeben und Folgeverarbeitung abbrechen
@@ -602,9 +618,10 @@ public class SchedulerUI extends JFrame {
          * im angegebenen Ausgabeformat in das Ausgabeverzeichnis exportieren
          */
         outputController = new OutputController();
-        outputController.outputSchedules(masterSchedule.getAllSchedules(), outputFormat, outputPath);
+        List<ScheduleView> views = schedule.getAllScheduleViews(dataController.getRooms(), dataController.getAcademics(), dataController.getStudyPrograms());
+        outputController.outputSchedules(views, outputFormat, outputPath);
         Protocol.log("Dateiexport abgeschlossen");
-        
+
     }
 
     /**
@@ -628,7 +645,7 @@ public class SchedulerUI extends JFrame {
          * Knoten für Pläne interner Räume erzeugen und an Raumknoten anhängen
          */
         DefaultMutableTreeNode rRoomsInternal = new DefaultMutableTreeNode("Interne Räume");
-        List<Room> rooms = masterSchedule.getRooms(RoomType.INTERNAL);
+        List<Room> rooms = dataController.getRooms(RoomType.INTERNAL);
         Collections.sort(rooms);
         for (Room room : rooms) {
             rRoomsInternal.add(new DefaultMutableTreeNode(room));
@@ -639,7 +656,7 @@ public class SchedulerUI extends JFrame {
          * Knoten für Pläne externer Räume erzeugen und an Raumknoten anhängen
          */
         DefaultMutableTreeNode rRoomsExternal = new DefaultMutableTreeNode("Externe Räume");
-        rooms = masterSchedule.getRooms(RoomType.EXTERNAL);
+        rooms = dataController.getRooms(RoomType.EXTERNAL);
         Collections.sort(rooms);
         for (Room room : rooms) {
             rRoomsExternal.add(new DefaultMutableTreeNode(room));
@@ -693,21 +710,23 @@ public class SchedulerUI extends JFrame {
             rCourses.add(rCourse);
 
             /**
+             * Plansicht für aktuellen Kurs erzeugen
+             */
+            ScheduleViewCourse scheduleView = new ScheduleViewCourse(course, schedule);
+
+            /**
              * Knoten für Raumpläne erzeugen in denen der Kurs vorkommt
              */
             DefaultMutableTreeNode rCourseRooms = new DefaultMutableTreeNode("Räume");
             rCourse.add(rCourseRooms);
             List<Room> relevantRooms = new ArrayList<>();
-            
-            Iterator<Room> roomSchedules = masterSchedule.getRoomSchedules().keySet().iterator();
-            while (roomSchedules.hasNext()) {
-                Room room = roomSchedules.next();
-                for (ScheduleElement scheduleElement : masterSchedule.getSchedule(room).getScheduleElements()) {
-                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course)) {
-                        relevantRooms.add(room);
-                    }
-                }
+
+            for (ScheduleElementNew element : scheduleView.getScheduleElements()) {
+               for (ScheduleAppointment appointment : element.getAppointments()) {
+                   relevantRooms.add(appointment.getRoom());
+               }
             }
+          
             Collections.sort(relevantRooms);
             for (Room room : relevantRooms) {
                 rCourseRooms.add(new DefaultMutableTreeNode(room));
@@ -719,17 +738,13 @@ public class SchedulerUI extends JFrame {
             DefaultMutableTreeNode rCourseAcadmic = new DefaultMutableTreeNode("Dozent");
             rCourse.add(rCourseAcadmic);
             List<Academic> relevantAcademics = new ArrayList<>();
-            
-            Iterator<Academic> academicSchedules = masterSchedule.getAcadademicSchedules().keySet().iterator();
-            while (academicSchedules.hasNext()) {
-                Academic academic = academicSchedules.next();
-                for (ScheduleElement scheduleElement : masterSchedule.getSchedule(academic).getScheduleElements()) {
-                    if (scheduleElement.isBlocked() && scheduleElement.getCourse().equals(course)
-                            && scheduleElement.getCourse().getAcademic().equals(academic)) {
-                        relevantAcademics.add(academic);
-                    }
-                }
+
+            for (ScheduleElementNew element : scheduleView.getScheduleElements()) {
+               for (ScheduleAppointment appointment : element.getAppointments()) {
+                   relevantAcademics.add(appointment.getCourse().getAcademic());
+               }
             }
+            
             Collections.sort(relevantAcademics);
             for (Academic academic : relevantAcademics) {
                 rCourseAcadmic.add(new DefaultMutableTreeNode(academic));
@@ -742,16 +757,13 @@ public class SchedulerUI extends JFrame {
             DefaultMutableTreeNode rCourseStudyPrograms = new DefaultMutableTreeNode("Studiengänge");
             rCourse.add(rCourseStudyPrograms);
             List<StudyProgram> relevantStudyPrograms = new ArrayList<>();
-            
-            Iterator<StudyProgram> studyProgrammSchedules = masterSchedule.getStudyProgramSchedules().keySet().iterator();
-            while (studyProgrammSchedules.hasNext()) {
-                StudyProgram studyProgram = studyProgrammSchedules.next();
-                
+
+            for (StudyProgram studyProgram : dataController.getStudyPrograms()) {
                 if (studyProgram.containsCourse(course)) {
                     relevantStudyPrograms.add(studyProgram);
                 }
-                
             }
+            
             Collections.sort(relevantStudyPrograms);
             for (StudyProgram studyProgram : relevantStudyPrograms) {
                 DefaultMutableTreeNode rCourseStudyProgram = new DefaultMutableTreeNode(studyProgram);
@@ -761,9 +773,9 @@ public class SchedulerUI extends JFrame {
                         rCourseStudyProgram.add(new DefaultMutableTreeNode(semester));
                     }
                 }
-                
+
             }
-            
+
         }
 
         /**
@@ -781,7 +793,7 @@ public class SchedulerUI extends JFrame {
          * Window Adapter registrieren
          */
         addWindowListener(new WindowAdapter() {
-            
+
             @Override
             public void windowClosing(WindowEvent e) {
 
@@ -801,7 +813,7 @@ public class SchedulerUI extends JFrame {
                 }
             }
         });
-        
+
     }
-    
+
 }

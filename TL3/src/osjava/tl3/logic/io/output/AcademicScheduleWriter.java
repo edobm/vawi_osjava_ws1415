@@ -1,9 +1,8 @@
-package osjava.tl3.logic.io.input;
+package osjava.tl3.logic.io.output;
 
-import osjava.tl3.logic.io.output.OutputFileWriter;
-import osjava.tl3.logic.io.output.OutputFormat;
-import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleType;
+import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewAcademic;
+
 
 /**
  * Diese Klasse erzeugt den Stundenplan für Dozenten
@@ -18,12 +17,12 @@ public class AcademicScheduleWriter extends OutputFileWriter
      * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe 
      * eines Dozentenplanes im angegebenen Format in den angegebenen Pfad.
      *
-     * @param schedule
+     * @param scheduleView
      * @param outputFormat
      * @param outputPath
      */
     @Override
-    public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath){
+    public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath){
         /**
          * Prefix für Ausgabedateien
          */
@@ -32,33 +31,30 @@ public class AcademicScheduleWriter extends OutputFileWriter
         /**
          * Prüfung der Eingabe
          */
-        if (schedule == null) {
+        if (scheduleView == null) {
              throw new IllegalArgumentException("Given instance of Schedule must not be null!");
-        }
-        if (schedule.getType() != ScheduleType.ACADAMIC) {
-            throw new IllegalArgumentException("Given instance of Schedule invalid. Type is: " + schedule.getType() + ", expected: " + ScheduleType.ACADAMIC);
         }
         
         /**
          * Die Beschriftung des Dozentenplans ermitteln
          */
-        String title = getPrimaryNameElement(schedule);
+        String title = getPrimaryNameElement(scheduleView);
         
         /**
          * Ausgabe des Schedules an an Vaterklasse delegieren und spezifische Beschriftung übergeben
          */
-        writeSchedule(schedule, outputFormat, outputPath, fileNamePrefix, title);
+        writeSchedule(scheduleView, outputFormat, outputPath, fileNamePrefix, title);
         
     }
 
     /**
      * Den Dateinamen anhand des Dozenten ermitteln
-     * @param schedule Der Plan für den ein Name erzeugt werden soll
+     * @param scheduleView Die Plansicht für den ein Name erzeugt werden soll
      * @return Der Name des Plans
      */
     @Override
-    public String getPrimaryNameElement(Schedule schedule) {
-        return schedule.getAcademic().getName();
+    public String getPrimaryNameElement(ScheduleView scheduleView) {
+       return ((ScheduleViewAcademic)scheduleView).getAcademic().getName();
     }
    
 }

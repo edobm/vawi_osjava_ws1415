@@ -6,8 +6,9 @@ import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import osjava.tl3.model.ScheduleElement;
 import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.ScheduleAppointment;
+import osjava.tl3.model.schedule.ScheduleElementNew;
 
 /**
  * Dieser Renderer kann Instanzen der Klassen ScheduleElement und TimeSlot ausgeben.
@@ -48,29 +49,38 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
             Object value, boolean isSelected, boolean hasFocus, int row,
             int column) {
         
-        if (value instanceof ScheduleElement) {
-            ScheduleElement scheduleElement = (ScheduleElement) value;
+        if (value instanceof ScheduleElementNew) {
+            ScheduleElementNew scheduleElement = (ScheduleElementNew) value;
           
-            if (!scheduleElement.isBlocked()) {
+            if (scheduleElement.isEmpty()) {
                 setText("");
                 setToolTipText("Nicht belegt.");
                 setBackground(colorFree);
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
-                sb.append("Kurs ").append(scheduleElement.getCourse().getNumber()).append(" (")
-                        .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br>");
-                sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br>");
-                sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br>");
-                sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br>");
-                sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
-                sb.append("</body></html>");
-                setText(sb.toString());
-                setBackground(scheduleElement.getCourse().getType().getName().equals("Uebung") ? colorTutorial : colorHearing);
-                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " 
-                        + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() 
-                        + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " 
-                        + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
+                for (ScheduleAppointment appointment: scheduleElement.getAppointments()) {
+                    sb.append("<span style=\" border: 1px solid orange;\">");
+                    sb.append("Kurs ");
+                    sb.append(appointment.getCourse().getNumber()).append(" (")
+                            .append(appointment.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br/>");
+                    sb.append("<b>").append(appointment.getCourse().getName()).append("</b><br/>");
+                    sb.append("Raum: ").append(appointment.getRoom().getName()).append("<br/>");
+                    sb.append("Dozent: ").append(appointment.getCourse().getAcademic().getName()).append("<br/>");
+                    sb.append("Teilnehmer: ").append(appointment.getCourse().getStudents());
+                    sb.append("<span>");
+                    
+                }
+//                
+//                setBackground(scheduleElement.getCourse().getType().getName().equals("Uebung") ? colorTutorial : colorHearing);
+//                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " 
+//                        + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() 
+//                        + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " 
+//                        + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
+                
+              setText(sb.toString());
+//                
+                
             }
         } else if (value instanceof TimeSlot) {
             setText(value.toString());

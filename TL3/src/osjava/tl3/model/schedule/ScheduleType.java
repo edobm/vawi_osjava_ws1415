@@ -1,4 +1,4 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 /**
  * Mögliche Plantypen

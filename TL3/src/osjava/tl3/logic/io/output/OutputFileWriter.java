@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import osjava.tl3.model.Schedule;
+import osjava.tl3.model.schedule.ScheduleView;
 
 /**
  * Diese Klasse stellt die Dateischreiboperationen bereit.
@@ -27,39 +27,39 @@ public abstract class OutputFileWriter {
     /**
      * Liefert das primäre Namenselement für den gegebenen Plan
      *
-     * @param schedule Der Plan für den das primäre Namenselement ermittelt
-     * werden soll
+     * @param scheduleView Die Plansicht für den das primäre Namenselement
+     * ermittelt werden soll
      * @return Das primäre Namenselement
      */
-    public abstract String getPrimaryNameElement(Schedule schedule);
+    public abstract String getPrimaryNameElement(ScheduleView scheduleView);
 
     /**
      * Schreibt eine Planinstanz im angebenen Ausgabeformat in den angegebenen
      * Ausgabepfad
      *
-     * @param schedule Der Plan
+     * @param scheduleView Die Plansicht
      * @param outputFormat Das Ausgabeformat
      * @param outputPath Der Ausgabepfad
      */
-    public abstract void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath);
+    public abstract void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath);
 
     /**
-     * Schreibt eine Planinstanz im angegebenen Ausgabeformat in den angebenen
+     * Schreibt eine Plansicht im angegebenen Ausgabeformat in den angebenen
      * Ausgabepfad
      *
-     * @param schedule Der Plan
+     * @param scheduleView Die Plansicht
      * @param outputFormat Das Ausgabeformat
      * @param outputPath Der Ausgabepfad
      * @param fileNamePrefix Das Prefix das am Anfang des Dateinamens ausgegeben
      * werden soll
      * @param title Der Bezeichner für den Plan
      */
-    protected void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath, String fileNamePrefix, String title) {
+    protected void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath, String fileNamePrefix, String title) {
 
         /**
          * Wenn Scheduleinstanz null ist Fehler werfen
          */
-        if (schedule == null) {
+        if (scheduleView == null) {
             throw new IllegalArgumentException("Given instance of Schedule must not be null!");
         }
 
@@ -71,14 +71,14 @@ public abstract class OutputFileWriter {
         /**
          * Schedule in Ausgabeformat umsetzen
          */
-        StringBuilder sb = formatter.format(schedule, title);
+        StringBuilder sb = formatter.format(scheduleView, title);
 
         /**
          * Dateinamen erzeugen
          */
         StringBuilder fileName = new StringBuilder();
         fileName.append(outputPath).append(File.separator).append(fileNamePrefix);
-        fileName.append(getFileName(getPrimaryNameElement(schedule), formatter.getFileNameSuffix()));
+        fileName.append(getFileName(getPrimaryNameElement(scheduleView), formatter.getFileNameSuffix()));
 
         /**
          * Datei ausgeben

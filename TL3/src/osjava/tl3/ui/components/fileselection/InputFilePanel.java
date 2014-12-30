@@ -89,7 +89,6 @@ public class InputFilePanel extends JPanel {
          * FileChooser erzeugen und initialisieren
          */
         fileChooser = new JFileChooser();
-        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
         if (acceptedInputFileType != InputFileType.OUTPUT_DIRECTORY) {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             fileChooser.setMultiSelectionEnabled(true);
@@ -158,7 +157,7 @@ public class InputFilePanel extends JPanel {
         /**
          * Dateiselektionsdialog zeigen
          */
-        int result = fileChooser.showDialog(this, "Auswählen");
+        int result = fileChooser.showOpenDialog(this);
 
         /**
          * Dialogrückgabe behandeln

@@ -1,12 +1,16 @@
-package osjava.tl3.logic.io.input;
+package osjava.tl3.logic.io.output;
 
-import osjava.tl3.logic.io.output.OutputFormatter;
 import osjava.tl3.model.Day;
-import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleCoordinate;
-import osjava.tl3.model.ScheduleElement;
-import osjava.tl3.model.ScheduleType;
+import osjava.tl3.model.RoomType;
+import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.ScheduleAppointment;
+import osjava.tl3.model.schedule.ScheduleElementNew;
+import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewAcademic;
+import osjava.tl3.model.schedule.ScheduleViewRoom;
+import osjava.tl3.model.schedule.ScheduleViewSemester;
+import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 
 /**
  * Ein Ausgabeformatierer für Planinstanzen für das HTML-Format
@@ -29,25 +33,26 @@ public class HTMLOutputFormatter extends OutputFormatter {
     /**
      * Erzeugt für den eigegebenen Plan die HTML Ausgabe
      *
-     * @param schedule Der auszugebende Plan
+     * @param scheduleView Der auszugebende Plan
      * @param title Der Titel/Beschriftung des Plans
      * @return Die Repräsentation des Plans im Ausgabeformat
      */
     @Override
-    public StringBuilder format(Schedule schedule, String title) {
+    public StringBuilder format(ScheduleView scheduleView, String title) {
         StringBuilder sb = new StringBuilder();
         StringBuilder sbTitle = new StringBuilder();
 
-        if (schedule.getType() == ScheduleType.ACADAMIC) {
+        if (scheduleView instanceof ScheduleViewAcademic) {
             sbTitle.append("Dozentenplan: ").append(title);
         }
-        if (schedule.getType() == ScheduleType.ROOM_INTERNAL) {
-            sbTitle.append("Raumplan: ").append(title).append(" (intern)");
+        if (scheduleView instanceof ScheduleViewRoom) {
+            ScheduleViewRoom viewRoom = (ScheduleViewRoom)scheduleView;
+            sbTitle.append("Raumplan: ").append(title).append(viewRoom.getRoom().getType() == RoomType.INTERNAL ? " (intern)" : " (extern)");
         }
-        if (schedule.getType() == ScheduleType.ROOM_EXTERNAL) {
-            sbTitle.append("Raumplan: ").append(title).append(" (extern)");
+        if (scheduleView instanceof ScheduleViewSemester) {
+            sbTitle.append("Fachsemesterplan: ");
         }
-        if (schedule.getType() == ScheduleType.STUDY_PROGRAM) {
+        if (scheduleView instanceof ScheduleViewStudyProgram) {
             sbTitle.append("Studiengangsplan: ").append(title);
         }
         
@@ -79,21 +84,25 @@ public class HTMLOutputFormatter extends OutputFormatter {
             sb.append("</td>");
 
             ScheduleCoordinate scheduleCoordinate;
-            ScheduleElement scheduleElement;
+            ScheduleElementNew scheduleElement;
             for (int day = 0; day < 5; day++) {
                 scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(day), TimeSlot.valueOf(timeslot));
-                scheduleElement = schedule.getScheduleElement(scheduleCoordinate);
+                scheduleElement = scheduleView.getScheduleElement(scheduleCoordinate);
 
                 sb.append("<td>");
-                if (scheduleElement.isBlocked()) {
+                
+                for (ScheduleAppointment appointment: scheduleElement.getAppointments()) {
+                    sb.append("<span style=\" border: 1px solid orange;\">");
                     sb.append("Kurs ");
-                    sb.append(scheduleElement.getCourse().getNumber()).append(" (")
-                            .append(scheduleElement.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br/>");
-                    sb.append("<b>").append(scheduleElement.getCourse().getName()).append("</b><br/>");
-                    sb.append("Raum: ").append(scheduleElement.getRoom().getName()).append("<br/>");
-                    sb.append("Dozent: ").append(scheduleElement.getCourse().getAcademic().getName()).append("<br/>");
-                    sb.append("Teilnehmer: ").append(scheduleElement.getCourse().getStudents());
+                    sb.append(appointment.getCourse().getNumber()).append(" (")
+                            .append(appointment.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br/>");
+                    sb.append("<b>").append(appointment.getCourse().getName()).append("</b><br/>");
+                    sb.append("Raum: ").append(appointment.getRoom().getName()).append("<br/>");
+                    sb.append("Dozent: ").append(appointment.getCourse().getAcademic().getName()).append("<br/>");
+                    sb.append("Teilnehmer: ").append(appointment.getCourse().getStudents());
+                    sb.append("<span>");
                 }
+                
                 sb.append("</td>");
             }
 

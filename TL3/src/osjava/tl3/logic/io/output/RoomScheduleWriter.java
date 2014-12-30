@@ -1,8 +1,7 @@
 package osjava.tl3.logic.io.output;
 
-import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleElement;
-import osjava.tl3.model.ScheduleType;
+import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewRoom;
 
 /**
  * Diese Klasse erzeugt die Ausgabe für die Raumpläne
@@ -16,12 +15,12 @@ public class RoomScheduleWriter extends OutputFileWriter {
      * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe
      * eines Raumplanes im angegebenen Format in den angegebenen Pfad.
      *
-     * @param schedule
+     * @param scheduleView
      * @param outputFormat
      * @param outputPath
      */
     @Override
-    public void writeSchedule(Schedule schedule, OutputFormat outputFormat, String outputPath) {
+    public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
         
         /**
          * Prefix für Ausgabedateien
@@ -31,30 +30,32 @@ public class RoomScheduleWriter extends OutputFileWriter {
         /**
          * Prüfung der Eingabe
          */
-        if (schedule == null) {
+        if (scheduleView == null) {
             throw new IllegalArgumentException("Given instance of Schedule must not be null!");
         }
-        if (schedule.getType() != ScheduleType.ROOM_INTERNAL
-                && schedule.getType() != ScheduleType.ROOM_EXTERNAL) {
-            throw new IllegalArgumentException("Given instance of Schedule invalid. Type is: " + schedule.getType()
-                    + ", expected: " + ScheduleType.ROOM_INTERNAL + " or " + ScheduleType.ROOM_EXTERNAL);
-        }
+        
 
         /**
          * Die Beschriftung des Raumplans ermitteln
          */
-        String title = getPrimaryNameElement(schedule);
+        String title = getPrimaryNameElement(scheduleView);
 
         /**
          * Ausgabe des Schedules an an Vaterklasse delegieren und spezifische
          * Beschriftung übergeben
          */
-        writeSchedule(schedule, outputFormat, outputPath, fileNamePrefix, title);
+        writeSchedule(scheduleView, outputFormat, outputPath, fileNamePrefix, title);
 
     }
 
+    /**
+     * Liefert das primäre Namenselement für eine Raumsicht
+     * @param scheduleView Die Plansicht
+     * @return Das primäre Namenselement
+     */
     @Override
-    public String getPrimaryNameElement(Schedule schedule) {
-        return schedule.getRoom().getName();
+    public String getPrimaryNameElement(ScheduleView scheduleView) {
+        return ((ScheduleViewRoom)scheduleView).getRoom().getName();
     }
+    
 }

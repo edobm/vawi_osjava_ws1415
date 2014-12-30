@@ -1,6 +1,8 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 import java.util.Objects;
+import osjava.tl3.model.Day;
+import osjava.tl3.model.TimeSlot;
 
 /**
  * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Wochenplan
@@ -33,6 +35,7 @@ public class ScheduleCoordinate {
 
     /**
      * Liefert die Tag-Komponente der Koordinate
+     *
      * @return Die Tag-Komponente
      */
     public Day getDay() {
@@ -41,6 +44,7 @@ public class ScheduleCoordinate {
 
     /**
      * Liefert die Zeitraum-Komponente der Koordinate
+     *
      * @return Die Zeitraum-Komponente der Koordinate
      */
     public TimeSlot getTimeSlot() {
@@ -56,14 +60,18 @@ public class ScheduleCoordinate {
      */
     @Override
     public boolean equals(Object obj) {
-        ScheduleCoordinate other = (ScheduleCoordinate) obj;
-
-        return this.day == other.day && this.timeSlot == other.timeSlot;
+        if (obj instanceof ScheduleCoordinate) {
+            ScheduleCoordinate other = (ScheduleCoordinate) obj;
+            return this.day == other.day && this.timeSlot == other.timeSlot;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Berechnet den HashCode
-     * @return 
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -75,6 +83,7 @@ public class ScheduleCoordinate {
 
     /**
      * Die String-Darstellung
+     *
      * @return Die String-Darstellung
      */
     @Override

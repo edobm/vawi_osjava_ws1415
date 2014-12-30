@@ -2,8 +2,10 @@ package osjava.tl3.logic.planning;
 
 import java.util.HashMap;
 import osjava.tl3.logic.planning.strategies.Strategy;
-import osjava.tl3.model.MasterSchedule;
+import osjava.tl3.logic.planning.strategies.StrategyNew;
+import osjava.tl3.model.schedule.MasterSchedule;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.model.schedule.ScheduleNew;
 
 /**
  * Diese Klasse erzeugt auf Basis der gegebenen Kurse und verfügbaren Räume den
@@ -28,12 +30,12 @@ public class Scheduler {
     /**
      * Instanz des Gesamtplans
      */
-    private MasterSchedule masterSchedule;
+    private ScheduleNew schedule;
 
     /**
      * Instanz der Strategie für die Planung
      */
-    private Strategy strategy;
+    private StrategyNew strategy;
 
     /**
      * Den Gesamtplan auf Basis der gewählten Strategie erstellen.
@@ -45,7 +47,7 @@ public class Scheduler {
         /**
          * Führt die Strategie aus und erzeugt dabei den Gesamtplan
          */
-        masterSchedule = strategy.execute(dataController, parameters);
+        schedule = strategy.execute(dataController, parameters);
     }
 
     /**
@@ -62,15 +64,15 @@ public class Scheduler {
      *
      * @return Der Gesamtplan
      */
-    public MasterSchedule getMasterSchedule() {
-        return masterSchedule;
+    public ScheduleNew getSchedule() {
+        return schedule;
     }
 
     /**
      * Liefert die Strategie
      * @return Die Strategie
      */
-    public Strategy getStrategy() {
+    public StrategyNew getStrategy() {
         return strategy;
     }
 
@@ -78,7 +80,7 @@ public class Scheduler {
      * Setzt die Strategie
      * @param strategy Die Strategie
      */
-    public void setStrategy(Strategy strategy) {
+    public void setStrategy(StrategyNew strategy) {
         this.strategy = strategy;
     }
 

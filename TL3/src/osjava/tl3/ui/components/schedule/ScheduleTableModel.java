@@ -2,11 +2,12 @@ package osjava.tl3.ui.components.schedule;
 
 import javax.swing.table.DefaultTableModel;
 import osjava.tl3.model.Day;
-import osjava.tl3.model.Schedule;
-import osjava.tl3.model.ScheduleCoordinate;
-import osjava.tl3.model.ScheduleElement;
-import osjava.tl3.model.ScheduleType;
+import osjava.tl3.model.schedule.ScheduleCoordinate;
+import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleType;
 import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.ScheduleView;
+import osjava.tl3.model.schedule.ScheduleViewUnspecific;
 
 /**
  * Ein auf Instanzen der Klasse Schedule spezialisiertes TableModel.
@@ -19,15 +20,15 @@ public class ScheduleTableModel extends DefaultTableModel  {
     /**
      * Die Planinstanz auf der dieses TableModel operiert
      */
-    private Schedule schedule = new Schedule(ScheduleType.ACADAMIC);
+    private ScheduleView scheduleView = new ScheduleViewUnspecific();
 
     /**
      * Setzt die Instanz der Klasse Schedule, auf der dieses TableModel
      * operieren soll
      * @param schedule 
      */
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setSchedule(ScheduleView schedule) {
+        this.scheduleView = schedule;
         fireTableDataChanged();
     }
 
@@ -115,7 +116,7 @@ public class ScheduleTableModel extends DefaultTableModel  {
 
             ScheduleCoordinate scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(col - 1), TimeSlot.valueOf(row));
             
-            return schedule.getScheduleElement(scheduleCoordinate);
+            return scheduleView.getScheduleElement(scheduleCoordinate);
         }
     }
 

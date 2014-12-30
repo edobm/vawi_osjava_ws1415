@@ -55,6 +55,18 @@ public class StudyProgram implements Comparable<StudyProgram> {
         }
         return null;
     }
+    
+    /**
+     * Liefert alle Kurse dieses Studiegangs
+     * @return Die Liste der Kurse
+     */
+    public List<Course> getCourses() {
+        List<Course> courses = new ArrayList<>();
+        for (Semester semester : semesters) {
+            courses.addAll(semester.getCourses());
+        }
+        return courses;
+    }
 
     /**
      * Liefert die String-Darstellung

@@ -9,11 +9,12 @@ import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.schedule.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.model.schedule.ScheduleNew;
+import osjava.tl3.model.schedule.SchedulingException;
 
 /**
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
@@ -21,12 +22,12 @@ import osjava.tl3.model.controller.DataController;
  *
  * @author Meikel Bode
  */
-public class CostOptimizedStrategy extends Strategy {
-    
+public class CostOptimizedStrategyNew extends StrategyNew {
+
     /**
      * Erzeugt eine Instanz der Planungsstrategie CostOptimizedStrategy
      */
-    public CostOptimizedStrategy() {
+    public CostOptimizedStrategyNew() {
         super("Kostenoptimiert");
         Protocol.log("Strategie: " + getName());
     }
@@ -39,10 +40,9 @@ public class CostOptimizedStrategy extends Strategy {
      * @return Der erzeugte Gesamplan
      */
     @Override
-    public MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters) {
+    public ScheduleNew execute(DataController dataController, HashMap<String, Object> parameters) {
         super.dataController = dataController;
         super.parameters = parameters;
-        super.masterSchedule.initFromDataController(dataController);
 
         /**
          * Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
@@ -52,7 +52,7 @@ public class CostOptimizedStrategy extends Strategy {
         /**
          * Den erzeugten Gesamtplan zurück geben
          */
-        return masterSchedule;
+        return schedule;
     }
 
     /**
@@ -120,7 +120,7 @@ public class CostOptimizedStrategy extends Strategy {
              * Prüfen ob der Dozent noch freie Termine hat un wenn nicht, den
              * Kurs in die Liste der nicht einplanbaren Kurse eintragen
              */
-            freeCoordinatesAcademic = masterSchedule.getFreeCoordiates(course.getAcademic());
+            freeCoordinatesAcademic = schedule.getFreeCoordiates(course.getAcademic());
             if (freeCoordinatesAcademic.isEmpty()) {
                 Protocol.log("\tFehler: Kurs nicht einplanbar. Dozent hat keine Slots mehr frei: " + course);
                 coursesNotPlanned.add(course);
@@ -132,7 +132,7 @@ public class CostOptimizedStrategy extends Strategy {
              * haben und wenn nicht, den Kurs in die Liste der nicht
              * einplanbaren Kurse eintragen
              */
-            freeCoordinatesStudyPrograms = masterSchedule.getFreeCoordiates(course);
+            freeCoordinatesStudyPrograms = schedule.getFreeCoordiates(dataController.getStudyProgramsByCourse(course), course);
             if (freeCoordinatesStudyPrograms.isEmpty()) {
                 Protocol.log("\tFehler: Kurs nicht einplanbar. Fachsemester haben haben keine Slots mehr frei: " + course);
                 coursesNotPlanned.add(course);
@@ -154,7 +154,7 @@ public class CostOptimizedStrategy extends Strategy {
                  * Schnittmenge über alle freien Koordinaten des Raumplans, des
                  * Dozentenplans und aller Fachsemesterpläne erzeugen
                  */
-                freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
+                freeCoordinatesRoom = schedule.getFreeCoordiates(room);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                 freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                 freeIntersection.retainAll(freeCoordinatesAcademic);
@@ -172,21 +172,41 @@ public class CostOptimizedStrategy extends Strategy {
                  * Die erste freie Koordinate für die Planung verwenden
                  */
                 ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
-                masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
 
-                /**
-                 * Vermerken, dass der aktuelle Kurs intern eingeplant wurde und
-                 * damit eine spätere Überprüfung externer Räume entfallen kann
-                 */
-                coursePlanned = true;
+                try {
 
-                Protocol.log("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                    /**
+                     * Termin erstellen
+                     */
+                    schedule.createAppointment(scheduleCoordinate, room, course);
 
-                /**
-                 * Die Schleife kann beendet werden, da der Kurs erfolgreich
-                 * eingeplant wurde
-                 */
-                break;
+                    /**
+                     * Vermerken, dass der aktuelle Kurs intern eingeplant wurde
+                     * und damit eine spätere Überprüfung externer Räume
+                     * entfallen kann
+                     */
+                    coursePlanned = true;
+
+                    Protocol.log("\tIntern eingeplant: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+
+                    /**
+                     * Die Schleife kann beendet werden, da der Kurs erfolgreich
+                     * eingeplant wurde
+                     */
+                    break;
+
+                } catch (SchedulingException ex) {
+
+                    /**
+                     * Vermerken, dass der aktuelle Kurs nicht eingeplant werden
+                     * konnte
+                     */
+                    coursePlanned = false;
+
+                    Protocol.log("\tFehler bei der Einplanung: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]: " + ex.getMessage());
+
+                }
+
             }
 
             /**
@@ -195,9 +215,10 @@ public class CostOptimizedStrategy extends Strategy {
              * zunächst, einen bereits erzeugten, externen Raum zu finden, der
              * noch eine passende, freie Plan Koordinate hat.
              *
-             * Dieser Schritt optimiert daher die Anzahl der anzumietenden, externen
-             * Räume indem so viele Kurse eingeplant werden, wie freie Plan
-             * Koordinaten existieren, also maximal 25 Kurse pro externem Raum.
+             * Dieser Schritt optimiert daher die Anzahl der anzumietenden,
+             * externen Räume indem so viele Kurse eingeplant werden, wie freie
+             * Plan Koordinaten existieren, also maximal 25 Kurse pro externem
+             * Raum.
              */
             if (!coursePlanned) {
 
@@ -215,7 +236,7 @@ public class CostOptimizedStrategy extends Strategy {
                      * Schnittmenge über alle freien Koordinaten des Raumplans,
                      * des Dozentenplans und aller Fachsemesterpläne erzeugen
                      */
-                    freeCoordinatesRoom = masterSchedule.getFreeCoordiates(room);
+                    freeCoordinatesRoom = schedule.getFreeCoordiates(room);
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                     freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                     freeIntersection.retainAll(freeCoordinatesAcademic);
@@ -233,26 +254,41 @@ public class CostOptimizedStrategy extends Strategy {
                      * Die erste freie Koordinate für die Planung verwenden
                      */
                     ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
-                    masterSchedule.blockCoordinate(scheduleCoordinate, room, course);
+                    try {
 
-                    /**
-                     * Vermerken, dass der aktuelle Kurs extern eingeplant wurde
-                     * und damit kein weiterer externer Raum erzeugt werden
-                     * muss.
-                     */
-                    coursePlanned = true;
+                        /**
+                         * Termin erstellen
+                         */
+                        schedule.createAppointment(scheduleCoordinate, room, course);
 
-                    /**
-                     * Protokoll fortschreiben
-                     */
-                    Protocol.log("\tExtern eingeplant (bestehender Raum): " 
-                            + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+                        /**
+                         * Vermerken, dass der aktuelle Kurs intern eingeplant
+                         * wurde und damit eine spätere Überprüfung externer
+                         * Räume entfallen kann
+                         */
+                        coursePlanned = true;
 
-                    /**
-                     * Die Schleife kann beendet werden, da der Kurs erfolgreich
-                     * eingeplant wurde
-                     */
-                    break;
+                        Protocol.log("\tExtern eingeplant (bestehender Raum): "
+                                + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]");
+
+                        /**
+                         * Die Schleife kann beendet werden, da der Kurs
+                         * erfolgreich eingeplant wurde
+                         */
+                        break;
+
+                    } catch (SchedulingException ex) {
+
+                        /**
+                         * Vermerken, dass der aktuelle Kurs nicht eingeplant
+                         * werden konnte
+                         */
+                        coursePlanned = false;
+
+                        Protocol.log("\tFehler bei der Einplanung: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + room + " [" + room.getRoomId() + "]: " + ex.getMessage());
+
+                    }
+
                 }
             }
 
@@ -264,22 +300,15 @@ public class CostOptimizedStrategy extends Strategy {
             if (!coursePlanned) {
 
                 /**
-                 * Einen weiteren externen Raum mithilfe des Gesamtplans
-                 * erzeugen und dem Raum alle möglichen bekannten
-                 * Ausstatungsgegenstände zuweisen
+                 * Einen externen Raum erzeugen
                  */
-                Room externalRoom = masterSchedule.createExternalRoom(dataController.getEquipments());
-
-                /**
-                 * Den Raum auch im DataController ablegen
-                 */
-                dataController.getRooms().add(externalRoom);
+                Room externalRoom = dataController.createExternalRoom();
 
                 /**
                  * Schnittmenge über alle freien Koordinaten des Raumplans, des
                  * Dozentenplans und aller Fachsemesterpläne erzeugen
                  */
-                freeCoordinatesRoom = masterSchedule.getFreeCoordiates(externalRoom);
+                freeCoordinatesRoom = schedule.getFreeCoordiates(externalRoom);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
                 freeIntersection.retainAll(freeCoordinatesStudyPrograms);
                 freeIntersection.retainAll(freeCoordinatesAcademic);
@@ -295,16 +324,28 @@ public class CostOptimizedStrategy extends Strategy {
                 }
 
                 /**
-                 * Erste freie Koordinate für die Planung verwenden
+                 * Die erste freie Koordinate für die Planung verwenden
                  */
-                masterSchedule.blockCoordinate(freeIntersection.get(0), externalRoom, course);
+                ScheduleCoordinate scheduleCoordinate = freeIntersection.get(0);
+                try {
 
-                /**
-                 * Protokoll fortschreiben
-                 */
-                Protocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName() 
-                        + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+                    /**
+                     * Termin erstellen
+                     */
+                    schedule.createAppointment(freeIntersection.get(0), externalRoom, course);
 
+                    /**
+                     * Protokoll fortschreiben
+                     */
+                    Protocol.log("\tExtern eingeplant (neuer Raum): " + course.getAcademic().getName()
+                            + "; " + freeIntersection.get(0) + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]");
+
+                  
+                } catch (SchedulingException ex) {
+
+                    Protocol.log("\tFehler bei der Einplanung: " + course.getAcademic().getName() + "; " + scheduleCoordinate + ";" + externalRoom + " [" + externalRoom.getRoomId() + "]: " + ex.getMessage());
+
+                }
             }
         }
 

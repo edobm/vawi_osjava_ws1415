@@ -1,6 +1,6 @@
 package osjava.tl3.logic.io.output;
 
-import osjava.tl3.model.Schedule;
+import osjava.tl3.model.schedule.ScheduleView;
 
 /**
  *
@@ -15,7 +15,7 @@ public abstract class OutputFormatter {
      * @param title Der Titel den der Plan haben soll
      * @return Der StringBuilder der den Text hält
      */
-    public abstract StringBuilder format(Schedule schedule, String title);
+    public abstract StringBuilder format(ScheduleView schedule, String title);
     
     /**
      * Liefert das implementierungsspezifische Filename Suffiy

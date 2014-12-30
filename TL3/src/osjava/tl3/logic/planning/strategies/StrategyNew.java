@@ -7,10 +7,10 @@ import java.util.List;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.schedule.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.model.schedule.ScheduleNew;
 
 /**
  * Diese abstrakte Klasse stellt die Basis für alle Planungstrategien zur
@@ -18,8 +18,8 @@ import osjava.tl3.model.controller.DataController;
  *
  * @author Meikel Bode
  */
-public abstract class Strategy {
-
+public abstract class StrategyNew {
+    
     /**
      * Der Name der Planungsstrategie
      */
@@ -28,7 +28,7 @@ public abstract class Strategy {
     /**
      * Der durch die Strategie erstellte Gesamtplan
      */
-    protected MasterSchedule masterSchedule;
+    protected ScheduleNew schedule;
 
     /**
      * Der Data Controller
@@ -45,9 +45,9 @@ public abstract class Strategy {
      *
      * @param name Der Name der Planungsstrategie
      */
-    public Strategy(String name) {
+    public StrategyNew(String name) {
         this.name = name;
-        this.masterSchedule = new MasterSchedule();
+        this.schedule = new ScheduleNew();
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class Strategy {
      * @param parameters Mögliche Parameter für die Planungsstrategie
      * @return
      */
-    public abstract MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters);
+    public abstract ScheduleNew execute(DataController dataController, HashMap<String, Object> parameters);
 
     /**
      * Ermittele alle für den gegeben Kurs potentiell geeigneten Räume des
@@ -83,7 +83,7 @@ public abstract class Strategy {
 
         List<Room> matchingRooms = new ArrayList<>();
 
-        for (Room room : masterSchedule.getRooms()) {
+        for (Room room : dataController.getRooms()) {
 
             /**
              * Passt der Raumtyp?

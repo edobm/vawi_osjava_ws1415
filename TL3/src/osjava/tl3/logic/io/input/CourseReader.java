@@ -1,4 +1,4 @@
-package osjava.tl3.logic.io.output;
+package osjava.tl3.logic.io.input;
 
 import osjava.tl3.logic.io.input.InputValidator;
 import osjava.tl3.logic.io.input.InputFileReaderException;

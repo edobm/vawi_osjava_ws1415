@@ -1,5 +1,8 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
   
+import osjava.tl3.model.Course;
+import osjava.tl3.model.Room;
+
 /**
  * Diese Klasse repräsentiert ein Element des Terminplans.
  * Jedes Element ist einem Zeitpunkt an einem bestimmten Wochentag in einem Semeter zugeordnet.

@@ -2,19 +2,20 @@ package osjava.tl3.model.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import osjava.tl3.logic.io.output.CourseReader;
+import osjava.tl3.logic.io.input.CourseReader;
 import osjava.tl3.logic.io.input.RoomReader;
 import osjava.tl3.logic.io.input.StudyProgramReader;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Equipment;
 import osjava.tl3.model.Room;
+import osjava.tl3.model.RoomType;
 import osjava.tl3.model.StudyProgram;
 
 /**
- * Diese Klasse lädt und hält die verschiedenen Eingabedaten mittels der verschiedenen
- * Reader Ausprägungen. Zudem hält sie die eingelesenen Daten für die spätere
- * Nutzung der Klasse Scheduler.
+ * Diese Klasse lädt und hält die verschiedenen Eingabedaten mittels der
+ * verschiedenen Reader Ausprägungen. Zudem hält sie die eingelesenen Daten für
+ * die spätere Nutzung der Klasse Scheduler.
  *
  * @author Christoph Lurz
  * @version 1.0
@@ -25,33 +26,32 @@ public class DataController {
      * Die Liste der Räume
      */
     private List<Room> rooms = new ArrayList<>();
-    
+
     /**
      * Die Liste der Studiengänge
      */
     private List<StudyProgram> studyPrograms = new ArrayList<>();
-    
+
     /**
      * Die Liste der Kurse
      */
     private List<Course> courses = new ArrayList<>();
-    
+
     /**
      * Die Liste der Austattungsgegenstände
      */
     private List<Equipment> equipments = new ArrayList<>();
 
-    
     /**
      * Readerinstanz für Räume
      */
     private RoomReader roomReader;
-    
+
     /**
      * Readerinstanz für Studiengänge
      */
     private StudyProgramReader studyProgrammReader;
-    
+
     /**
      * Readerinstanz für Kurse
      */
@@ -176,8 +176,33 @@ public class DataController {
     }
 
     /**
+     * Erzeugt einen externen Raum und einen korrespondierenden Plan. Weiterhin
+     * werden der Raum und der Plan der Liste der Raumpläne hinzufügt.
+     *
+     * @return Der neue, externe Raum
+     */
+    public Room createExternalRoom() {
+
+        /**
+         * Einen Raum erzeugen
+         */
+        Room room = new Room();
+        room.setType(RoomType.EXTERNAL);
+        room.setName("Externer Raum " + (getRooms(RoomType.EXTERNAL).size() + 1));
+        room.setSeats(10000);
+        room.setAvailableEquipments(equipments);
+
+        /**
+         * Den externen Raum hinzufügen
+         */
+        rooms.add(room);
+
+        return room;
+    }
+
+    /**
      * Liefert die Räume
-     * 
+     *
      * @return Die Räume
      */
     public List<Room> getRooms() {
@@ -185,7 +210,25 @@ public class DataController {
     }
 
     /**
+     * Liefert die Räume des angegebenen Typs
+     *
+     * @param roomType Der Raumtyp
+     * @return Die Räume
+     */
+    public List<Room> getRooms(RoomType roomType) {
+        List<Room> list = new ArrayList<>();
+
+        for (Room room : rooms) {
+            if (room.getType() == roomType) {
+                list.add(room);
+            }
+        }
+        return list;
+    }
+
+    /**
      * Setzt die Räume
+     *
      * @param rooms Die Räume
      */
     public void setRooms(List<Room> rooms) {
@@ -194,6 +237,7 @@ public class DataController {
 
     /**
      * Liefert die Studiengänge
+     *
      * @return Die Studiengänge
      */
     public List<StudyProgram> getStudyPrograms() {
@@ -202,22 +246,25 @@ public class DataController {
 
     /**
      * Setzt die Studiengänge
+     *
      * @param studyPrograms Die Studiengänge
      */
     public void setStudyPrograms(List<StudyProgram> studyPrograms) {
         this.studyPrograms = studyPrograms;
     }
-    
+
     /**
      * Fügt einen Studiengang zur Liste der Studiengänge hinzu
+     *
      * @param studyProgram Studiengang der hinzugefügt werden soll
      */
-    public void addStudyProgram (StudyProgram studyProgram){
+    public void addStudyProgram(StudyProgram studyProgram) {
         studyPrograms.add(studyProgram);
     }
 
     /**
      * Liefert die Kurse
+     *
      * @return Die Kurse
      */
     public List<Course> getCourses() {
@@ -226,22 +273,25 @@ public class DataController {
 
     /**
      * Setzt die Kurse
+     *
      * @param courses Die Kurse
      */
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
-    
+
     /**
      * Fügt einen Kurs zur Liste der Kurse hinzu
+     *
      * @param course Kurs der hinzugefügt werden soll
      */
-    public void addCourse(Course course){
+    public void addCourse(Course course) {
         courses.add(course);
     }
 
     /**
      * Liefert die Ausstattungsgegenstände
+     *
      * @return Die Ausstattungsgegenstände
      */
     public List<Equipment> getEquipments() {
@@ -250,17 +300,20 @@ public class DataController {
 
     /**
      * Setzt die Ausstattungsgegenstände
+     *
      * @param equipments Die Ausstattungsgegenstände
      */
     public void setEquipments(List<Equipment> equipments) {
         this.equipments = equipments;
     }
-    
+
     /**
-     * Fügt einen Ausstattungsgegenstand zur Liste der Ausstattungsgegenstände hinzu
+     * Fügt einen Ausstattungsgegenstand zur Liste der Ausstattungsgegenstände
+     * hinzu
+     *
      * @param equipment Ausstattungsgegenstand der hinzugefügt werden soll
      */
-    public void addEquipment(Equipment equipment){
+    public void addEquipment(Equipment equipment) {
         equipments.add(equipment);
     }
 
