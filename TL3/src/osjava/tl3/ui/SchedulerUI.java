@@ -41,10 +41,9 @@ import osjava.tl3.logic.io.output.OutputFormat;
 import osjava.tl3.logic.io.input.RoomReader;
 import osjava.tl3.logic.io.input.StudyProgramReader;
 import osjava.tl3.logic.planning.Scheduler;
-import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
 import osjava.tl3.logging.Protocol;
-import osjava.tl3.logic.planning.strategies.CostOptimizedStrategyNew;
+import osjava.tl3.logic.planning.strategies.CostOptimizedStrategy;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Room;
@@ -53,8 +52,8 @@ import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.ScheduleAppointment;
-import osjava.tl3.model.schedule.ScheduleElementNew;
-import osjava.tl3.model.schedule.ScheduleNew;
+import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.Schedule;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewCourse;
@@ -145,7 +144,7 @@ public class SchedulerUI extends JFrame {
     /**
      * Instanz des Gesamtplans
      */
-    private ScheduleNew schedule;
+    private Schedule schedule;
 
     /**
      * Instanz des OutputControllers für die Dateiausgabe der erzeugten
@@ -260,7 +259,7 @@ public class SchedulerUI extends JFrame {
         panelConfiguration.add(labelStrategies);
         panelConfiguration.add(comboBoxStrategies);
         ComboBoxElementModel cbxModelStrategies = new ComboBoxElementModel();
-        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategyNew.class));
+        cbxModelStrategies.addElement(new ComboxBoxElement("Kostenoptimiert", CostOptimizedStrategy.class));
         comboBoxStrategies.setModel(cbxModelStrategies);
         panelConfiguration.add(labelCosts);
         panelConfiguration.add(textFieldCosts);
@@ -721,7 +720,7 @@ public class SchedulerUI extends JFrame {
             rCourse.add(rCourseRooms);
             List<Room> relevantRooms = new ArrayList<>();
 
-            for (ScheduleElementNew element : scheduleView.getScheduleElements()) {
+            for (ScheduleElement element : scheduleView.getScheduleElements()) {
                for (ScheduleAppointment appointment : element.getAppointments()) {
                    relevantRooms.add(appointment.getRoom());
                }
@@ -739,7 +738,7 @@ public class SchedulerUI extends JFrame {
             rCourse.add(rCourseAcadmic);
             List<Academic> relevantAcademics = new ArrayList<>();
 
-            for (ScheduleElementNew element : scheduleView.getScheduleElements()) {
+            for (ScheduleElement element : scheduleView.getScheduleElements()) {
                for (ScheduleAppointment appointment : element.getAppointments()) {
                    relevantAcademics.add(appointment.getCourse().getAcademic());
                }

@@ -1,11 +1,11 @@
 package osjava.tl3.model.schedule;
 
 import osjava.tl3.model.Course;
-import osjava.tl3.model.Room;
 
 /**
+ * Der Gesamtplan aus sicht eines Kurses
  *
- * @author meikelbode
+ * @author Meikel Bode
  */
 public class ScheduleViewCourse extends ScheduleView {
 
@@ -14,15 +14,28 @@ public class ScheduleViewCourse extends ScheduleView {
      */
     private final Course course;
 
-    public ScheduleViewCourse(Course course, ScheduleNew schedule) {
+    /**
+     * Erzeugt eine neue Instanz der Fachsemestersicht
+     *
+     * @param course Das Kurs auf dem diese Sicht operiert
+     * @param schedule Der Plan auf dem diese Sicht operiert
+     */
+    public ScheduleViewCourse(Course course, Schedule schedule) {
         super(schedule);
         this.course = course;
     }
 
+    /**
+     * Liefert die Termine des Planelements auf der gegebenen Koordinate 
+     * anhand des Kurses. 
+     * Nur die Termine für das Filterkrieterium werden zurückgeliefert
+     * @param coordinate Die Plankoordinate
+     * @return Das gefilterte Planelement 
+     */
     @Override
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
         
-        ScheduleElementNew elementFiltered = new ScheduleElementNew(coordinate);
+        ScheduleElement elementFiltered = new ScheduleElement(coordinate);
         
         ScheduleAppointment appointment = schedule.getScheduleElement(coordinate).getAppointment(course);
         

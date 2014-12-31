@@ -2,7 +2,6 @@ package osjava.tl3.logic.io.output;
 
 import osjava.tl3.model.schedule.ScheduleAppointment;
 import osjava.tl3.model.schedule.ScheduleElement;
-import osjava.tl3.model.schedule.ScheduleElementNew;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;
@@ -47,15 +46,12 @@ public class CSVOutputFormatter extends OutputFormatter {
 
         if (scheduleView instanceof ScheduleViewAcademic) {
 
-            // Typkonvertierung
-            ScheduleViewAcademic view = (ScheduleViewAcademic) scheduleView;
-
             // Kopfzeile ausgeben
             sb.append(DESCRIPTION_LINE_ACADEMIC).append(NEW_LINE);
 
             // Zeilen ausgeben
             String column1, column2, column3, column4;
-            for (ScheduleElementNew scheduleElement : scheduleView.getScheduleElements()) {
+            for (ScheduleElement scheduleElement : scheduleView.getScheduleElements()) {
 
                 column1 = scheduleElement.getCoordiate().getDay().toString();
                 column2 = scheduleElement.getCoordiate().getTimeSlot().toString();
@@ -76,15 +72,12 @@ public class CSVOutputFormatter extends OutputFormatter {
 
         if (scheduleView instanceof ScheduleViewRoom) {
 
-            // Typkonvertierung
-            ScheduleViewRoom view = (ScheduleViewRoom) scheduleView;
-
             // Kopfzeile ausgeben
             sb.append(DESCRIPTION_LINE_ROOM).append(NEW_LINE);
 
             // Zeilen ausgeben
             String column1, column2, column3, column4;
-            for (ScheduleElementNew scheduleElement : scheduleView.getScheduleElements()) {
+            for (ScheduleElement scheduleElement : scheduleView.getScheduleElements()) {
 
                 column1 = scheduleElement.getCoordiate().getDay().toString();
                 column2 = scheduleElement.getCoordiate().getTimeSlot().toString();
@@ -106,15 +99,12 @@ public class CSVOutputFormatter extends OutputFormatter {
         if (scheduleView instanceof ScheduleViewStudyProgram 
                 || scheduleView instanceof ScheduleViewSemester) {
 
-            // Typkonvertierung
-            ScheduleViewSemester view = (ScheduleViewSemester) scheduleView;
-
             // Kopfzeile ausgeben
             sb.append(DESCRIPTION_LINE_STUDYPROGRAM).append(NEW_LINE);
 
             // Zeilen ausgeben
             String column1, column2, column3, column4, column5;
-            for (ScheduleElementNew scheduleElement : scheduleView.getScheduleElements()) {
+            for (ScheduleElement scheduleElement : scheduleView.getScheduleElements()) {
 
                 column1 = scheduleElement.getCoordiate().getDay().toString();
                 column2 = scheduleElement.getCoordiate().getTimeSlot().toString();

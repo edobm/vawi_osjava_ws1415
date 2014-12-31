@@ -3,8 +3,9 @@ package osjava.tl3.model.schedule;
 import osjava.tl3.model.Academic;
 
 /**
+ * Der Gesamtplan aus sicht eines Dozenten
  *
- * @author meikelbode
+ * @author Meikel Bode
  */
 public class ScheduleViewAcademic extends ScheduleView {
 
@@ -14,15 +15,27 @@ public class ScheduleViewAcademic extends ScheduleView {
      */
     private final Academic academic;
 
-    public ScheduleViewAcademic(Academic academic, ScheduleNew schedule) {
+    /**
+     * Erzeugt eine neue Instanz einer Dozentensicht
+     * @param academic Der Dozent
+     * @param schedule Der Plan auf dem diese Sicht operiert
+     */
+    public ScheduleViewAcademic(Academic academic, Schedule schedule) {
         super(schedule);
         this.academic = academic;
     }
 
+    /**
+     * Liefert die Termine des Planelements auf der gegebenen Koordinate 
+     * anhand des Dozenten. 
+     * Nur die Termine für das Filterkrieterium werden zurückgeliefert
+     * @param coordinate Die Plankoordinate
+     * @return Das gefilterte Planelement 
+     */
     @Override
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
 
-        ScheduleElementNew elementFiltered = new ScheduleElementNew(coordinate);
+        ScheduleElement elementFiltered = new ScheduleElement(coordinate);
 
         ScheduleAppointment appointment = schedule.getScheduleElement(coordinate).getAppointment(academic);
 

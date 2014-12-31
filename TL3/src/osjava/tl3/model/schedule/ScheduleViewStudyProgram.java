@@ -4,8 +4,9 @@ import osjava.tl3.model.Course;
 import osjava.tl3.model.StudyProgram;
 
 /**
+ * Der Gesamtplan aus sicht eines Studiengangs
  *
- * @author meikelbode
+ * @author Meikel Bode
  */
 public class ScheduleViewStudyProgram extends ScheduleView {
 
@@ -20,15 +21,22 @@ public class ScheduleViewStudyProgram extends ScheduleView {
      * @param studyProgramm Der Studiengang auf dem diese Sicht operiert
      * @param schedule Der Plan auf dem diese Sicht operiert
      */
-    public ScheduleViewStudyProgram(StudyProgram studyProgramm, ScheduleNew schedule) {
+    public ScheduleViewStudyProgram(StudyProgram studyProgramm, Schedule schedule) {
         super(schedule);
         this.studyProgramm = studyProgramm;
     }
 
+    /**
+     * Liefert die Termine des Planelements auf der gegebenen Koordinate 
+     * anhand des Studiengangs. 
+     * Nur die Termine für das Filterkrieterium werden zurückgeliefert
+     * @param coordinate Die Plankoordinate
+     * @return Das gefilterte Planelement 
+     */
     @Override
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
 
-        ScheduleElementNew elementFiltered = new ScheduleElementNew(coordinate);
+        ScheduleElement elementFiltered = new ScheduleElement(coordinate);
 
         ScheduleAppointment appointment;
         for (Course course : getStudyProgramm().getCourses()) {

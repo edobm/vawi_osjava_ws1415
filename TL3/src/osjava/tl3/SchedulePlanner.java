@@ -3,18 +3,16 @@ package osjava.tl3;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import osjava.tl3.logging.Protocol;
 import osjava.tl3.logic.io.output.OutputController;
 import osjava.tl3.logic.io.output.OutputFormat;
 import static osjava.tl3.logic.io.output.OutputFormat.CSV_TEXT;
 import static osjava.tl3.logic.io.output.OutputFormat.HTML;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
-import osjava.tl3.logic.planning.strategies.StrategyNew;
-import osjava.tl3.model.schedule.MasterSchedule;
+import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.controller.DataController;
-import osjava.tl3.model.schedule.ScheduleNew;
+import osjava.tl3.model.schedule.Schedule;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.ui.SchedulerUI;
 
@@ -199,7 +197,7 @@ public class SchedulePlanner {
         loadInputData(dataController);
 
         // Plan erzeugen
-        ScheduleNew schedule = createSchedule(dataController);
+        Schedule schedule = createSchedule(dataController);
 
         // Statistiken zum Gesamtplan ausgeben
         printCoreStats(dataController, schedule);
@@ -231,12 +229,12 @@ public class SchedulePlanner {
     /**
      * Auf Basis der Parametriesierung die Zeitplanung durchführen
      */
-    private ScheduleNew createSchedule(DataController dataController) {
+    private Schedule createSchedule(DataController dataController) {
 
         /**
          * Strategie erzeugen auf Basis Eingabedateien
          */
-        StrategyNew strategy = StrategyFactory.getInstanceByClassName(parameters.get("strategy"));
+        Strategy strategy = StrategyFactory.getInstanceByClassName(parameters.get("strategy"));
         if (strategy == null) {
             System.out.println("Unbekannte Planungsstrategie: " + parameters.get("strategy"));
             System.exit(2);
@@ -272,7 +270,7 @@ public class SchedulePlanner {
     /**
      * Erzeugen des Outputs im gewünschten Format
      */
-    private void writeOutput(DataController dataController, ScheduleNew schedule) {
+    private void writeOutput(DataController dataController, Schedule schedule) {
 
         OutputFormat outputFormat = getOutputFormat(parameters.get("format"));
         String outputDirectory = parameters.get("out");
@@ -297,7 +295,7 @@ public class SchedulePlanner {
      * @param schedule Der Gesamtplan für den Statistiken ausgegeben werden
      * sollen
      */
-    public void printCoreStats(DataController dataController, ScheduleNew schedule) {
+    public void printCoreStats(DataController dataController, Schedule schedule) {
 
         System.out.println("Räume insgesamt: " + dataController.getRooms().size());
         System.out.println("Räume intern: " + dataController.getRooms(RoomType.INTERNAL).size());

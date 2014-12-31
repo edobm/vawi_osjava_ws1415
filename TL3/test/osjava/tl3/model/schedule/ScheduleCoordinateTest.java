@@ -1,17 +1,18 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
-import osjava.tl3.model.schedule.ScheduleCoordinate;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import osjava.tl3.model.Day;
+import osjava.tl3.model.TimeSlot;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author BODE28
+ * @author Meikel Bode
  */
 public class ScheduleCoordinateTest {
     

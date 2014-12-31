@@ -82,7 +82,7 @@ public class CourseReader extends InputFileReader {
         try {
             numberOfStudents = Integer.parseInt(courseData[4]);
         } catch (Exception e) {
-            System.out.println("Eingabewert für die Anzahl der Studenten ist kein Integer!");
+            Protocol.log("Eingabewert für die Anzahl der Studenten ist kein Integer!");
         }
         course.setStudents(numberOfStudents);
 
@@ -96,7 +96,7 @@ public class CourseReader extends InputFileReader {
                 }
             }
         } else {
-            System.out.println("Die Veranstaltung " + removeQuotationMarks(courseData[1]) + " benötigt kein Equipment!");
+            Protocol.log("Die Veranstaltung " + removeQuotationMarks(courseData[1]) + " benötigt kein Equipment!");
         }
 
         return course;

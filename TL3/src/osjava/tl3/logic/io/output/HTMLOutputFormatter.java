@@ -5,7 +5,7 @@ import osjava.tl3.model.RoomType;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
-import osjava.tl3.model.schedule.ScheduleElementNew;
+import osjava.tl3.model.schedule.ScheduleElement;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;
@@ -84,7 +84,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
             sb.append("</td>");
 
             ScheduleCoordinate scheduleCoordinate;
-            ScheduleElementNew scheduleElement;
+            ScheduleElement scheduleElement;
             for (int day = 0; day < 5; day++) {
                 scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(day), TimeSlot.valueOf(timeslot));
                 scheduleElement = scheduleView.getScheduleElement(scheduleCoordinate);

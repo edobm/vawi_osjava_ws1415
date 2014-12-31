@@ -1,9 +1,5 @@
 package osjava.tl3.logic.io.output;
 
-import static osjava.tl3.model.schedule.ScheduleType.ACADAMIC;
-import static osjava.tl3.model.schedule.ScheduleType.ROOM_EXTERNAL;
-import static osjava.tl3.model.schedule.ScheduleType.ROOM_INTERNAL;
-import static osjava.tl3.model.schedule.ScheduleType.STUDY_PROGRAM;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;

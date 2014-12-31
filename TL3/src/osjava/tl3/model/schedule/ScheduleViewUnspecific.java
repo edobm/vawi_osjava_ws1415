@@ -12,7 +12,7 @@ public class ScheduleViewUnspecific extends ScheduleView {
      * Erzeugt eine unspezifische Plansicht dar
      */
     public ScheduleViewUnspecific() {
-        super(new ScheduleNew());
+        super(new Schedule());
     }
     
     /**
@@ -21,7 +21,7 @@ public class ScheduleViewUnspecific extends ScheduleView {
      * @return Das Plementelement
      */
     @Override
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
         return schedule.getScheduleElement(coordinate);
     }
     

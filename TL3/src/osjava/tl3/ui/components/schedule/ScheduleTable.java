@@ -3,8 +3,8 @@ package osjava.tl3.ui.components.schedule;
 import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-import osjava.tl3.model.schedule.ScheduleElement;
 import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.ScheduleElement;
 
 /**
  * Implement eine JTable für die spezfischen Anforderungen zur Anzeige eines

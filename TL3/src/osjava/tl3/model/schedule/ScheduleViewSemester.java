@@ -1,13 +1,12 @@
 package osjava.tl3.model.schedule;
 
-import java.util.ArrayList;
-import java.util.List;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Semester;
 
 /**
+ * Der Gesamtplan aus sicht eines Fachsemesters
  *
- * @author meikelbode
+ * @author Meikel Bode
  */
 public class ScheduleViewSemester extends ScheduleView {
 
@@ -22,15 +21,22 @@ public class ScheduleViewSemester extends ScheduleView {
      * @param semester Das Fachsemester auf dem diese Sicht operiert
      * @param schedule Der Plan auf dem diese Sicht operiert
      */
-    public ScheduleViewSemester(Semester semester, ScheduleNew schedule) {
+    public ScheduleViewSemester(Semester semester, Schedule schedule) {
         super(schedule);
         this.semester = semester;
     }
 
+    /**
+     * Liefert die Termine des Planelements auf der gegebenen Koordinate 
+     * anhand des Fachsemesters. 
+     * Nur die Termine für das Filterkrieterium werden zurückgeliefert
+     * @param coordinate Die Plankoordinate
+     * @return Das gefilterte Planelement 
+     */
     @Override
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
 
-        ScheduleElementNew elementFiltered = new ScheduleElementNew(coordinate);
+        ScheduleElement elementFiltered = new ScheduleElement(coordinate);
 
         ScheduleAppointment appointment;
         for (Course course : getSemester().getCourses()) {

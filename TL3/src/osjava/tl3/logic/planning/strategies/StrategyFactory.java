@@ -16,7 +16,7 @@ public class StrategyFactory {
      * @param className Der Name der Klasse 
      * @return Die Instanz der Klasse oder null, wenn diese nicht gefunden werden konnte
      */
-    public static final StrategyNew getInstanceByClassName(String className) {
+    public static final Strategy getInstanceByClassName(String className) {
 
         /**
          * Legt das zugelassene Package für Strategieimplementierungen fest
@@ -32,9 +32,9 @@ public class StrategyFactory {
             /**
              * Prüfen ob die Klasse wirklich von Strategy.class abstammt
              */
-            if (StrategyNew.class.isAssignableFrom(cls)) {
+            if (Strategy.class.isAssignableFrom(cls)) {
                 Protocol.log("Strategie geladen: " + cls.getName());
-                return (StrategyNew) cls.newInstance();
+                return (Strategy) cls.newInstance();
             } else {
                 Protocol.log("Strategie konnte nicht geladen werden: " + packagePath + "." + className);
                 return null;

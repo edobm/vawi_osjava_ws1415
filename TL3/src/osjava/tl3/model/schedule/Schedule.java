@@ -10,21 +10,23 @@ import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 
 /**
- *
- * @author meikelbode
+ * Der Gesamtplan für alle Räume, Kurse, Dozenten und Fachsemester der
+ * Studiengengänge
+ * 
+ * @author Meikel Bode
  */
-public class ScheduleNew extends ScheduleBasis {
+public class Schedule extends ScheduleBasis {
 
     /**
      * Die Elemente des Plans
      */
-    private final List<ScheduleElementNew> scheduleElements;
+    private final List<ScheduleElement> scheduleElements;
 
     /**
      * Erzeugt einen neuen Plan vom gegebenen Typ
      *
      */
-    public ScheduleNew() {
+    public Schedule() {
         this.scheduleElements = new ArrayList<>(25);
         initSchedule();
     }
@@ -35,7 +37,7 @@ public class ScheduleNew extends ScheduleBasis {
     private void initSchedule() {
 
         for (ScheduleCoordinate coordinate : ScheduleBasis.getPossibleScheduleCoordinates()) {
-            scheduleElements.add(new ScheduleElementNew(coordinate));
+            scheduleElements.add(new ScheduleElement(coordinate));
         }
     }
 
@@ -46,8 +48,8 @@ public class ScheduleNew extends ScheduleBasis {
      * @return Das zur Koordinate passende Planelement oder null, wenn zur
      * gegebenen Kordinate kein Element gefunden wurde
      */
-    public ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate) {
-        for (ScheduleElementNew scheduleElement : scheduleElements) {
+    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
+        for (ScheduleElement scheduleElement : scheduleElements) {
             if (scheduleElement.getCoordiate().equals(coordinate)) {
                 return scheduleElement;
             }
@@ -60,7 +62,7 @@ public class ScheduleNew extends ScheduleBasis {
      *
      * @return Die Planelemente
      */
-    public List<ScheduleElementNew> getScheduleElements() {
+    public List<ScheduleElement> getScheduleElements() {
         return scheduleElements;
     }
 
@@ -133,12 +135,9 @@ public class ScheduleNew extends ScheduleBasis {
      * @param scheduleCoordinate Die Plankoordinate
      * @param room Der Raum
      * @param course Der Kurs
-     * @throws SchedulingException Falls der Termin nicht eingeplant werden
-     * konnte
      */
-    public void createAppointment(ScheduleCoordinate scheduleCoordinate, Room room, Course course) throws SchedulingException {
-        ScheduleElementNew element = getScheduleElement(scheduleCoordinate);
-        element.createAppointment(room, course);
+    public void createAppointment(ScheduleCoordinate scheduleCoordinate, Room room, Course course){
+        getScheduleElement(scheduleCoordinate).createAppointment(room, course);
     }
 
     /**
@@ -149,7 +148,7 @@ public class ScheduleNew extends ScheduleBasis {
     public int getAppointmentCount() {
         int count = 0;
 
-        for (ScheduleElementNew element : scheduleElements) {
+        for (ScheduleElement element : scheduleElements) {
             count += element.getAppointments().size();
         }
 
@@ -165,7 +164,7 @@ public class ScheduleNew extends ScheduleBasis {
     public int getStudentsCount(RoomType roomType) {
         int count = 0;
 
-        for (ScheduleElementNew element : scheduleElements) {
+        for (ScheduleElement element : scheduleElements) {
             for (ScheduleAppointment appointment : element.getAppointments()) {
                 if (appointment.getRoom().getType() == roomType) {
                     count += appointment.getCourse().getStudents();

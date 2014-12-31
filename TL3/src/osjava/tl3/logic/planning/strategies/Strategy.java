@@ -7,10 +7,10 @@ import java.util.List;
 import osjava.tl3.logic.planning.strategies.helpers.RoomAvailableEquipmentComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.schedule.MasterSchedule;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.controller.DataController;
+import osjava.tl3.model.schedule.Schedule;
 
 /**
  * Diese abstrakte Klasse stellt die Basis für alle Planungstrategien zur
@@ -19,7 +19,7 @@ import osjava.tl3.model.controller.DataController;
  * @author Meikel Bode
  */
 public abstract class Strategy {
-
+    
     /**
      * Der Name der Planungsstrategie
      */
@@ -28,7 +28,7 @@ public abstract class Strategy {
     /**
      * Der durch die Strategie erstellte Gesamtplan
      */
-    protected MasterSchedule masterSchedule;
+    protected Schedule schedule;
 
     /**
      * Der Data Controller
@@ -47,7 +47,7 @@ public abstract class Strategy {
      */
     public Strategy(String name) {
         this.name = name;
-        this.masterSchedule = new MasterSchedule();
+        this.schedule = new Schedule();
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class Strategy {
      * @param parameters Mögliche Parameter für die Planungsstrategie
      * @return
      */
-    public abstract MasterSchedule execute(DataController dataController, HashMap<String, Object> parameters);
+    public abstract Schedule execute(DataController dataController, HashMap<String, Object> parameters);
 
     /**
      * Ermittele alle für den gegeben Kurs potentiell geeigneten Räume des
@@ -83,7 +83,7 @@ public abstract class Strategy {
 
         List<Room> matchingRooms = new ArrayList<>();
 
-        for (Room room : masterSchedule.getRooms()) {
+        for (Room room : dataController.getRooms()) {
 
             /**
              * Passt der Raumtyp?

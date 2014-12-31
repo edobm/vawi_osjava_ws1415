@@ -5,7 +5,7 @@ import osjava.tl3.model.Day;
 import osjava.tl3.model.TimeSlot;
 
 /**
- * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Wochenplan
+ * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Plan
  * dar, wie beispielsweise (MONDAY;0800) oder (WEDNESDAY;1400)
  *
  * @author Meikel Bode

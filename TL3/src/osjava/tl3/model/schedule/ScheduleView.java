@@ -4,19 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Diese Klasse repräsentiert die Entität Terminplan.
- *
- * Ein Terminplan besteht aus Terminelementen.
- *
- * Bei 5 Zeitfenstern à 2 Stunden pro Tag und 5 Tagen pro Woche ergegeben
- * grundsätzlich 25 mögliche Termine zur Platzierung von Kursen eines
- * Fachsemesters.
- *
- * Einschränkende Kriterien sind: - Anzahl der eigenen Räume - Verfügbare und
- * benötigte Ausstattung pro Raum und Lehrveranstaltung - Verfügbare und
- * benötigte Sitzplätze pro Raum und Lehrveranstaltug - Keine Überplanung der
- * Dozenten - Überschneidunngsfreie Planung der Kurse eines Fachsemesters -
- * Möglichst geringe Kosten bei externer Raumbelegung
+ * Diese Klasse repräsentiert eine Sicht auf den Gesamtplan.
+ * Die Klasse stellt allgemeine Methoden für spezifische Implementierungen bereit.
  *
  * @author Meikel Bode
  */
@@ -25,14 +14,14 @@ public abstract class ScheduleView extends ScheduleBasis {
     /**
      * Der Plan auf dem diese Sicht operiert
      */
-    protected final ScheduleNew schedule;
+    protected final Schedule schedule;
 
     /**
      * Erzeugt eine neue Sicht auf den Plan
      *
      * @param schedule Der Plan auf den die Sicht operieren soll
      */
-    public ScheduleView(ScheduleNew schedule) {
+    public ScheduleView(Schedule schedule) {
         this.schedule = schedule;
     }
 
@@ -43,17 +32,17 @@ public abstract class ScheduleView extends ScheduleBasis {
      * @return Das zur Koordinate passende Planelement oder null, wenn zur
      * gegebenen Kordinate kein Element gefunden wurde
      */
-    public abstract ScheduleElementNew getScheduleElement(ScheduleCoordinate coordinate);
+    public abstract ScheduleElement getScheduleElement(ScheduleCoordinate coordinate);
 
     /**
      * Liefert die Planelemente
      *
      * @return Die Planelemente
      */
-    public List<ScheduleElementNew> getScheduleElements() {
-        List<ScheduleElementNew> elements = new ArrayList<>();
+    public List<ScheduleElement> getScheduleElements() {
+        List<ScheduleElement> elements = new ArrayList<>();
 
-        for (ScheduleCoordinate coordinate : possibleScheduleCoordinates) {
+        for (ScheduleCoordinate coordinate : getPossibleScheduleCoordinates()) {
             elements.add(getScheduleElement(coordinate));
         }
 
@@ -61,14 +50,15 @@ public abstract class ScheduleView extends ScheduleBasis {
     }
 
     /**
-     * Liefert alle belegten Koordinaten des Plans
+     * Liefert alle belegten oder unbelegten Koordinaten der Plansicht
      *
+     * @param onlyBlocked Nur belegte oder unbelegt
      * @return Die Liste der belegten Koordinaten
      */
     private List<ScheduleCoordinate> getCoordinates(boolean onlyBlocked) {
         List<ScheduleCoordinate> coordinates = new ArrayList<>();
 
-        for (ScheduleElementNew scheduleElement : getScheduleElements()) {
+        for (ScheduleElement scheduleElement : getScheduleElements()) {
             if (onlyBlocked) {
                 if (!scheduleElement.isEmpty()) {
                     coordinates.add(scheduleElement.getCoordiate());
@@ -82,14 +72,14 @@ public abstract class ScheduleView extends ScheduleBasis {
 
         return coordinates;
     }
-    
-     /**
+
+    /**
      * Liefert alle freien Koordinaten des Plans
      *
      * @return Die Liste der freien Koordinaten
      */
     public List<ScheduleCoordinate> getFreeCoordinates() {
-       return getCoordinates(false);
+        return getCoordinates(false);
     }
 
     /**
@@ -98,7 +88,7 @@ public abstract class ScheduleView extends ScheduleBasis {
      * @return Die Liste der belegten Koordinaten
      */
     public List<ScheduleCoordinate> getBlockedCoordinates() {
-       return getCoordinates(true);
+        return getCoordinates(true);
     }
-    
+
 }

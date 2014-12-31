@@ -79,7 +79,7 @@ public class RoomReader extends InputFileReader {
                 }
             }
         } else {
-            System.out.println("In Raum " + removeQuotationMarks(roomData[0]) + " kein Equipment vorhanden!");
+            Protocol.log("In Raum " + removeQuotationMarks(roomData[0]) + " kein Equipment vorhanden!");
         }
 
         //Typ setzen
@@ -91,10 +91,12 @@ public class RoomReader extends InputFileReader {
 
     /**
      * Validiert Datensätze aus Raumdateien
+     *
      * @param rowNumber Die aktuelle Zeilenzahl
      * @param recordLine Die aktuelle Zeile aus der Datei
      * @return Die Spalten der Zeile
-     * @throws InputFileReaderException Wenn ein Validierungsfehler aufgetreten sein sollte 
+     * @throws InputFileReaderException Wenn ein Validierungsfehler aufgetreten
+     * sein sollte
      */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
@@ -144,7 +146,7 @@ public class RoomReader extends InputFileReader {
             if (record[2] != null && record[2].length() > 2) {
                 InputValidator.validateEquipment("Austattung", record[2], recordLine, rowNumber);
             }
-            
+
         }
 
         /**

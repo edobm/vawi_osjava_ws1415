@@ -1,102 +1,117 @@
 package osjava.tl3.model.schedule;
-  
+
+import java.util.ArrayList;
+import java.util.List;
+import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Room;
 
 /**
- * Diese Klasse repräsentiert ein Element des Terminplans.
- * Jedes Element ist einem Zeitpunkt an einem bestimmten Wochentag in einem Semeter zugeordnet.
- * Zudem wird diesem Element ein bestimmter Kurs einem Raum zugeordnet. 
- * Implizit wird damit auch festgelegt welcher Dozent wann welche Lehrveranstaltung hält.
- * 
+ * Diese Klasse repräsentiert ein Element des Terminplans. Jedes Element ist
+ * einer bestimmten Plankoordinate zugeordnet. Jedes Planelement kann beliebig
+ * viele Termine (ScheduleAppointments) in Form einer Kombination von Raum und
+ * Kurs beinhalten.
+ *
  * @author Meikel Bode
- * @version 1.0
  */
-public class ScheduleElement
-{
+public class ScheduleElement {
+
     /**
      * Die Koordinate dieses Planelements
      */
-    private ScheduleCoordinate coordiate = null;
-    
+    private final ScheduleCoordinate coordiate;
+
     /**
-     * Der diesem Planelement zugewiesene Raum
+     * Die Liste von Terminen die diesem ScheduleElement zugewiesen sind
      */
-    private Room room = null;
-    
+    private final List<ScheduleAppointment> appointments = new ArrayList<>();
+
     /**
-     * Der diesem Planelement zugewiesene Kurs
+     * Erzeugt eine neue Instanz für die gegebene
+     *
+     * @param coordinate
      */
-    private Course course = null;
-    
-    /**
-     * Ob dieses Planelement bereits belegt ist.
-     * @return Belegt ja oder nein
-     */
-    public boolean isBlocked() {
-        return course != null && room != null;
-    }
-    
-    /**
-     * Setzt den gegebenen Kurs und liefert das aktuelle ScheduleElement zurück
-     * @param course Der zusetzende Kurs
-     * @return Die aktuelle Instanz des Planelements auf dem gearbeitet wird.
-     */
-    public ScheduleElement assignCourse(Course course) {
-        if (this.course != null) {
-            throw new IllegalStateException("Course already assinged!");
-        }
-        this.course = course;
-        return this;
-    }
-    
-    /**
-     * Setzt den gegebenen Raum und liefert das aktuelle ScheduleElement zurück
-     * @param room Der zusetzende Raum
-     * @return Die aktuelle Instanz des Planelements auf dem gearbeitet wird.
-     */
-    public ScheduleElement assignRoom(Room room) {
-        if (this.room != null) {
-            throw new IllegalStateException("Room already assinged!");
-        }
-        this.room = room;
-        return this;
+    public ScheduleElement(ScheduleCoordinate coordinate) {
+        this.coordiate = coordinate;
     }
 
     /**
-     * Liefert den Kurs 
-     * @return Der Kurs
-     */
-    public Course getCourse() {
-        return course;
-    }
-
-    /**
-     * Setzt den Kurs
+     * Erzeugt einen neuen Termin in diesem Planelement für den angegebenen Kurs
+     * im angegebenen Raum
+     *
+     * @param room Der Raum
      * @param course Der Kurs
      */
-    public void setCourse(Course course) {
-        this.course = course;
+    public void createAppointment(Room room, Course course) {
+        appointments.add(new ScheduleAppointment(room, course));
     }
 
     /**
-     * Liefert den Raum
-     * @return Der Raum
+     * Liefert einen Termin auf diesem Planelement für den gegebenen Dozenten
+     *
+     * @param academic Der Dozent
+     * @return Der Termin der null wenn keiner existiert
      */
-    public Room getRoom() {
-        return room;
+    public ScheduleAppointment getAppointment(Academic academic) {
+        for (ScheduleAppointment scheduleAppointment : getAppointments()) {
+            if (scheduleAppointment.getCourse().getAcademic().equals(academic)) {
+                return scheduleAppointment;
+            }
+        }
+        return null;
     }
 
     /**
-     * Setzt den Raum
+     * Liefert einen Termin auf diesem Planelement für den gegebenen Raum
+     *
      * @param room Der Raum
+     * @return Der Termin der null wenn keiner existiert
      */
-    public void setRoom(Room room) {
-        this.room = room;
+    public ScheduleAppointment getAppointment(Room room) {
+        for (ScheduleAppointment scheduleAppointment : getAppointments()) {
+            if (scheduleAppointment.getRoom().equals(room)) {
+                return scheduleAppointment;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Liefert einen Termin auf diesem Planelement für den gegebenen Kurs
+     *
+     * @param course Der Dozent
+     * @return Der Termin der null wenn keiner existiert
+     */
+    public ScheduleAppointment getAppointment(Course course) {
+        for (ScheduleAppointment scheduleAppointment : getAppointments()) {
+            if (scheduleAppointment.getCourse().equals(course)) {
+                return scheduleAppointment;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Fügt einen Termin hinzu
+     *
+     * @param appointment Der Termin
+     */
+    public void addAppointment(ScheduleAppointment appointment) {
+        getAppointments().add(appointment);
+    }
+
+    /**
+     * Prüft ob diesem Planelement Termine zugewiesen sind
+     *
+     * @return Ja oder Nein
+     */
+    public boolean isEmpty() {
+        return getAppointments().isEmpty();
     }
 
     /**
      * Setzt die Plankoordinate
+     *
      * @return Die Plankoordinate
      */
     public ScheduleCoordinate getCoordiate() {
@@ -104,10 +119,12 @@ public class ScheduleElement
     }
 
     /**
-     * Setzt die Plankoordinate
-     * @param coordiate Plankoordinate
+     * Liefert die Termine dieses Elements
+     *
+     * @return Die Termine
      */
-    public void setCoordiate(ScheduleCoordinate coordiate) {
-        this.coordiate = coordiate;
+    public List<ScheduleAppointment> getAppointments() {
+        return appointments;
     }
+
 }
