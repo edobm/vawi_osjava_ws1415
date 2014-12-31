@@ -13,7 +13,7 @@ import osjava.tl3.model.controller.DataController;
  *
  * @author meikelbode
  */
-public class ScheduleBasicTest {
+public abstract class ScheduleBasicTest {
 
     protected DataController dataController;
 

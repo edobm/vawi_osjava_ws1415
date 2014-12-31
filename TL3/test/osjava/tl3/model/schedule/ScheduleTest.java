@@ -2,12 +2,8 @@ package osjava.tl3.model.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Day;
@@ -81,15 +77,11 @@ public class ScheduleTest extends ScheduleBasicTest {
         List<ScheduleCoordinate> result = instance.getFreeCoordiates(studyPrograms, course);
         assertEquals(25, result.size());
 
-        try {
             instance.createAppointment(coordinate, room, course);
             result = instance.getFreeCoordiates(studyPrograms, course);
             assertEquals(24, result.size());
 
-        } catch (SchedulingException ex) {
-            fail("Exception aufgetreten: " + ex);
-        }
-
+      
     }
 
     /**
@@ -109,14 +101,12 @@ public class ScheduleTest extends ScheduleBasicTest {
         List<ScheduleCoordinate> result = instance.getFreeCoordiates(academic);
         assertEquals(25, result.size());
 
-        try {
+      
             instance.createAppointment(coordinate, room, course);
             result = instance.getFreeCoordiates(academic);
             assertEquals(24, result.size());
 
-        } catch (SchedulingException ex) {
-            fail("Exception aufgetreten: " + ex);
-        }
+      
     }
 
     /**
@@ -135,14 +125,12 @@ public class ScheduleTest extends ScheduleBasicTest {
         List<ScheduleCoordinate> result = instance.getFreeCoordiates(room);
         assertEquals(25, result.size());
 
-        try {
+      
             instance.createAppointment(coordinate, room, course);
             result = instance.getFreeCoordiates(room);
             assertEquals(24, result.size());
 
-        } catch (SchedulingException ex) {
-            fail("Exception aufgetreten: " + ex);
-        }
+     
     }
 
     /**
@@ -162,14 +150,11 @@ public class ScheduleTest extends ScheduleBasicTest {
         assertNotNull(element);
         assertTrue(element.isEmpty());
 
-        try {
+       
             instance.createAppointment(coordinate, room, course);
             element = instance.getScheduleElement(coordinate);
             assertFalse(element.isEmpty());
 
-        } catch (SchedulingException ex) {
-            fail("Exception aufgetreten: " + ex);
-        }
     }
 
     /**
@@ -213,16 +198,14 @@ public class ScheduleTest extends ScheduleBasicTest {
         assertEquals(0, instance.getStudentsCount(RoomType.INTERNAL));
         assertEquals(0, instance.getStudentsCount(RoomType.EXTERNAL));
 
-        try {
+       
             instance.createAppointment(coordinate, room, course1);
             instance.createAppointment(coordinate, externalRoom, course2);
 
             assertEquals(800, instance.getStudentsCount(RoomType.INTERNAL));
             assertEquals(100, instance.getStudentsCount(RoomType.EXTERNAL));
 
-        } catch (SchedulingException ex) {
-            fail("Exception aufgetreten: " + ex);
-        }
+     
     }
 
     /**
