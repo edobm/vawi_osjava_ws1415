@@ -4,7 +4,7 @@ import osjava.tl3.model.Course;
 import osjava.tl3.model.Semester;
 
 /**
- * Der Gesamtplan aus sicht eines Fachsemesters
+ * Der Gesamtplan aus Sicht eines Fachsemesters
  *
  * @author Meikel Bode
  */

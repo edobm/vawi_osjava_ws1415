@@ -3,7 +3,7 @@ package osjava.tl3.model.schedule;
 import osjava.tl3.model.Academic;
 
 /**
- * Der Gesamtplan aus sicht eines Dozenten
+ * Der Gesamtplan aus Sicht eines Dozenten
  *
  * @author Meikel Bode
  */

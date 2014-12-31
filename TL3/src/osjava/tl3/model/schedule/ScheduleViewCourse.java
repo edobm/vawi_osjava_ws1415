@@ -3,7 +3,7 @@ package osjava.tl3.model.schedule;
 import osjava.tl3.model.Course;
 
 /**
- * Der Gesamtplan aus sicht eines Kurses
+ * Der Gesamtplan aus Sicht eines Kurses
  *
  * @author Meikel Bode
  */

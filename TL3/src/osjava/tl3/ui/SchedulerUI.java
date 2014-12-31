@@ -476,7 +476,7 @@ public class SchedulerUI extends JFrame {
             Protocol.log("Gesamtplanberechnung abgebrochen wegen Validierungsfehlern");
             return;
         }
-
+        
         /**
          * DataController erzeugen
          */

@@ -4,7 +4,7 @@ import osjava.tl3.model.Course;
 import osjava.tl3.model.StudyProgram;
 
 /**
- * Der Gesamtplan aus sicht eines Studiengangs
+ * Der Gesamtplan aus Sicht eines Studiengangs
  *
  * @author Meikel Bode
  */

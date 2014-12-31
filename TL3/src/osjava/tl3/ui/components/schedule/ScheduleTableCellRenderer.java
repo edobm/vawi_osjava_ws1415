@@ -3,6 +3,7 @@ package osjava.tl3.ui.components.schedule;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -59,12 +60,13 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 setToolTipText("Nicht belegt.");
                 setBackground(colorFree);
             } else {
+                setVerticalTextPosition(JLabel.TOP);
                 setBackground(colorFree);
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html><body>");
                 for (ScheduleAppointment appointment : scheduleElement.getAppointments()) {
-                    sb.append("<div style=\" width: 100%; margin: 2px; float: left;");
-                    sb.append("border: 1px solid #dddddd; ");
+                    sb.append("<div style=\" margin: 3px; padding: 3px; word-wrap: break-word; overflow-x: auto; vertical-align: top;");
+                    sb.append("border: 2px solid #cccccc; ");
 
                     if (appointment.getCourse().getType().getName().equals("Uebung")) {
                         sb.append("background-color: #99eeaa; ");
@@ -82,20 +84,19 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                     sb.append("</div>");
 
                 }
-//                
-//                setBackground(scheduleElement.getCourse().getType().getName().equals("Uebung") ? colorTutorial : colorHearing);
-//                setToolTipText("<html><body>Raum ID: " + scheduleElement.getRoom().getRoomId() + "<br>Plätze vorhanden: " 
-//                        + scheduleElement.getRoom().getSeats() + "<br>Plätze benötigt: " + scheduleElement.getCourse().getStudents() 
-//                        + "<br>Vorhandene Austattung: " +scheduleElement.getRoom().getAvailableEquipments()+ "<br>Benötigte Austattung: " 
-//                        + scheduleElement.getCourse().getRequiredEquipments()+"</body></html>");
 
+                /**
+                 * Tabellenwert zuweisen
+                 */
                 setText(sb.toString());            
 
             }
         } else if (value instanceof TimeSlot) {
+            setVerticalTextPosition(JLabel.CENTER);
             setText(value.toString());
             setToolTipText("");
             setBackground(colorTimeSlot);
+            
         } else {
             setToolTipText("Nicht belegt.");
             setText("");

@@ -3,7 +3,7 @@ package osjava.tl3.model.schedule;
 import osjava.tl3.model.Room;
 
 /**
- * Der Gesamtplan aus sicht eines Raumes
+ * Der Gesamtplan aus Sicht eines Raumes
  *
  * @author Meikel Bode
  */

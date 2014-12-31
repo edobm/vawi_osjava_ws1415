@@ -46,7 +46,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
             sbTitle.append("Dozentenplan: ").append(title);
         }
         if (scheduleView instanceof ScheduleViewRoom) {
-            ScheduleViewRoom viewRoom = (ScheduleViewRoom)scheduleView;
+            ScheduleViewRoom viewRoom = (ScheduleViewRoom) scheduleView;
             sbTitle.append("Raumplan: ").append(title).append(viewRoom.getRoom().getType() == RoomType.INTERNAL ? " (intern)" : " (extern)");
         }
         if (scheduleView instanceof ScheduleViewSemester) {
@@ -55,7 +55,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
         if (scheduleView instanceof ScheduleViewStudyProgram) {
             sbTitle.append("Studiengangsplan: ").append(title);
         }
-        
+
         sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("<head>");
@@ -90,9 +90,17 @@ public class HTMLOutputFormatter extends OutputFormatter {
                 scheduleElement = scheduleView.getScheduleElement(scheduleCoordinate);
 
                 sb.append("<td>");
-                
-                for (ScheduleAppointment appointment: scheduleElement.getAppointments()) {
-                    sb.append("<span style=\" border: 1px solid orange;\">");
+
+                for (ScheduleAppointment appointment : scheduleElement.getAppointments()) {
+                    sb.append("<div style=\" margin: 3px; padding: 3px; word-wrap: break-word; overflow-x: auto; vertical-align: top;");
+                    sb.append("border: 2px solid #cccccc; ");
+
+                    if (appointment.getCourse().getType().getName().equals("Uebung")) {
+                        sb.append("background-color: #99eeaa; ");
+                    } else {
+                        sb.append("background-color: #99ddff; ");
+                    }
+                    sb.append("\">");
                     sb.append("Kurs ");
                     sb.append(appointment.getCourse().getNumber()).append(" (")
                             .append(appointment.getCourse().getType().getName().equals("Uebung") ? "Übung" : "Vorlesung").append("):<br/>");
@@ -100,9 +108,9 @@ public class HTMLOutputFormatter extends OutputFormatter {
                     sb.append("Raum: ").append(appointment.getRoom().getName()).append("<br/>");
                     sb.append("Dozent: ").append(appointment.getCourse().getAcademic().getName()).append("<br/>");
                     sb.append("Teilnehmer: ").append(appointment.getCourse().getStudents());
-                    sb.append("<span>");
+                    sb.append("</div>");
                 }
-                
+
                 sb.append("</td>");
             }
 

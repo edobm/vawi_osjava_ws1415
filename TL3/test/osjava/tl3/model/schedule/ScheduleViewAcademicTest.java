@@ -48,7 +48,7 @@ public class ScheduleViewAcademicTest extends ScheduleBasicTest {
     }
 
     @Test
-    public void testGetBlockedCoodinates() throws SchedulingException {
+    public void testGetBlockedCoodinates(){
         System.out.println("getBlockedCoodinates");
         Academic academic = dataController.getAcademicByName("Frey");
         Schedule schedule = new Schedule();
@@ -67,7 +67,7 @@ public class ScheduleViewAcademicTest extends ScheduleBasicTest {
     }
 
     @Test
-    public void testGetFreeCoodinates() throws SchedulingException {
+    public void testGetFreeCoodinates() {
         System.out.println("getFreeCoodinates");
         Academic academic = dataController.getAcademicByName("Frey");
         Schedule schedule = new Schedule();

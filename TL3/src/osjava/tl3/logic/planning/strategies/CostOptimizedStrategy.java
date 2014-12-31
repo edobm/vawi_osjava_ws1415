@@ -14,7 +14,6 @@ import osjava.tl3.model.RoomType;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.Schedule;
-import osjava.tl3.model.schedule.SchedulingException;
 
 /**
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
