@@ -1,20 +1,20 @@
-package osjava.tl3.ui.components.schedule;
+package osjava.tl3.gui.components.schedule;
 
 import javax.swing.table.DefaultTableModel;
 import osjava.tl3.model.Day;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.TimeSlot;
-import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewUnspecific;
 
 /**
- * Ein auf Instanzen der Klasse Schedule spezialisiertes TableModel.
- * Diese Klasse erweiter die Klasse DefaultTableModel
- * 
+ * Ein auf Instanzen der Klasse Schedule spezialisiertes TableModel. Diese
+ * Klasse erweiter die Klasse DefaultTableModel
+ *
  * @author Meikel Bode
  */
-public class ScheduleTableModel extends DefaultTableModel  {
+public class ScheduleTableModel extends DefaultTableModel {
 
     /**
      * Die Planinstanz auf der dieses TableModel operiert
@@ -24,7 +24,8 @@ public class ScheduleTableModel extends DefaultTableModel  {
     /**
      * Setzt die Instanz der Klasse Schedule, auf der dieses TableModel
      * operieren soll
-     * @param schedule 
+     *
+     * @param schedule
      */
     public void setSchedule(ScheduleView schedule) {
         this.scheduleView = schedule;
@@ -32,9 +33,9 @@ public class ScheduleTableModel extends DefaultTableModel  {
     }
 
     /**
-     * Liefert die Zeilen des Models
-     * Dieser Wert ist immer 5!
-     * Zeilen: 0800-1000, 1000-1200, 1200-1400, 1400-1600 und 1600-1800
+     * Liefert die Zeilen des Models Dieser Wert ist immer 5! Zeilen: 0800-1000,
+     * 1000-1200, 1200-1400, 1400-1600 und 1600-1800
+     *
      * @return Die Anzahl der Zeilen
      */
     @Override
@@ -43,9 +44,9 @@ public class ScheduleTableModel extends DefaultTableModel  {
     }
 
     /**
-     * Liefert die Spaten des Models
-     * Dieser Wert ist immer 6!
-     * Spalten: Zeitraum, Montag, Dienstag, Mittwoch, Donnerstag, Freitag
+     * Liefert die Spaten des Models Dieser Wert ist immer 6! Spalten: Zeitraum,
+     * Montag, Dienstag, Mittwoch, Donnerstag, Freitag
+     *
      * @return Die Anzahl der Spalten
      */
     @Override
@@ -55,6 +56,7 @@ public class ScheduleTableModel extends DefaultTableModel  {
 
     /**
      * Der Bezeichner der gegebenen Spalte
+     *
      * @param columnIndex Index der Spalte
      * @return Der Bezeichner der Spalte mit dem gegebenen Index
      */
@@ -78,19 +80,20 @@ public class ScheduleTableModel extends DefaultTableModel  {
     }
 
     /**
-     * Die Klasse des Werts der Spalte mit dem gegebenen Index
-     * Ist immer ScheduleElement
+     * Die Klasse des Werts der Spalte mit dem gegebenen Index Ist immer
+     * ScheduleElementImpl
+     *
      * @param columnIndex Der Index
      * @return Die Klasse des Werts am gegebenen Index
      */
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return ScheduleElement.class;
+        return ScheduleElementViewWrapper.class;
     }
 
     /**
-     * Ob die Zelle am Zeilen- und Spaltenindex editiertbar ist.
-     * Ist immer false
+     * Ob die Zelle am Zeilen- und Spaltenindex editiertbar ist. Ist immer false
+     *
      * @param rowIndex Der Index der Zeile
      * @param columnIndex der Index der Spalte
      * @return Ob editierbar oder nicht. Immer False!
@@ -102,19 +105,20 @@ public class ScheduleTableModel extends DefaultTableModel  {
 
     /**
      * Liefert den Wert an der Position Zeile und Spalte
+     *
      * @param row Die Zeile
      * @param col Die Spalte
      * @return Der Wert des Models an den gegeben Indices
      */
     @Override
     public Object getValueAt(int row, int col) {
-        
+
         if (col == 0) {
             return TimeSlot.valueOf(row);
         } else {
 
             ScheduleCoordinate scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(col - 1), TimeSlot.valueOf(row));
-            
+
             return scheduleView.getScheduleElement(scheduleCoordinate);
         }
     }

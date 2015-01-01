@@ -1,11 +1,11 @@
-package osjava.tl3.ui.components.schedule;
+package osjava.tl3.gui.components.schedule;
 
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import osjava.tl3.model.TimeSlot;
-import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 
 /**
  * Implement eine JTable für die spezfischen Anforderungen zur Anzeige eines
@@ -23,8 +23,8 @@ public class ScheduleTable extends JTable {
     /**
      * Erzeugt eine neue Instanz von ScheduleTable und setzt grundlegende
      * Einstellungen. Weiterhin wird zur Erzeugung einer stundenplanartigen
-     * Ausgabe Elemente (ScheduleElement) der jeweils zugeordneten Instanz der
-     * Klasse Schedule (Plan), sowie der Instanzen von TimeSlot, der
+     * Ausgabe Elemente (ScheduleElementImpl) der jeweils zugeordneten Instanz
+     * der Klasse Schedule (Plan), sowie der Instanzen von TimeSlot, der
      * spezialisierte Renderer ScheduleTableCellRenderer zugewiesen.
      *
      * @param dm Das TableModel
@@ -35,12 +35,13 @@ public class ScheduleTable extends JTable {
         /**
          * Grundlegende Einstellungen vornehmen
          */
-        setDefaultRenderer(ScheduleElement.class, new ScheduleTableCellRenderer());
+        setDefaultRenderer(ScheduleElementViewWrapper.class, new ScheduleTableCellRenderer());
         setDefaultRenderer(TimeSlot.class, new ScheduleTableCellRenderer());
         setGridColor(Color.LIGHT_GRAY);
 
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(false);
+
     }
 
     /**
@@ -57,18 +58,18 @@ public class ScheduleTable extends JTable {
          * Alle Zeilen durchlaufen
          */
         for (int row = 0; row < getRowCount(); row++) {
-            
+
             maxHeightInRow = 0;
             currentRowHeight = 0;
-            
+
             /**
              * Alle Spalten durchlaufen und für jede Zelle die gewünschte Höhe
              * ermitteln
              */
             for (int column = 0; column < getColumnCount(); column++) {
 
-                cellRenderer = (JLabel) prepareRenderer(getDefaultRenderer(ScheduleElement.class), row, column);
-                currentRowHeight = cellRenderer.getPreferredSize().height + getIntercellSpacing().height + 50;
+                cellRenderer = (JLabel) prepareRenderer(getDefaultRenderer(ScheduleElementViewWrapper.class), row, column);
+                currentRowHeight = cellRenderer.getPreferredSize().height + getIntercellSpacing().height + 20;
                 if (currentRowHeight > maxHeightInRow) {
                     maxHeightInRow = currentRowHeight;
                 }

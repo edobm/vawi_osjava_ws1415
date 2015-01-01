@@ -1,4 +1,4 @@
-package osjava.tl3.ui.components.fileselection;
+package osjava.tl3.gui.components.fileselection;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -97,4 +97,5 @@ public class InputFileDialog extends JDialog implements ComponentListener {
     public void componentHidden(ComponentEvent e) {
         // Nicht verwendet!
     }
+    
 }

@@ -39,8 +39,8 @@ public class ScheduleTest extends ScheduleBasicTest {
 
         Schedule instance = new Schedule();
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
-        ScheduleElement expResult = new ScheduleElement(coordinate);
-        ScheduleElement result = instance.getScheduleElement(coordinate);
+        ScheduleElementImpl expResult = new ScheduleElementImpl(coordinate);
+        ScheduleElementImpl result = instance.getScheduleElement(coordinate);
 
         assertEquals(expResult.getCoordiate(), result.getCoordiate());
 
@@ -54,7 +54,7 @@ public class ScheduleTest extends ScheduleBasicTest {
         System.out.println("getScheduleElements");
         Schedule instance = new Schedule();
 
-        List<ScheduleElement> result = instance.getScheduleElements();
+        List<ScheduleElementImpl> result = instance.getScheduleElements();
         assertEquals(25, result.size());
 
     }
@@ -146,7 +146,7 @@ public class ScheduleTest extends ScheduleBasicTest {
         Room room = dataController.getRoomByName("Audimax");
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
 
-        ScheduleElement element = instance.getScheduleElement(coordinate);
+        ScheduleElementImpl element = instance.getScheduleElement(coordinate);
         assertNotNull(element);
         assertTrue(element.isEmpty());
 
@@ -193,7 +193,7 @@ public class ScheduleTest extends ScheduleBasicTest {
 
         ScheduleCoordinate coordinate = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
 
-        ScheduleElement element = instance.getScheduleElement(coordinate);
+        ScheduleElementImpl element = instance.getScheduleElement(coordinate);
 
         assertEquals(0, instance.getStudentsCount(RoomType.INTERNAL));
         assertEquals(0, instance.getStudentsCount(RoomType.EXTERNAL));

@@ -43,7 +43,7 @@ public abstract class ScheduleView extends ScheduleBasis {
         List<ScheduleElement> elements = new ArrayList<>();
 
         for (ScheduleCoordinate coordinate : getPossibleScheduleCoordinates()) {
-            elements.add(getScheduleElement(coordinate));
+            elements.add(new ScheduleElementViewWrapper(this, getScheduleElement(coordinate)));
         }
 
         return elements;

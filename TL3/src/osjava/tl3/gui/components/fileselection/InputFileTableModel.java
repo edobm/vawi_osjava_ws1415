@@ -1,7 +1,8 @@
-package osjava.tl3.ui.components.fileselection;
+package osjava.tl3.gui.components.fileselection;
 
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import osjava.tl3.logging.Protocol;
 
 /**
  * Ein Tablemodel für die Aufnahme von Eingabedateien und Ausgabeverzeichnissen
@@ -47,7 +48,7 @@ public class InputFileTableModel extends DefaultTableModel {
 
         for (InputFileDescriptor ifd : selectedFiles) {
             if (ifd.getFile().equals(inputFile.getFile())) {
-                System.out.println("Datei bereits hinzugefügt: " + inputFile.getFile().toString());
+                Protocol.log("Datei bereits hinzugefügt: " + inputFile.getFile().toString());
                 return;
             }
         }

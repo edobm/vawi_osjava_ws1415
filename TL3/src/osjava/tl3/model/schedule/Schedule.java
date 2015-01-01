@@ -20,7 +20,7 @@ public class Schedule extends ScheduleBasis {
     /**
      * Die Elemente des Plans
      */
-    private final List<ScheduleElement> scheduleElements;
+    private final List<ScheduleElementImpl> scheduleElements;
 
     /**
      * Erzeugt einen neuen Plan vom gegebenen Typ
@@ -37,7 +37,7 @@ public class Schedule extends ScheduleBasis {
     private void initSchedule() {
 
         for (ScheduleCoordinate coordinate : ScheduleBasis.getPossibleScheduleCoordinates()) {
-            scheduleElements.add(new ScheduleElement(coordinate));
+            scheduleElements.add(new ScheduleElementImpl(coordinate));
         }
     }
 
@@ -48,8 +48,8 @@ public class Schedule extends ScheduleBasis {
      * @return Das zur Koordinate passende Planelement oder null, wenn zur
      * gegebenen Kordinate kein Element gefunden wurde
      */
-    public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
-        for (ScheduleElement scheduleElement : scheduleElements) {
+    public ScheduleElementImpl getScheduleElement(ScheduleCoordinate coordinate) {
+        for (ScheduleElementImpl scheduleElement : scheduleElements) {
             if (scheduleElement.getCoordiate().equals(coordinate)) {
                 return scheduleElement;
             }
@@ -62,7 +62,7 @@ public class Schedule extends ScheduleBasis {
      *
      * @return Die Planelemente
      */
-    public List<ScheduleElement> getScheduleElements() {
+    public List<ScheduleElementImpl> getScheduleElements() {
         return scheduleElements;
     }
 
@@ -148,7 +148,7 @@ public class Schedule extends ScheduleBasis {
     public int getAppointmentCount() {
         int count = 0;
 
-        for (ScheduleElement element : scheduleElements) {
+        for (ScheduleElementImpl element : scheduleElements) {
             count += element.getAppointments().size();
         }
 
@@ -164,7 +164,7 @@ public class Schedule extends ScheduleBasis {
     public int getStudentsCount(RoomType roomType) {
         int count = 0;
 
-        for (ScheduleElement element : scheduleElements) {
+        for (ScheduleElementImpl element : scheduleElements) {
             for (ScheduleAppointment appointment : element.getAppointments()) {
                 if (appointment.getRoom().getType() == roomType) {
                     count += appointment.getCourse().getStudents();

@@ -1,18 +1,20 @@
-package osjava.tl3.ui.components.schedule;
+package osjava.tl3.gui.components.schedule;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
-import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
+import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 
 /**
- * Dieser Renderer kann Instanzen der Klassen ScheduleElement und TimeSlot
+ * Dieser Renderer kann Instanzen der Klassen ScheduleElementImpl und TimeSlot
  * ausgeben. Die Klasse erweitert die Klasse DefaultTableCellRenderer
  *
  * @author Meikel Bode
@@ -34,7 +36,7 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * Erzeugt eine Instanz von JLabel, die als darstellende Komponente der
      * zugewiesenen Instanz von JTable an der Koordinate (row, column) verwendet
-     * werden soll. Dieser Renderer kann Instanzen von ScheduleElement und
+     * werden soll. Dieser Renderer kann Instanzen von ScheduleElementImpl und
      * TimeSlot darstellen.
      *
      * @param table Die JTable auf der der Renderer operiert
@@ -52,18 +54,23 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
             Object value, boolean isSelected, boolean hasFocus, int row,
             int column) {
 
-        if (value instanceof ScheduleElement) {
-            ScheduleElement scheduleElement = (ScheduleElement) value;
+        if (value instanceof ScheduleElementViewWrapper) {
+            ScheduleElementViewWrapper scheduleElement = (ScheduleElementViewWrapper) value;
+
+            StudyProgram studyProgram = null;
+            if (scheduleElement.getScheduleView() instanceof ScheduleViewStudyProgram) {
+                studyProgram = ((ScheduleViewStudyProgram) scheduleElement.getScheduleView()).getStudyProgramm();
+            }
 
             if (scheduleElement.isEmpty()) {
                 setText("");
                 setToolTipText("Nicht belegt.");
                 setBackground(colorFree);
             } else {
-                setVerticalTextPosition(JLabel.TOP);
+                setVerticalAlignment(SwingConstants.TOP);
                 setBackground(colorFree);
                 StringBuilder sb = new StringBuilder();
-                sb.append("<html><body>");
+                sb.append("<html>");
                 for (ScheduleAppointment appointment : scheduleElement.getAppointments()) {
                     sb.append("<div style=\" margin: 3px; padding: 3px; word-wrap: break-word; overflow-x: auto; vertical-align: top;");
                     sb.append("border: 2px solid #cccccc; ");
@@ -81,22 +88,29 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                     sb.append("Raum: ").append(appointment.getRoom().getName()).append("<br/>");
                     sb.append("Dozent: ").append(appointment.getCourse().getAcademic().getName()).append("<br/>");
                     sb.append("Teilnehmer: ").append(appointment.getCourse().getStudents());
+                    /**
+                     * Semester ausgeben
+                     */
+                    if (studyProgram != null) {
+                        sb.append("<br/>").append(studyProgram.getSemesterByCourse(appointment.getCourse()));
+                    }
+
                     sb.append("</div>");
 
                 }
-
+                sb.append("</html>");
                 /**
                  * Tabellenwert zuweisen
                  */
-                setText(sb.toString());            
+                setText(sb.toString());
 
             }
         } else if (value instanceof TimeSlot) {
-            setVerticalTextPosition(JLabel.CENTER);
+            setVerticalAlignment(SwingConstants.CENTER);
             setText(value.toString());
             setToolTipText("");
             setBackground(colorTimeSlot);
-            
+
         } else {
             setToolTipText("Nicht belegt.");
             setText("");

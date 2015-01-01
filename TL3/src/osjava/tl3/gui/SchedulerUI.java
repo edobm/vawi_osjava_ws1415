@@ -1,11 +1,11 @@
-package osjava.tl3.ui;
+package osjava.tl3.gui;
 
-import osjava.tl3.ui.components.schedule.ScheduleTableModel;
-import osjava.tl3.ui.components.schedule.ScheduleTable;
-import osjava.tl3.ui.components.combobox.ComboxBoxElement;
-import osjava.tl3.ui.components.combobox.ComboBoxElementModel;
-import osjava.tl3.ui.components.logging.LoggingPanel;
-import osjava.tl3.ui.components.fileselection.InputFileType;
+import osjava.tl3.gui.components.schedule.ScheduleTableModel;
+import osjava.tl3.gui.components.schedule.ScheduleTable;
+import osjava.tl3.gui.components.combobox.ComboxBoxElement;
+import osjava.tl3.gui.components.combobox.ComboBoxElementModel;
+import osjava.tl3.gui.components.logging.LoggingPanel;
+import osjava.tl3.gui.components.fileselection.InputFileType;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -52,7 +52,6 @@ import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.ScheduleAppointment;
-import osjava.tl3.model.schedule.ScheduleElement;
 import osjava.tl3.model.schedule.Schedule;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
@@ -60,8 +59,9 @@ import osjava.tl3.model.schedule.ScheduleViewCourse;
 import osjava.tl3.model.schedule.ScheduleViewRoom;
 import osjava.tl3.model.schedule.ScheduleViewSemester;
 import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
-import osjava.tl3.ui.components.fileselection.InputFileDescriptor;
-import osjava.tl3.ui.components.fileselection.InputFileDialog;
+import osjava.tl3.gui.components.fileselection.InputFileDescriptor;
+import osjava.tl3.gui.components.fileselection.InputFileDialog;
+import osjava.tl3.model.schedule.ScheduleElement;
 
 /**
  * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung der
@@ -188,8 +188,8 @@ public class SchedulerUI extends JFrame {
         /**
          * Meldung ausgeben
          */
-        Protocol.log("Schedule Planner: VAWi WS14/15 OSJAVA TL3 (Gruppe 1: Christoph Lurz, Christian Müller, Fabian Simon, Meikel Bode)");
-        Protocol.log("Programm initialisiert");
+        Protocol.log("GUI-Modus initialisiert");
+        
     }
 
     /**

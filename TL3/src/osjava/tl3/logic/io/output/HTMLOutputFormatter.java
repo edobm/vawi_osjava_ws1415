@@ -6,6 +6,8 @@ import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
 import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleElementImpl;
+import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;
@@ -41,7 +43,9 @@ public class HTMLOutputFormatter extends OutputFormatter {
     public StringBuilder format(ScheduleView scheduleView, String title) {
         StringBuilder sb = new StringBuilder();
         StringBuilder sbTitle = new StringBuilder();
-
+        
+        ScheduleViewStudyProgram studyProgramView = null;
+       
         if (scheduleView instanceof ScheduleViewAcademic) {
             sbTitle.append("Dozentenplan: ").append(title);
         }
@@ -54,6 +58,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
         }
         if (scheduleView instanceof ScheduleViewStudyProgram) {
             sbTitle.append("Studiengangsplan: ").append(title);
+            studyProgramView = (ScheduleViewStudyProgram)scheduleView;
         }
 
         sb.append("<!DOCTYPE html>");
@@ -63,6 +68,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
         sb.append("<style>");
         sb.append("table, th, td { border: 1px solid black; border-collapse: collapse; } ");
         sb.append("th, td { padding: 5px; text-align: left; }");
+        sb.append("td.appointment { vertical-align: top; }");
         sb.append("</style>");
 
         sb.append("<title>");
@@ -89,7 +95,7 @@ public class HTMLOutputFormatter extends OutputFormatter {
                 scheduleCoordinate = new ScheduleCoordinate(Day.valueOf(day), TimeSlot.valueOf(timeslot));
                 scheduleElement = scheduleView.getScheduleElement(scheduleCoordinate);
 
-                sb.append("<td>");
+                sb.append("<td class=\"appointment\">");
 
                 for (ScheduleAppointment appointment : scheduleElement.getAppointments()) {
                     sb.append("<div style=\" margin: 3px; padding: 3px; word-wrap: break-word; overflow-x: auto; vertical-align: top;");
@@ -108,6 +114,13 @@ public class HTMLOutputFormatter extends OutputFormatter {
                     sb.append("Raum: ").append(appointment.getRoom().getName()).append("<br/>");
                     sb.append("Dozent: ").append(appointment.getCourse().getAcademic().getName()).append("<br/>");
                     sb.append("Teilnehmer: ").append(appointment.getCourse().getStudents());
+                    /**
+                     * Semester ausgeben
+                     */
+                    if (studyProgramView != null) {
+                         sb.append("<br/>").append(studyProgramView.getStudyProgramm().getSemesterByCourse(appointment.getCourse()));
+                    }
+                    
                     sb.append("</div>");
                 }
 

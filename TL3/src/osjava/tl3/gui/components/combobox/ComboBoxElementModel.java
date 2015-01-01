@@ -1,4 +1,4 @@
-package osjava.tl3.ui.components.combobox;
+package osjava.tl3.gui.components.combobox;
 
 import java.util.ArrayList;
 import java.util.List;

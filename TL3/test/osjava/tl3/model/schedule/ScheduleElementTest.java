@@ -19,7 +19,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of createAppointment method, of class ScheduleElement.
+     * Test of createAppointment method, of class ScheduleElementImpl.
      */
     @Test
     public void testCreateAppointment() throws Exception {
@@ -28,7 +28,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
         Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
 
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         assertTrue(instance.isEmpty());
 
         instance.createAppointment(room, course);
@@ -37,7 +37,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of getAppointment method, of class ScheduleElement.
+     * Test of getAppointment method, of class ScheduleElementImpl.
      */
     @Test
     public void testGetAppointment_Academic() throws Exception {
@@ -47,7 +47,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
         Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
 
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         assertTrue(instance.isEmpty());
 
         instance.createAppointment(room, course);
@@ -60,7 +60,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of getAppointment method, of class ScheduleElement.
+     * Test of getAppointment method, of class ScheduleElementImpl.
      */
     @Test
     public void testGetAppointment_Room() throws Exception {
@@ -69,7 +69,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
         Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
 
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         assertTrue(instance.isEmpty());
 
         instance.createAppointment(room, course);
@@ -81,7 +81,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of getAppointment method, of class ScheduleElement.
+     * Test of getAppointment method, of class ScheduleElementImpl.
      */
     @Test
     public void testGetAppointment_Course() throws Exception {
@@ -89,7 +89,7 @@ public class ScheduleElementTest extends ScheduleBasicTest {
         Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
 
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         assertTrue(instance.isEmpty());
 
         instance.createAppointment(room, course);
@@ -101,13 +101,13 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of isEmpty method, of class ScheduleElement.
+     * Test of isEmpty method, of class ScheduleElementImpl.
      */
     @Test
     public void testIsEmpty() {
         System.out.println("isEmpty");
         
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
         
@@ -121,13 +121,13 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of getCoordiate method, of class ScheduleElement.
+     * Test of getCoordiate method, of class ScheduleElementImpl.
      */
     @Test
     public void testGetCoordiate() {
         System.out.println("getCoordiate");
         
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
         
         ScheduleCoordinate expResult = new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800);
         ScheduleCoordinate result = instance.getCoordiate();
@@ -137,12 +137,12 @@ public class ScheduleElementTest extends ScheduleBasicTest {
     }
 
     /**
-     * Test of getAppointments method, of class ScheduleElement.
+     * Test of getAppointments method, of class ScheduleElementImpl.
      */
     @Test
     public void testGetAppointments() {
         System.out.println("getAppointments");
-        ScheduleElement instance = new ScheduleElement(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
+        ScheduleElementImpl instance = new ScheduleElementImpl(new ScheduleCoordinate(Day.MONDAY, TimeSlot.SLOT_0800));
          Room room = dataController.getRoomByName("Audimax");
         Course course = dataController.getCourseByID("1");
         

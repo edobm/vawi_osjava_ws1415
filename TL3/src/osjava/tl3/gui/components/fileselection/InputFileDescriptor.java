@@ -1,4 +1,4 @@
-package osjava.tl3.ui.components.fileselection;
+package osjava.tl3.gui.components.fileselection;
 
 import java.io.File;
 

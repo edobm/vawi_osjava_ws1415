@@ -35,7 +35,7 @@ public class ScheduleViewCourse extends ScheduleView {
     @Override
     public ScheduleElement getScheduleElement(ScheduleCoordinate coordinate) {
         
-        ScheduleElement elementFiltered = new ScheduleElement(coordinate);
+        ScheduleElementImpl elementFiltered = new ScheduleElementImpl(coordinate);
         
         ScheduleAppointment appointment = schedule.getScheduleElement(coordinate).getAppointment(course);
         
@@ -43,7 +43,7 @@ public class ScheduleViewCourse extends ScheduleView {
             elementFiltered.addAppointment(appointment);
         }
         
-        return elementFiltered;
+        return new ScheduleElementViewWrapper(this, elementFiltered);
 
     }
 

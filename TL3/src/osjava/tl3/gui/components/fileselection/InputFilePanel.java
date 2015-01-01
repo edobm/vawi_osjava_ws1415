@@ -1,4 +1,4 @@
-package osjava.tl3.ui.components.fileselection;
+package osjava.tl3.gui.components.fileselection;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import osjava.tl3.logging.Protocol;
 
 /**
  * UI Element zur anzeige eine Tabelle und Buttons zur Aufnahme von selektierten
@@ -176,6 +177,7 @@ public class InputFilePanel extends JPanel {
                 File directory = fileChooser.getSelectedFile();
                 fileDescriptor = new InputFileDescriptor(acceptedInputFileType, directory.exists() ? directory : directory.getParentFile());
                 inputFileTableModel.addInputFile(fileDescriptor);
+                Protocol.log("Ausgabeverzeichnis selektiert: " + fileDescriptor.getFile().getAbsolutePath());
             } else {
                 /**
                  * Modus: Daitei(n) wählen
@@ -183,6 +185,7 @@ public class InputFilePanel extends JPanel {
                 for (File file : fileChooser.getSelectedFiles()) {
                     fileDescriptor = new InputFileDescriptor(acceptedInputFileType, file);
                     inputFileTableModel.addInputFile(fileDescriptor);
+                    Protocol.log("Eingabedatei [Typ = " + acceptedInputFileType+"] selektiert: " + fileDescriptor.getFile().getName());
                 }
             }
         }

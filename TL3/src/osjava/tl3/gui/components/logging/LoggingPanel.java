@@ -1,4 +1,4 @@
-package osjava.tl3.ui.components.logging;
+package osjava.tl3.gui.components.logging;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
