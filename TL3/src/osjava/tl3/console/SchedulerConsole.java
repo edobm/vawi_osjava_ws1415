@@ -33,10 +33,11 @@ public class SchedulerConsole implements Observer {
     private final HashMap<String, String> parameters;
 
     /**
+     * Konstruktor
      * Erzeugt eine neue Instanz des Konsolen-Modus und übergibt die
      * Laufzeitparameter
      *
-     * @param parameters
+     * @param parameters Die Laufzeitparameter
      */
     public SchedulerConsole(HashMap<String, String> parameters) {
         this.parameters = parameters;
@@ -76,7 +77,7 @@ public class SchedulerConsole implements Observer {
      *
      * @param dataController Der DataController der die Eingabedaten puffert
      */
-    public void loadInputData(DataController dataController) {
+    private void loadInputData(DataController dataController) {
 
         /**
          * Raumdateien einlesen
@@ -159,10 +160,10 @@ public class SchedulerConsole implements Observer {
         String outputDirectory = parameters.get("out");
         Protocol.log("Ausgabeverzeichnis: " + outputDirectory);
 
-        OutputController oc = new OutputController();
+        OutputController outputController = new OutputController();
 
-        List<ScheduleView> views = schedule.getAllScheduleViews(dataController.getRooms(), dataController.getAcademics(), dataController.getStudyPrograms());
-        oc.outputSchedules(views, outputFormat, outputDirectory);
+        List<ScheduleView> scheduleViews = schedule.getAllScheduleViews(dataController.getRooms(), dataController.getAcademics(), dataController.getStudyPrograms());
+        outputController.outputSchedules(scheduleViews, outputFormat, outputDirectory);
 
     }
 
@@ -171,7 +172,7 @@ public class SchedulerConsole implements Observer {
      * @param parameterName
      * @return
      */
-    public OutputFormat mapOutputFormat(String parameterName) {
+    private OutputFormat mapOutputFormat(String parameterName) {
 
         switch (parameterName.toLowerCase()) {
             case "html":
@@ -190,7 +191,7 @@ public class SchedulerConsole implements Observer {
      * @param schedule Der Gesamtplan für den Statistiken ausgegeben werden
      * sollen
      */
-    public void printCoreStats(DataController dataController, Schedule schedule) {
+    private void printCoreStats(DataController dataController, Schedule schedule) {
 
         Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
         Protocol.log("Räume intern: " + dataController.getRooms(RoomType.INTERNAL).size());

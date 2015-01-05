@@ -33,7 +33,7 @@ public final class SchedulePlanner implements Observer {
      * Erlaubte Laufzeitparameter
      */
     private static final String[] parameterKeys = new String[]{"help", "mode", "roomfiles", "coursefiles", "studyprogramfiles",
-        "out", "format", "strategy"};
+        "out", "format", "strategy", "seatcosts"};
 
     /**
      * Die vorbereiteten Laufzeitparameter
@@ -99,6 +99,7 @@ public final class SchedulePlanner implements Observer {
         Protocol.log(" -out=Ausgabeverzeichnis - Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen");
         Protocol.log(" -format=<csv_text>|html - Das Format in dem die Ausgabedateien erzeugt werden sollen");
         Protocol.log(" -strategy=<CostOptimizedStrategy> - Die Planungsstrategie");
+        Protocol.log(" -seatcosts=<10> - Die Kosten für einen externen Sitzplatz (ganzzahlig)");
         Protocol.log("");
         Protocol.log("Pfade und Dateinamen dürfen keine Leerzeichen enthalten.");
         Protocol.log("<Wert> ist der Standard falls der Parameter nicht angegeben wird.");
@@ -111,7 +112,7 @@ public final class SchedulePlanner implements Observer {
      *
      * @param argv die Kommandozeilenparameter des Programms
      */
-    public void parseArgumentVector(String[] argv) {
+    private void parseArgumentVector(String[] argv) {
 
         try {
             for (String parameter : argv) {
@@ -120,12 +121,12 @@ public final class SchedulePlanner implements Observer {
                     System.exit(2);
                 } else {
                     // Aktuelles Argument zerlegen
-                    parameter = parameter.replace("-", "");
-                    String[] parts = parameter.split("=");
+                    parameter = parameter.replace("-", ""); // -mode=gui -> mode=gui
+                    String[] parts = parameter.split("="); 
 
                     // Das Argument in Schlüssel und Wert aufteilen 
                     // und in der Parameterliste speichern
-                    parameters.put(parts[0], parts[1]);
+                    parameters.put(parts[0], parts[1]); // 0 -> mode, 1 -> gui
                 }
             }
         } catch (Exception e) {
@@ -134,8 +135,12 @@ public final class SchedulePlanner implements Observer {
             System.exit(2);
         }
 
+        /**
+         * Soll die Hilfe ausgegeben werden?
+         */
         if (parameters.containsKey("help")) {
             printExecutionHint();
+            System.exit(0);
         }
 
         /**
@@ -187,7 +192,7 @@ public final class SchedulePlanner implements Observer {
                      * Ausgabeformat validieren
                      */
                     if (key.equals("format")) {
-                        if (!parameters.containsKey("format")) {
+                        if (!parameters.containsKey(key)) {
                             Protocol.log("Setze Default-Format: CSV_TEXT");
                             parameters.put("format", "CSV_TEXT");
                             System.exit(200);
@@ -202,8 +207,8 @@ public final class SchedulePlanner implements Observer {
                      * Planungsstrategie validieren
                      */
                     if (key.equals("strategy")) {
-                        if (!parameters.containsKey("strategy")) {
-                            parameters.put("strategy", "CostOptimizedStrategy");
+                        if (!parameters.containsKey(key)) {
+                            parameters.put(key, "CostOptimizedStrategy");
                             Protocol.log("Setze Default-Planungstrategie: CostOptimizedStrategy");
                         }
                     }
@@ -212,7 +217,7 @@ public final class SchedulePlanner implements Observer {
                      * Raumdateien validieren
                      */
                     if (key.equals("roomfiles")) {
-                        if (!parameters.containsKey("roomfiles")) {
+                        if (!parameters.containsKey(key)) {
                             Protocol.log("Raumdateien wurden nicht übergeben!");
                             System.exit(400);
                         }
@@ -229,7 +234,7 @@ public final class SchedulePlanner implements Observer {
                      * Kursdateien validieren
                      */
                     if (key.equals("studyprogramfiles")) {
-                        if (!parameters.containsKey("studyprogramfiles")) {
+                        if (!parameters.containsKey(key)) {
                             Protocol.log("Kursdateien wurden nicht übergeben!");
                             System.exit(500);
                         }
@@ -245,7 +250,7 @@ public final class SchedulePlanner implements Observer {
                      * Studiegangsdateien validieren
                      */
                     if (key.equals("studyprogramfiles")) {
-                        if (!parameters.containsKey("studyprogramfiles")) {
+                        if (!parameters.containsKey(key)) {
                             Protocol.log("Studiengangsdateien wurden nicht übergeben!");
                             System.exit(600);
                         }
@@ -256,6 +261,25 @@ public final class SchedulePlanner implements Observer {
                             System.exit(601);
                         }
                     }
+
+                    /**
+                     * Sitzplatzkosten validieren
+                     */
+                    if (key.equals("seatcosts")) {
+                        if (!parameters.containsKey(key)) {
+                            parameters.put(key, "10");
+                            Protocol.log("Setze Default-Sitzplatzkosten: 10 EUR");
+                        } else {
+                            try {
+                                Integer.parseInt((String) parameters.get(key));
+                                // Alles ok, Wert ist ein Integer
+                            } catch (Exception e) {
+                                Protocol.log("Sitzplatzkosten ist keine Ganzzahl: " + parameters.get(key));
+                                System.exit(701);
+                            }
+                        }
+                    }
+
                 }
 
                 break;
@@ -306,7 +330,8 @@ public final class SchedulePlanner implements Observer {
         String mode = parameters.get("mode");
         if (mode.equals("console")) {
             /**
-             * SchedulePlanner als Observer deregistrieren
+             * SchedulePlanner als Observer deregistrieren, damit Logmeldungen
+             * nicht zwei Mal auf der Konsole ausgegeben werden.
              */
             Protocol.getInstance().deleteObserver(SchedulePlanner.this);
             executeConsole();
