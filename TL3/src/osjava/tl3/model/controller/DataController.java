@@ -13,8 +13,9 @@ import osjava.tl3.model.RoomType;
 import osjava.tl3.model.StudyProgram;
 
 /**
- * Diese Klasse lädt und hält die verschiedenen Eingabedaten mittels der
- * verschiedenen Reader Ausprägungen. Zudem hält sie die eingelesenen Daten für
+ * Diese Klasse hält die verschiedenen Eingabedaten, die mittels der
+ * verschiedenen Reader Ausprägungen eingelesen wurden. 
+ * Zudem hält sie die eingelesenen Daten für
  * die spätere Nutzung der Klasse Scheduler.
  *
  * @author Christoph Lurz
@@ -56,12 +57,6 @@ public class DataController {
      * Readerinstanz für Kurse
      */
     private CourseReader courseReader;
-
-    /**
-     * Die Eingabedaten mittels der Reader laden
-     */
-    public void load() {
-    }
 
     /**
      * Liefert den Raum mit der gegebenen Bezeichnung
