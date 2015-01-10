@@ -1,9 +1,9 @@
 package osjava.tl3.logic.io.output;
 
-import osjava.tl3.model.Day;
+import osjava.tl3.model.schedule.Day;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
-import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
 import osjava.tl3.model.schedule.ScheduleElement;
 import osjava.tl3.model.schedule.ScheduleElementImpl;

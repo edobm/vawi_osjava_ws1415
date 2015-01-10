@@ -2,8 +2,6 @@ package osjava.tl3.model.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
-import osjava.tl3.model.Day;
-import osjava.tl3.model.TimeSlot;
 
 /**
  * Stellt grundlengende Plandaten und Methoden bereit

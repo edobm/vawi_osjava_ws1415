@@ -1,4 +1,4 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 /**
  * Dieser Enum Typ repräsentiert die Wochentage. Die Sortierbarkeit wird über

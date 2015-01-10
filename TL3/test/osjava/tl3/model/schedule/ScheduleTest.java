@@ -6,12 +6,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import osjava.tl3.model.Academic;
 import osjava.tl3.model.Course;
-import osjava.tl3.model.Day;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.Semester;
 import osjava.tl3.model.StudyProgram;
-import osjava.tl3.model.TimeSlot;
 
 /**
  *

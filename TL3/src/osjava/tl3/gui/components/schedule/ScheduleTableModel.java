@@ -1,9 +1,9 @@
 package osjava.tl3.gui.components.schedule;
 
 import javax.swing.table.DefaultTableModel;
-import osjava.tl3.model.Day;
+import osjava.tl3.model.schedule.Day;
 import osjava.tl3.model.schedule.ScheduleCoordinate;
-import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewUnspecific;

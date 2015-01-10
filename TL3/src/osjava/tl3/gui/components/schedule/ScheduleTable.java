@@ -4,7 +4,7 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-import osjava.tl3.model.TimeSlot;
+import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 
 /**

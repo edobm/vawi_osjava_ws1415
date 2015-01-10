@@ -6,8 +6,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import osjava.tl3.model.Day;
-import osjava.tl3.model.TimeSlot;
 import static org.junit.Assert.*;
 
 /**

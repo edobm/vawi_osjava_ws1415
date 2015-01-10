@@ -1,8 +1,6 @@
 package osjava.tl3.model.schedule;
 
 import java.util.Objects;
-import osjava.tl3.model.Day;
-import osjava.tl3.model.TimeSlot;
 
 /**
  * Diese Klasse stellt eine eindeutig bestimmte Koordinate in einem Plan

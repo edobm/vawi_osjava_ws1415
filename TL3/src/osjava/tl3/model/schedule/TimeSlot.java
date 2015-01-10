@@ -1,4 +1,4 @@
-package osjava.tl3.model;
+package osjava.tl3.model.schedule;
 
 /**
  * Enum Typ der die verfügbaren Startzeiten repräsentiert. Die Reihenfolge der
