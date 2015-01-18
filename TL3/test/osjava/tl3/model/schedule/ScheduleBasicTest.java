@@ -2,8 +2,10 @@ package osjava.tl3.model.schedule;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import osjava.tl3.logic.io.input.CourseReader;
 import osjava.tl3.logic.io.input.RoomReader;
 import osjava.tl3.logic.io.input.StudyProgramReader;
@@ -13,7 +15,7 @@ import osjava.tl3.model.controller.DataController;
  *
  * @author meikelbode
  */
-public abstract class ScheduleBasicTest {
+public class ScheduleBasicTest {
 
     protected DataController dataController;
 
@@ -55,6 +57,13 @@ public abstract class ScheduleBasicTest {
         studyProgramReader.readStudyPrograms("/Users/meikelbode/Desktop/inputfiles/studiengang_wiingba.csv", dataController);
         studyProgramReader.readStudyPrograms("/Users/meikelbode/Desktop/inputfiles/studiengang_wiwila.csv", dataController);
 
+    }
+    
+    @Test
+    public void testDataControler() {
+        Assert.assertEquals(10, dataController.getRooms().size());
+        Assert.assertEquals(231, dataController.getCourses().size());
+        Assert.assertEquals(8, dataController.getStudyPrograms().size());
     }
 
 }

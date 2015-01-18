@@ -64,13 +64,12 @@ public class SchedulerTest {
     @Test
     public void testExecuteStrategy() {
         System.out.println("executeStrategy");
-        HashMap<String, Object> parameters = null;
-
+        
         Scheduler instance = new Scheduler();
         instance.setDataController(dataController);
         instance.setStrategy(StrategyFactory.getInstanceByClassName("CostOptimizedStrategy"));
 
-        instance.executeStrategy(parameters);
+        instance.executeStrategy();
 
     }
 

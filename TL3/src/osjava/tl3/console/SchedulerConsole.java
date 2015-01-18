@@ -140,7 +140,7 @@ public class SchedulerConsole implements Observer {
         /**
          * Planungsstrategie ausführen
          */
-        scheduler.executeStrategy(null);
+        scheduler.executeStrategy();
 
         /**
          * Gesamtplan zurück geben

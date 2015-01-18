@@ -541,7 +541,7 @@ public class SchedulerUI extends JFrame {
          * Selektierte Planungsstrategie auf Basis der Eingabedaten ausführen
          * und erzeugten Gesamtplan holen
          */
-        scheduler.executeStrategy(null);
+        scheduler.executeStrategy();
         schedule = scheduler.getSchedule();
 
         /**

@@ -38,14 +38,13 @@ public class Scheduler {
     /**
      * Den Gesamtplan auf Basis der gewählten Strategie erstellen.
      *
-     * @param parameters Laufzeitparameter für die Planungsstrategie
      */
-    public void executeStrategy(HashMap<String, Object> parameters) {
+    public void executeStrategy() {
         
         /**
          * Führt die Strategie aus und erzeugt dabei den Gesamtplan
          */
-        schedule = strategy.execute(dataController, parameters);
+        schedule = strategy.execute(dataController);
     }
 
     /**

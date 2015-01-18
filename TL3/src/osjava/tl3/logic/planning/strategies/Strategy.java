@@ -36,11 +36,6 @@ public abstract class Strategy {
     protected DataController dataController;
 
     /**
-     * Speichert potentielle Laufzeitparameter für die Planungsstrategie
-     */
-    protected HashMap<String, Object> parameters;
-
-    /**
      * Eine neue Instanz erzeugen
      *
      * @param name Der Name der Planungsstrategie
@@ -64,10 +59,9 @@ public abstract class Strategy {
      * einer konkreten Klasse implementiert werden
      *
      * @param dataController Der Controller der das Modell hält
-     * @param parameters Mögliche Parameter für die Planungsstrategie
-     * @return
+     * @return Der berechnete Gesamtplan
      */
-    public abstract Schedule execute(DataController dataController, HashMap<String, Object> parameters);
+    public abstract Schedule execute(DataController dataController);
 
     /**
      * Ermittele alle für den gegeben Kurs potentiell geeigneten Räume des
