@@ -184,7 +184,7 @@ public class DataController {
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);
         room.setName("Externer Raum " + (getRooms(RoomType.EXTERNAL).size() + 1));
-        room.setSeats(10000);
+        room.setSeats(100000);
         room.setAvailableEquipments(equipments);
 
         /**

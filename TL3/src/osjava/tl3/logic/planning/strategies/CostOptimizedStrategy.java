@@ -16,18 +16,17 @@ import osjava.tl3.model.schedule.Schedule;
 
 /**
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
- * Kosten.
- * Die Strategie versucht dabei priorisiert Kurse mit vielen Teilnehmern auf interne Räume
- * zu verteilen, falls benötigtes und vorhandenes Equipment passen.
- * Kann passender interner Raum gefunden werden, wird zunächst geprüft, ob ggf.
- * bereits ein externer Raum bekannt ist, in den dieser Kurs eingeplant werden 
- * kann. Ist der externe Raum bereits voll oder kann passt der Raum nicht zum
- * Plan des Dozenten, wird einer weiterer externer Raum angemietet (erzeugt) und
- * der Kurs dort eingeplant, passend zum Dozetenplan.
- * Kann der Kurs nicht eingeplant werden, da der Dozent keinen freien Termin mehr hat
- * oder die keines der Fachsemester der Studiengänge, in denen der Kurs angeboten wird
- * mehr einen freien Termin hat, wird der Kurs in die Liste der nicht  einplanbaren
- * Kurse eingetragen.
+ * Kosten. Die Strategie versucht dabei priorisiert Kurse mit vielen Teilnehmern
+ * auf interne Räume zu verteilen, falls benötigtes und vorhandenes Equipment
+ * passen. Kann passender interner Raum gefunden werden, wird zunächst geprüft,
+ * ob ggf. bereits ein externer Raum bekannt ist, in den dieser Kurs eingeplant
+ * werden kann. Ist der externe Raum bereits voll oder kann passt der Raum nicht
+ * zum Plan des Dozenten, wird einer weiterer externer Raum angemietet (erzeugt)
+ * und der Kurs dort eingeplant, passend zum Dozetenplan. Kann der Kurs nicht
+ * eingeplant werden, da der Dozent keinen freien Termin mehr hat oder die
+ * keines der Fachsemester der Studiengänge, in denen der Kurs angeboten wird
+ * mehr einen freien Termin hat, wird der Kurs in die Liste der nicht
+ * einplanbaren Kurse eingetragen.
  *
  * @author Meikel Bode
  */
@@ -51,7 +50,7 @@ public class CostOptimizedStrategy extends Strategy {
     @Override
     public Schedule execute(DataController dataController) {
         super.dataController = dataController;
-       
+
         /**
          * Auf Basis der vorbereiteten Hilfstabellen den Gesamtplan aufbauen
          */
@@ -122,7 +121,7 @@ public class CostOptimizedStrategy extends Strategy {
             /**
              * Protokoll fortschreiben
              */
-            Protocol.log("Plane: [KursID='" + course.getNumber() +"', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName()+ "', Teilnehmer='" + course.getStudents() +"']");
+            Protocol.log("Plane: [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName() + "', Teilnehmer='" + course.getStudents() + "']");
 
             /**
              * Prüfen ob der Dozent noch freie Termine hat un wenn nicht, den
@@ -130,7 +129,7 @@ public class CostOptimizedStrategy extends Strategy {
              */
             freeCoordinatesAcademic = schedule.getFreeCoordiates(course.getAcademic());
             if (freeCoordinatesAcademic.isEmpty()) {
-                Protocol.log("\tFehler: Kurs nicht einplanbar. Dozent hat keine Plankoordinaten mehr frei: [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName()+ "']");
+                Protocol.log("\tFehler: Kurs nicht einplanbar. Dozent hat keine Plankoordinaten mehr frei: [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
                 coursesNotPlanned.add(course);
                 continue;
             }
@@ -152,6 +151,7 @@ public class CostOptimizedStrategy extends Strategy {
              * dort einzuplanen.
              */
             matchingRooms = getMatchingRooms(course, RoomType.INTERNAL);
+            Protocol.log("\tPassende Räume (intern): " + matchingRooms);
 
             /**
              * Alle passenden, internen Räumen prüfen
@@ -159,8 +159,8 @@ public class CostOptimizedStrategy extends Strategy {
             for (Room room : matchingRooms) {
 
                 /**
-                 * Schnittmenge über alle freien Koordinaten des Raumplans, des
-                 * Dozentenplans und aller Fachsemesterpläne erzeugen
+                 * Schnittmenge über alle freien Plankoordinaten des Raums, des
+                 * Dozenten und aller Fachsemester erzeugen
                  */
                 freeCoordinatesRoom = schedule.getFreeCoordiates(room);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -172,7 +172,7 @@ public class CostOptimizedStrategy extends Strategy {
                  * nicht, zum nächsten Raum gehen
                  */
                 if (freeIntersection.isEmpty()) {
-                    Protocol.log("\tKeine Plankoordinate frei: [RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Plätze='" + room.getSeats() +"']");
+                    Protocol.log("\t\tKeine Plankoordinate frei: [RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Plätze='" + room.getSeats() + "']");
                     continue;
                 }
 
@@ -192,7 +192,7 @@ public class CostOptimizedStrategy extends Strategy {
                  */
                 coursePlanned = true;
 
-                Protocol.log("\tIntern eingeplant: [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
+                Protocol.log("\t\tIntern eingeplant: [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "' Plätze='" + room.getSeats() + "']");
 
                 /**
                  * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -219,15 +219,16 @@ public class CostOptimizedStrategy extends Strategy {
                  * Passende externe Räume ermitteln
                  */
                 matchingRooms = getMatchingRooms(course, RoomType.EXTERNAL);
-
+                Protocol.log("\tPassende Räume (extern): " + matchingRooms);
+                
                 /**
                  * Alle passenden, externen Räume prüfen
                  */
                 for (Room room : matchingRooms) {
 
                     /**
-                     * Schnittmenge über alle freien Koordinaten des Raumplans,
-                     * des Dozentenplans und aller Fachsemesterpläne erzeugen
+                     * Schnittmenge über alle freien Plankoordinaten des Raums,
+                     * des Dozenten und aller Fachsemester erzeugen
                      */
                     freeCoordinatesRoom = schedule.getFreeCoordiates(room);
                     freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -239,7 +240,7 @@ public class CostOptimizedStrategy extends Strategy {
                      * Wenn nicht, zum nächsten Raum gehen.
                      */
                     if (freeIntersection.isEmpty()) {
-                         Protocol.log("\tKeine Plankoordinate frei: [RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Plätze='" + room.getSeats() +"']");
+                        Protocol.log("\t\tKeine Plankoordinate frei: [RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Plätze='" + room.getSeats() + "']");
                         continue;
                     }
 
@@ -260,7 +261,7 @@ public class CostOptimizedStrategy extends Strategy {
                      */
                     coursePlanned = true;
 
-                    Protocol.log("\tExtern eingeplant (bestehender Raum): [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
+                    Protocol.log("\t\tExtern eingeplant (bestehender Raum): [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
 
                     /**
                      * Die Schleife kann beendet werden, da der Kurs erfolgreich
@@ -282,10 +283,11 @@ public class CostOptimizedStrategy extends Strategy {
                  * Einen externen Raum erzeugen
                  */
                 Room room = dataController.createExternalRoom();
-
+                Protocol.log("\tErzeuge neuen Raum (extern): " + room);
+                
                 /**
-                 * Schnittmenge über alle freien Koordinaten des Raumplans, des
-                 * Dozentenplans und aller Fachsemesterpläne erzeugen
+                 * Schnittmenge über alle freien Plankoordinaten des Raums, des
+                 * Dozenten und aller Fachsemester erzeugen
                  */
                 freeCoordinatesRoom = schedule.getFreeCoordiates(room);
                 freeIntersection = new ArrayList<>(freeCoordinatesRoom);
@@ -297,7 +299,7 @@ public class CostOptimizedStrategy extends Strategy {
                  * Wenn nicht, dann ist der Kurs endgültig nicht einplanbar!
                  */
                 if (freeIntersection.isEmpty()) {
-                    Protocol.log("\tKeine Plankoordinate frei: Kurs konnte nicht eingeplant werden!");
+                    Protocol.log("\t\tKeine Plankoordinate frei: Kurs konnte nicht eingeplant werden!");
                     coursesNotPlanned.add(course);
                     continue;
                 }
@@ -315,7 +317,7 @@ public class CostOptimizedStrategy extends Strategy {
                 /**
                  * Protokoll fortschreiben
                  */
-                Protocol.log("\tExtern eingeplant (neuer Raum): [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
+                Protocol.log("\t\tExtern eingeplant (neuer Raum): [Plankoordinate='" + scheduleCoordinate + "', RaumID='" + room.getRoomId() + "', Raum='" + room.getName() + "']");
 
             }
         }

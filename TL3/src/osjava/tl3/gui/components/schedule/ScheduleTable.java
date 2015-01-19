@@ -8,8 +8,10 @@ import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 
 /**
- * Implement eine JTable für die spezfischen Anforderungen zur Anzeige eines
- * Planes (Schedule)
+ * Implementiert eine JTable für die spezfischen Anforderungen zur Anzeige eines
+ * Planes (Schedule).
+ * Die Tabelle nutzt zur Darstellung von ScheduleElementViewWrapper Elementen
+ * einen entsprechenden Renderer ScheduleTableCellRenderer.
  *
  * @author Meikel Bode
  */
@@ -27,10 +29,10 @@ public class ScheduleTable extends JTable {
      * der Klasse Schedule (Plan), sowie der Instanzen von TimeSlot, der
      * spezialisierte Renderer ScheduleTableCellRenderer zugewiesen.
      *
-     * @param dm Das TableModel
+     * @param tableModel Das TableModel
      */
-    public ScheduleTable(TableModel dm) {
-        super(dm);
+    public ScheduleTable(TableModel tableModel) {
+        super(tableModel);
 
         /**
          * Grundlegende Einstellungen vornehmen
@@ -38,14 +40,19 @@ public class ScheduleTable extends JTable {
         setDefaultRenderer(ScheduleElementViewWrapper.class, new ScheduleTableCellRenderer());
         setDefaultRenderer(TimeSlot.class, new ScheduleTableCellRenderer());
         setGridColor(Color.LIGHT_GRAY);
-
+        setDoubleBuffered(true);
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(false);
 
     }
 
     /**
-     * Passt die Höhe jeder Zeile an ihren Inhalt an
+     * Passt die Höhe jeder Zeile an ihren Inhalt an.
+     * Da der Inhalt einer Tabellenzelle variablen hoch und breit ist durch
+     * eine abweichende Anzahl von Terminen pro Plankoordinate, muss dynamisch
+     * die notwendige Höhe pro Zeile ermittelt werden.
+     * 
+     * @see JTable#doLayout() 
      */
     @Override
     public void doLayout() {

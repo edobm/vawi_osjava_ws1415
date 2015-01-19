@@ -17,6 +17,8 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
  * Dieser Renderer kann Instanzen der Klassen ScheduleElementImpl und TimeSlot
  * ausgeben. Die Klasse erweitert die Klasse DefaultTableCellRenderer
  *
+ * @see DefaultTableCellRenderer
+ * 
  * @author Meikel Bode
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
@@ -31,6 +33,7 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
         super();
         setBorder(new LineBorder(Color.DARK_GRAY, 1));
         setFont(new Font("Helvetica", Font.PLAIN, 12));
+        setDoubleBuffered(true);
     }
 
     /**

@@ -1,8 +1,5 @@
 package osjava.tl3.logic.io.input;
 
-import osjava.tl3.logic.io.input.InputValidator;
-import osjava.tl3.logic.io.input.InputFileReaderException;
-import osjava.tl3.logic.io.input.InputFileReader;
 import java.util.ArrayList;
 import java.util.List;
 import osjava.tl3.logging.Protocol;
@@ -96,7 +93,7 @@ public class CourseReader extends InputFileReader {
                 }
             }
         } else {
-            Protocol.log("Die Veranstaltung " + removeQuotationMarks(courseData[1]) + " benötigt kein Equipment!");
+            Protocol.log("Die Veranstaltung [KursID='" + course.getNumber()+ "', Kurs='" + course.getName() + "'] benötigt kein Equipment!");
         }
 
         return course;
