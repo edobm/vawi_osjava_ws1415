@@ -23,6 +23,9 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
  */
 public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
 
+    /**
+     * Farben vordefinieren
+     */
     private final Color colorFree = Color.WHITE;
     private final Color colorTimeSlot = new Color(212, 212, 212);
 
@@ -39,7 +42,7 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
     /**
      * Erzeugt eine Instanz von JLabel, die als darstellende Komponente der
      * zugewiesenen Instanz von JTable an der Koordinate (row, column) verwendet
-     * werden soll. Dieser Renderer kann Instanzen von ScheduleElementImpl und
+     * werden soll. Dieser Renderer kann Instanzen von ScheduleElementViewWrapper und
      * TimeSlot darstellen.
      *
      * @param table Die JTable auf der der Renderer operiert
@@ -51,12 +54,17 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
      * @param row Der Index der Tabellenzeile
      * @param column Der Index der Tabellenspalte
      * @return Die Renderer Komponente (JLabel)
+     * 
+     * @see DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int) 
      */
     @Override
     public Component getTableCellRendererComponent(JTable table,
             Object value, boolean isSelected, boolean hasFocus, int row,
             int column) {
 
+        /**
+         * ScheduleElementViewWrapper verarbeiten
+         */
         if (value instanceof ScheduleElementViewWrapper) {
             ScheduleElementViewWrapper scheduleElement = (ScheduleElementViewWrapper) value;
 
@@ -108,17 +116,29 @@ public class ScheduleTableCellRenderer extends DefaultTableCellRenderer {
                 setText(sb.toString());
 
             }
-        } else if (value instanceof TimeSlot) {
+        } 
+        /**
+         * TimeSlot verarbeiten
+         */
+        else if (value instanceof TimeSlot) {
             setVerticalAlignment(SwingConstants.CENTER);
             setText(value.toString());
             setToolTipText("");
             setBackground(colorTimeSlot);
 
-        } else {
+        } 
+        /**
+         * Anderfalls Zellenwert ignorieren und Detfaulausgaben machen
+         */
+        else {
             setToolTipText("Nicht belegt.");
             setText("");
             setBackground(colorFree);
         }
+        
+        /**
+         * Renderer Komponente (this) als Rückgabewert liefern
+         */
         return this;
     }
 

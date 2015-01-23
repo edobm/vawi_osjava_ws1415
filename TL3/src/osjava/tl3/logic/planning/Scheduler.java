@@ -1,6 +1,6 @@
 package osjava.tl3.logic.planning;
 
-import java.util.HashMap;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.Schedule;
@@ -16,7 +16,6 @@ import osjava.tl3.model.schedule.Schedule;
  * Studiengang.
  *
  * @author Meikel Bode
- * @version 1.0
  */
 public class Scheduler {
 
@@ -40,11 +39,13 @@ public class Scheduler {
      *
      */
     public void executeStrategy() {
-        
+
         /**
          * Führt die Strategie aus und erzeugt dabei den Gesamtplan
          */
+        long startTime = System.currentTimeMillis();
         schedule = strategy.execute(dataController);
+        Protocol.log("Plan erzeugt in: " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     /**
@@ -67,6 +68,7 @@ public class Scheduler {
 
     /**
      * Liefert die Strategie
+     *
      * @return Die Strategie
      */
     public Strategy getStrategy() {
@@ -75,10 +77,11 @@ public class Scheduler {
 
     /**
      * Setzt die Strategie
+     *
      * @param strategy Die Strategie
      */
     public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
     }
-
-} 
+    
+}

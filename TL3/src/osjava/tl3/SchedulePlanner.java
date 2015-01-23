@@ -10,13 +10,17 @@ import osjava.tl3.logging.Protocol;
 
 /**
  * Diese Klasse stellt mit der Main-Methode den Einstiegspunkt in das
- * Klassensystem dar. Als Parameter erwartet die Main-Methode die Parameter:
- *
- * -in="<directory>" - Verzeichnis das die Eingabedatein enthält
- * -out="<directory>" - Verzeichnis in das die Ausgabedatein geschrieben werden
- * sollen -format="<plaintext, html>" - Das gewünschte Ausgabeformat
- * -in="c:\tmp\int" -out="blablub" -format="plaintext"
- *
+ * Klassensystem dar. 
+ * 
+ * Es werden zwei Laufzeitmodi unterschieden: "gui" und "console".
+ * Wird das Programm ohne parameter gestartet, wird der graphische Modus gestartet.
+ * 
+ * Die Klasse implementiert das Observer/Oberservable Pattern. Sie registriert sich 
+ * bei der Klasse Protocol als Observer und erhält damit alle während der 
+ * Laufzeit erzeugten Programmausgaben und gibt diese auf der Konsole aus.
+ * Wird der Konsolenmodus gestartet deregistriert sich diese Klasse als Observer,
+ * da diese Aufgabe durch den Konsolenmodus übernommen wird.
+ * 
  * @author Christian Müller
  * @version 1.0
  */
@@ -32,7 +36,8 @@ public final class SchedulePlanner implements Observer {
     /**
      * Erlaubte Laufzeitparameter
      */
-    private static final String[] parameterKeys = new String[]{"help", "mode", "roomfiles", "coursefiles", "studyprogramfiles",
+    private static final String[] parameterKeys = new String[]{
+        "help", "mode", "roomfiles", "coursefiles", "studyprogramfiles",
         "out", "format", "strategy", "seatcosts"};
 
     /**
@@ -40,6 +45,7 @@ public final class SchedulePlanner implements Observer {
      */
     private final HashMap<String, String> parameters = new HashMap<>();
 
+    
     /**
      * Die Main-Methode und zugleich der Einstiegspunkt in das Klassensystem
      *
@@ -110,7 +116,7 @@ public final class SchedulePlanner implements Observer {
      * Verarbeitet den Argumentenvektor und speichert die Parameter in der
      * Parameterhashmap
      *
-     * @param argv die Kommandozeilenparameter des Programms
+     * @param argv Die Kommandozeilenparameter des Programms
      */
     private void parseArgumentVector(String[] argv) {
 
@@ -126,7 +132,7 @@ public final class SchedulePlanner implements Observer {
 
                     // Das Argument in Schlüssel und Wert aufteilen 
                     // und in der Parameterliste speichern
-                    parameters.put(parts[0], parts[1]); // 0 -> mode, 1 -> gui
+                    parameters.put(parts[0], parts[1]); // Index 0 -> mode, Index 1 -> gui
                 }
             }
         } catch (Exception e) {
@@ -181,9 +187,16 @@ public final class SchedulePlanner implements Observer {
                             System.exit(100);
                         }
 
+                        // Existiert das angegebenen Verzeichnis?
                         File file = new File(parameters.get(key));
                         if (!file.exists()) {
                             Protocol.log("Ausgabeverzeichnis exitiert nicht: " + parameters.get(key));
+                            System.exit(101);
+                        }
+                        
+                        // Ist das angegebene Verzeichnis wirklich ein Verzeichnis?
+                        if (!file.isDirectory()) {
+                            Protocol.log("Ausgabeverzeichnis ist kein Verzeichnis: " + parameters.get(key));
                             System.exit(101);
                         }
                     }
@@ -193,7 +206,7 @@ public final class SchedulePlanner implements Observer {
                      */
                     if (key.equals("format")) {
                         if (!parameters.containsKey(key)) {
-                            Protocol.log("Setze Default-Format: CSV_TEXT");
+                            Protocol.log("Kein Ausgabeformat angegeben. Setze Default-Format: csv_text");
                             parameters.put("format", "CSV_TEXT");
                             System.exit(200);
                         }
@@ -209,7 +222,7 @@ public final class SchedulePlanner implements Observer {
                     if (key.equals("strategy")) {
                         if (!parameters.containsKey(key)) {
                             parameters.put(key, "CostOptimizedStrategy");
-                            Protocol.log("Setze Default-Planungstrategie: CostOptimizedStrategy");
+                            Protocol.log("Keine Planungsstrategie übergeben. Setze Default-Planungstrategie: CostOptimizedStrategy");
                         }
                     }
 
@@ -268,13 +281,13 @@ public final class SchedulePlanner implements Observer {
                     if (key.equals("seatcosts")) {
                         if (!parameters.containsKey(key)) {
                             parameters.put(key, "10");
-                            Protocol.log("Setze Default-Sitzplatzkosten: 10 EUR");
+                            Protocol.log("Keine Sitzplatzkosten übergeben. Setze Default-Sitzplatzkosten: 10 EUR");
                         } else {
                             try {
                                 Integer.parseInt((String) parameters.get(key));
                                 // Alles ok, Wert ist ein Integer
                             } catch (Exception e) {
-                                Protocol.log("Sitzplatzkosten ist keine Ganzzahl: " + parameters.get(key));
+                                Protocol.log("Wert für Sitzplatzkosten ist keine Ganzzahl: " + parameters.get(key));
                                 System.exit(701);
                             }
                         }
@@ -330,12 +343,16 @@ public final class SchedulePlanner implements Observer {
         String mode = parameters.get("mode");
         if (mode.equals("console")) {
             /**
-             * SchedulePlanner als Observer deregistrieren, damit Logmeldungen
-             * nicht zwei Mal auf der Konsole ausgegeben werden.
+             * SchedulePlanner als Observer deregistrieren. Weitere Ausgaben
+             * erfolgen über Konsolenmodus direkt.
              */
             Protocol.getInstance().deleteObserver(SchedulePlanner.this);
             executeConsole();
         } else {
+            /**
+             * Weiterhin als Observer agieren. Die GUI gibt ebenfalls Meldungen 
+             * aus jedoch in einer spezifischen Komponente.
+             */
             executeGUI();
         }
     }
@@ -375,6 +392,7 @@ public final class SchedulePlanner implements Observer {
      *
      * @param o Das observierbare Objekt
      * @param arg Die letzte Änderung
+     * @see Observer
      */
     @Override
     public void update(Observable o, Object arg) {

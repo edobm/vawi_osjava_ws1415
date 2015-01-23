@@ -1,7 +1,8 @@
 package osjava.tl3.gui.components.combobox;
 
 /**
- * Hilfsklasse zur Abbildung von ComboBoxModel Einträgen
+ * Hilfsklasse zur Abbildung von ComboBoxModel Einträgen.
+ * Dabei wird in Anzeigetext und eigentlichen Wert des Elements differenziert.
  * 
  * @author Meikel Bode
  * 

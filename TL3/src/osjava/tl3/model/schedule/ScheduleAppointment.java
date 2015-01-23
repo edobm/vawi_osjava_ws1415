@@ -1,8 +1,11 @@
 package osjava.tl3.model.schedule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Room;
+import osjava.tl3.model.Semester;
 
 /**
  * Diese Klasse Repräsentiert einen Termin dar der einer Plankoordinate 
@@ -23,6 +26,12 @@ public class ScheduleAppointment {
      */
     private final Course course;
 
+//    /**
+//     * Die Fachsemester, die diesen Kurs tasächlich anbieten werden.
+//     * 
+//     */
+//    private final List<Semester> assignedSemesters = new ArrayList<>();
+    
     /**
      * Erzeugt eine neue Termininstanz für den gegebenen Raum und Kurs
      * @param room Der Raum

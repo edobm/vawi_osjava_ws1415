@@ -48,8 +48,10 @@ public class InputFileDescriptor implements Comparable<InputFileDescriptor>{
     /**
      * Vergleicht einen InputFileDescriptor mit einem anderen auf Basis
      * des absoluten Dateipfades
+     * 
      * @param other Die andere Instanz
      * @return Das Vergleichsergebnis
+     * @see Comparable
      */
     @Override
     public int compareTo(InputFileDescriptor other) {

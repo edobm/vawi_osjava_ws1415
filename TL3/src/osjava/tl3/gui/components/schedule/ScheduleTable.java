@@ -8,10 +8,10 @@ import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 
 /**
- * Implementiert eine JTable für die spezfischen Anforderungen zur Anzeige eines
- * Planes (Schedule).
- * Die Tabelle nutzt zur Darstellung von ScheduleElementViewWrapper Elementen
- * einen entsprechenden Renderer ScheduleTableCellRenderer.
+ * Implementiert eine JTable für die spezfischen Anforderungen zur Anzeige einer
+ * Plansicht (ScheduleView). Die Tabelle nutzt zur Darstellung von
+ * ScheduleElementViewWrapper Einträgen einen entsprechenden Renderer
+ * (ScheduleTableCellRenderer).
  *
  * @author Meikel Bode
  */
@@ -25,11 +25,10 @@ public class ScheduleTable extends JTable {
     /**
      * Erzeugt eine neue Instanz von ScheduleTable und setzt grundlegende
      * Einstellungen. Weiterhin wird zur Erzeugung einer stundenplanartigen
-     * Ausgabe Elemente (ScheduleElementImpl) der jeweils zugeordneten Instanz
-     * der Klasse Schedule (Plan), sowie der Instanzen von TimeSlot, der
-     * spezialisierte Renderer ScheduleTableCellRenderer zugewiesen.
+     * Ausgabe für die Planelemente (ScheduleElementImpl) der spezialisierte
+     * Zellenformatierer ScheduleTableCellRenderer zugewiesen.
      *
-     * @param tableModel Das TableModel
+     * @param tableModel Das TableModel auf dem diese Tabelle operiert
      */
     public ScheduleTable(TableModel tableModel) {
         super(tableModel);
@@ -37,32 +36,40 @@ public class ScheduleTable extends JTable {
         /**
          * Grundlegende Einstellungen vornehmen
          */
-        setDefaultRenderer(ScheduleElementViewWrapper.class, new ScheduleTableCellRenderer());
-        setDefaultRenderer(TimeSlot.class, new ScheduleTableCellRenderer());
         setGridColor(Color.LIGHT_GRAY);
         setDoubleBuffered(true);
         setColumnSelectionAllowed(false);
         setCellSelectionEnabled(false);
 
+        /**
+         * Diese Tabelle zeigt entwerder Instanzen von ScheduleElementViewWrapper
+         * oder Instanzen der Klasse TimeSlot an.
+         * In beiden Fällen wird die spezifische Darstellung über die spezialisierte
+         * Klasse ScheduleTableCellRenderer realisiert.
+         */
+        setDefaultRenderer(ScheduleElementViewWrapper.class, new ScheduleTableCellRenderer());
+        setDefaultRenderer(TimeSlot.class, new ScheduleTableCellRenderer());
+
     }
 
     /**
-     * Passt die Höhe jeder Zeile an ihren Inhalt an.
-     * Da der Inhalt einer Tabellenzelle variablen hoch und breit ist durch
-     * eine abweichende Anzahl von Terminen pro Plankoordinate, muss dynamisch
-     * die notwendige Höhe pro Zeile ermittelt werden.
-     * 
-     * @see JTable#doLayout() 
+     * Passt die Höhe jeder Zeile an ihren Inhalt an. Da der Inhalt einer
+     * Tabellenzelle variablen hoch und breit ist durch eine abweichende Anzahl
+     * von Terminen pro Plankoordinate, muss dynamisch die notwendige Höhe pro
+     * Zeile ermittelt werden.
+     *
+     * @see JTable#doLayout()
      */
     @Override
     public void doLayout() {
         super.doLayout();
+        
         int maxHeightInRow = 0;
         int currentRowHeight = 0;
         JLabel cellRenderer;
-
+    
         /**
-         * Alle Zeilen durchlaufen
+         * Alle Zeilen durchlaufen.
          */
         for (int row = 0; row < getRowCount(); row++) {
 
@@ -71,12 +78,16 @@ public class ScheduleTable extends JTable {
 
             /**
              * Alle Spalten durchlaufen und für jede Zelle die gewünschte Höhe
-             * ermitteln
+             * ermitteln und die maximale Höhe jeweils zwischenspeichern
              */
             for (int column = 0; column < getColumnCount(); column++) {
 
                 cellRenderer = (JLabel) prepareRenderer(getDefaultRenderer(ScheduleElementViewWrapper.class), row, column);
                 currentRowHeight = cellRenderer.getPreferredSize().height + getIntercellSpacing().height + 20;
+                
+                /**
+                 * Ggf. maximale Höhe anpassen
+                 */
                 if (currentRowHeight > maxHeightInRow) {
                     maxHeightInRow = currentRowHeight;
                 }
@@ -89,7 +100,7 @@ public class ScheduleTable extends JTable {
              */
             setRowHeight(row, maxHeightInRow > defaultRowHeight ? maxHeightInRow : defaultRowHeight);
         }
-
+       
     }
 
 }

@@ -1,7 +1,8 @@
 package osjava.tl3.gui.components.fileselection;
 
 /**
- * Stellt eine zu importierende Dateitype dar
+ * Stellt eine zu importierende Dateitype oder ein Ausgabeverzeichnis dar
+ * 
  * @author Meikel Bode
  */
 public enum InputFileType {

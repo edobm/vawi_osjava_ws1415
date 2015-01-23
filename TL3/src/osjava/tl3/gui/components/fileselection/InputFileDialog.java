@@ -42,7 +42,8 @@ public class InputFileDialog extends JDialog implements ComponentListener {
         addComponentListener(InputFileDialog.this);
 
         /**
-         * Das InputFilePanel initialisieren und dem Dialog hinzufügen
+         * Das InputFilePanel auf den gegeben Dateityp initialisieren und 
+         * dem Dialog hinzufügen
          */
         inputFilePanel = new InputFilePanel(inputFileType, this);
         add(inputFilePanel, BorderLayout.CENTER);
@@ -62,10 +63,10 @@ public class InputFileDialog extends JDialog implements ComponentListener {
      * Beim Öffnen des Dialoges prüfen ob Dateien selektiert wurden. 
      * Wenn nicht direkt den Selektionsdialog zeigen.
      *
-     * @param e Der Komponentenevent
+     * @param event Der Komponentenevent
      */
     @Override
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(ComponentEvent event) {
         if (inputFilePanel.getSelectedFiles().isEmpty()) {
             inputFilePanel.addFileAction();
         }
@@ -73,28 +74,28 @@ public class InputFileDialog extends JDialog implements ComponentListener {
 
     /**
      * Reagieren, wenn die Komponente in der Größe verändert wird
-     * @param e Der Komponentenevent
+     * @param event Der Komponentenevent
      */
     @Override
-    public void componentResized(ComponentEvent e) {
+    public void componentResized(ComponentEvent event) {
         // Nicht verwendet!
     }
 
     /**
      * Reagieren wenn die Komponente verschoben wird
-     * @param e Der Komponentenevent
+     * @param event Der Komponentenevent
      */
     @Override
-    public void componentMoved(ComponentEvent e) {
+    public void componentMoved(ComponentEvent event) {
         // Nicht verwendet!
     }
     
    /**
      * Reagieren wenn die Komponente versteckt wird
-     * @param e Der Komponentenevent
+     * @param event Der Komponentenevent
      */
     @Override
-    public void componentHidden(ComponentEvent e) {
+    public void componentHidden(ComponentEvent event) {
         // Nicht verwendet!
     }
     

@@ -3,7 +3,6 @@ package osjava.tl3.gui.components.fileselection;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JButton;
@@ -121,32 +120,20 @@ public class InputFilePanel extends JPanel {
 
         btnAddFile = new JButton("Element hinzufügen");
         buttonPanelFileButtons.add(btnAddFile);
-        btnAddFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addFileAction();
-            }
+        btnAddFile.addActionListener((ActionEvent e) -> {
+            addFileAction();
         });
 
         btnRemoveFile = new JButton("Auswahl entfernen");
         buttonPanelFileButtons.add(btnRemoveFile);
-        btnRemoveFile.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeFileAction();
-            }
+        btnRemoveFile.addActionListener((ActionEvent e) -> {
+            removeFileAction();
         });
 
         btnOk = new JButton("OK");
         buttonPanelFileButtons.add(btnOk);
-        btnOk.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                okAction();
-            }
+        btnOk.addActionListener((ActionEvent e) -> {
+            okAction();
         });
     }
 

@@ -56,12 +56,16 @@ public class InputFileTableModel extends DefaultTableModel {
         fireTableDataChanged();
     }
 
+    /**
+     * Entfernt selektierte Dateien über ihren Index
+     * @param selectedFiles Die zu entfernenden Indexeinträge
+     */
     public void removeSelectedFiles(int[] selectedFiles) {
         ArrayList<InputFileDescriptor> files = new ArrayList<>(selectedFiles.length);
         for (int idx : selectedFiles) {
             files.add(this.selectedFiles.get(idx));
         }
-        
+       
         this.selectedFiles.removeAll(files);
         fireTableDataChanged();
     }
@@ -91,7 +95,7 @@ public class InputFileTableModel extends DefaultTableModel {
     }
 
     /**
-     * Dateiname
+     * Liefert die Anzahl der Spalten
      *
      * @return Die Anzahl der Spalten
      */
@@ -101,18 +105,20 @@ public class InputFileTableModel extends DefaultTableModel {
     }
 
     /**
-     * Der Bezeichner der gegebenen Spalte
+     * Der Bezeichner der gegebenen Spalte.
+     * Ist in Abhängigkeit vom Dateityp immer "Verzeichnis" oder "Datei"
      *
      * @param columnIndex Index der Spalte
      * @return Der Bezeichner der Spalte mit dem gegebenen Index
      */
     @Override
     public String getColumnName(int columnIndex) {
-        switch (columnIndex) {
-            case 0:
-            default:
-                return inputFileType == InputFileType.OUTPUT_DIRECTORY ? "Verzeichnis" : "Datei";
-        }
+        
+        /**
+         * Es gibt nur eine Spalte, daher kann eine Prüfung auf den Index entfallen
+         */
+        return inputFileType == InputFileType.OUTPUT_DIRECTORY ? "Verzeichnis" : "Datei";
+        
     }
 
     /**
@@ -128,7 +134,8 @@ public class InputFileTableModel extends DefaultTableModel {
     }
 
     /**
-     * Ob die Zelle am Zeilen- und Spaltenindex editiertbar ist. Ist immer false
+     * Ob die Zelle am Zeilen- und Spaltenindex editierbar ist. 
+     * Ist immer false.
      *
      * @param rowIndex Der Index der Zeile
      * @param columnIndex der Index der Spalte

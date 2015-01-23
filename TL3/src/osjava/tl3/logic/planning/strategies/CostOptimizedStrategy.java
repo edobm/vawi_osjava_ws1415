@@ -18,17 +18,21 @@ import osjava.tl3.model.schedule.Schedule;
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
  * Kosten. Die Strategie versucht dabei priorisiert Kurse mit vielen Teilnehmern
  * auf interne Räume zu verteilen, falls benötigtes und vorhandenes Equipment
- * passen. Kann passender interner Raum gefunden werden, wird zunächst geprüft,
- * ob ggf. bereits ein externer Raum bekannt ist, in den dieser Kurs eingeplant
- * werden kann. Ist der externe Raum bereits voll oder kann passt der Raum nicht
+ * passen. Kann kein passender interner Raum gefunden werden, wird zunächst geprüft,
+ * ob ggf. bereits ein externer Raum mit noch freier Kapazität bekannt ist, 
+ * in den dieser Kurs eingeplant werden kann. 
+ * Ist der externe Raum bereits voll oder passt der Raum nicht
  * zum Plan des Dozenten, wird einer weiterer externer Raum angemietet (erzeugt)
  * und der Kurs dort eingeplant, passend zum Dozetenplan. Kann der Kurs nicht
- * eingeplant werden, da der Dozent keinen freien Termin mehr hat oder die
+ * eingeplant werden, da der Dozent keinen freien Termin mehr hat oder
  * keines der Fachsemester der Studiengänge, in denen der Kurs angeboten wird
  * mehr einen freien Termin hat, wird der Kurs in die Liste der nicht
  * einplanbaren Kurse eingetragen.
+ * 
  *
  * @author Meikel Bode
+ * 
+ * @see Strategy
  */
 public class CostOptimizedStrategy extends Strategy {
 
@@ -46,6 +50,8 @@ public class CostOptimizedStrategy extends Strategy {
      *
      * @see Strategy
      * @return Der erzeugte Gesamplan
+     * 
+     * @see Strategy#execute(osjava.tl3.model.controller.DataController) 
      */
     @Override
     public Schedule execute(DataController dataController) {

@@ -68,9 +68,12 @@ import osjava.tl3.model.schedule.ScheduleElement;
  * Planungslogik bereit.
  *
  * Die GUI stellt Möglichkeiten der Parametrisierung der Planungslogik und der
- * Eingabe und Ausgabe bereit. Weiterhin dient die GUI zu bequemen Auswahl
- * mittels JTree und Darstellung aller im Gesamtplan (MasterSchedule)
- * enthaltenen Plane (Schedule) in tabellarischer Form (JTable) bereit.
+ * Eingabe und Ausgabe bereit. Weiterhin dient die GUI zur bequemen Auswahl
+ * mittels JTree und Darstellung aller im Gesamtplan (Schedule)
+ * enthaltenen Pläne in tabellarischer Form (JTable) bereit.
+ * Die Klasse operiert dabei jedoch nicht direkt auf dem Plan sondern nutzt zu
+ * diesem Zweck spezifische Sichten auf den Plan, die jeweils spezifisch sind
+ * für Räume, Dozenten, Studiengänge und Fachsemester.
  *
  * @author Meikel Bode
  */
@@ -132,7 +135,7 @@ public class SchedulerUI extends JFrame {
     private final JButton btnOutputExecute = new JButton("Gesamtplan exportieren");
 
     /**
-     * Instanz des DataControllers für Zugriff auf Entitäten
+     * Instanz des DataControllers für Zugriff auf Model Daten
      */
     private DataController dataController;
 
@@ -176,7 +179,7 @@ public class SchedulerUI extends JFrame {
         initializeWindowEvents();
 
         /**
-         * Swing Komponenten erzeugen und Konfigurieren
+         * Swing Komponenten erzeugen und konfigurieren
          */
         initializeComponents();
 
@@ -188,7 +191,8 @@ public class SchedulerUI extends JFrame {
         /**
          * Meldung ausgeben
          */
-        Protocol.log("GUI-Modus initialisiert");
+        Protocol.log("GUI-Modus initialisiert.");
+        Protocol.log("Bereit.");
         
     }
 
@@ -203,7 +207,7 @@ public class SchedulerUI extends JFrame {
         setLayout(new BorderLayout());
 
         /**
-         * Buttonleiste oben platzieren
+         * Buttonleiste oben im Hauptfensterplatzieren
          */
         getContentPane().add(panelTopButtons, BorderLayout.NORTH);
 

@@ -24,7 +24,7 @@ public class LoggingPanel extends JPanel implements Observer {
     private final JTextArea textArea = new JTextArea();
 
     /**
-     * Die ScrollPane für die TextArea
+     * Die ScrollPane, die die TextArea aufnimmt
      */
     private final JScrollPane scrollPane = new JScrollPane();
 
@@ -43,7 +43,8 @@ public class LoggingPanel extends JPanel implements Observer {
         textArea.setFont(new Font("Monospace", Font.PLAIN, 12));
 
         /**
-         * Automatisches Scrolling aktivieren
+         * Automatisches Scrolling aktivieren, um immer die neuesten
+         * Logeinträge direkt anzuzeigen
          */
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -51,7 +52,7 @@ public class LoggingPanel extends JPanel implements Observer {
         /**
          * Registrierung als Observer
          */
-        Protocol.getInstance().addObserver(this);
+        Protocol.getInstance().addObserver(LoggingPanel.this);
     }
 
     /**
@@ -59,6 +60,8 @@ public class LoggingPanel extends JPanel implements Observer {
      *
      * @param o Das Observable (Protocol)
      * @param arg Die letzte Logmeldung
+     * 
+     * @see Observer#update(java.util.Observable, java.lang.Object) 
      */
     @Override
     public void update(Observable o, Object arg) {
