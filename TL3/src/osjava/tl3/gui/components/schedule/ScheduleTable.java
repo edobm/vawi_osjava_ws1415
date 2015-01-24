@@ -4,8 +4,8 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
+import osjava.tl3.model.schedule.TimeSlot;
 
 /**
  * Implementiert eine JTable für die spezfischen Anforderungen zur Anzeige einer

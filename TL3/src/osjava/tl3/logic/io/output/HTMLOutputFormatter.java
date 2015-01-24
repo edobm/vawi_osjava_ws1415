@@ -1,16 +1,16 @@
 package osjava.tl3.logic.io.output;
 
-import osjava.tl3.model.schedule.Day;
 import osjava.tl3.model.RoomType;
-import osjava.tl3.model.schedule.ScheduleCoordinate;
-import osjava.tl3.model.schedule.TimeSlot;
+import osjava.tl3.model.schedule.Day;
 import osjava.tl3.model.schedule.ScheduleAppointment;
+import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.schedule.ScheduleElement;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;
 import osjava.tl3.model.schedule.ScheduleViewSemester;
 import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
+import osjava.tl3.model.schedule.TimeSlot;
 
 /**
  * Ein Ausgabeformatierer für Planinstanzen für das HTML-Format

@@ -8,10 +8,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import osjava.tl3.model.StudyProgram;
-import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
 import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
+import osjava.tl3.model.schedule.TimeSlot;
 
 /**
  * Dieser Renderer kann Instanzen der Klassen ScheduleElementImpl und TimeSlot

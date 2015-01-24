@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.logic.planning.strategies.helpers.CourseStudentsComparator;
 import osjava.tl3.logic.planning.strategies.helpers.SortOrder;
-import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Course;
 import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
-import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.Schedule;
+import osjava.tl3.model.schedule.ScheduleCoordinate;
 
 /**
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
