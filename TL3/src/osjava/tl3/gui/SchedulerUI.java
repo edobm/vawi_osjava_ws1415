@@ -208,7 +208,7 @@ public class SchedulerUI extends JFrame {
         setLayout(new BorderLayout());
 
         /**
-         * Buttonleiste oben im Hauptfensterplatzieren
+         * Buttonleiste oben im Hauptfenster platzieren
          */
         getContentPane().add(panelTopButtons, BorderLayout.NORTH);
 
@@ -470,9 +470,8 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
-     * Initialisiert die Datenhaltung und erzeugt den Gesamtplan
-     * (MasterSchedule) und erzeugt das TreeModel und sowie das TableModel für
-     * die tabellarische Plandarstellung
+     * Initialisiert die Datenhaltung und erzeugt den Gesamtplan das TreeModel
+     * sowie das TableModel für die tabellarische Plandarstellung
      */
     private void executeScheduler() {
 
@@ -642,7 +641,7 @@ public class SchedulerUI extends JFrame {
     }
 
     /**
-     * Erzeugt auf Basis des Gesamtplanes (MasterSchedule) das TreeModel
+     * Erzeugt auf Basis des Gesamtplanes das TreeModel
      * mithilfe von verknüpften DefaultMutableTreeNodes
      */
     private TreeNode buildTreeModel() {
