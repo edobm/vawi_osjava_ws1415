@@ -39,6 +39,7 @@ public class CourseReader extends InputFileReader {
                 Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ": Zeile wird ignoriert");
             }
 
+            // Zeilenweise die Kurse erzeugen
             try {
                 dataController.getCourses().add(getCourse(i + 1, courseRecord, dataController));
             } catch (InputFileReaderException e) {
@@ -99,6 +100,15 @@ public class CourseReader extends InputFileReader {
         return course;
     }
 
+    /**
+     * Validiert die Zeile aus der Importdatei auf dem gegebenen Zeilenindex
+     * @param rowNumber Der Zeilenindex
+     * @param recordLine Die Zeile aus der Importdatei
+     * @return Die in Spalten zerlegte Zeile
+     * @throws InputFileReaderException 
+     * 
+     * @see InputFileReader#validateRecord(int, java.lang.String) 
+     */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
 

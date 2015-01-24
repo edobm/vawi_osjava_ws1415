@@ -6,8 +6,6 @@ import osjava.tl3.model.schedule.ScheduleCoordinate;
 import osjava.tl3.model.schedule.TimeSlot;
 import osjava.tl3.model.schedule.ScheduleAppointment;
 import osjava.tl3.model.schedule.ScheduleElement;
-import osjava.tl3.model.schedule.ScheduleElementImpl;
-import osjava.tl3.model.schedule.ScheduleElementViewWrapper;
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewAcademic;
 import osjava.tl3.model.schedule.ScheduleViewRoom;

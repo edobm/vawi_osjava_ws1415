@@ -7,7 +7,9 @@ import osjava.tl3.model.Room;
 
 /**
  * Stellt ein Element einer Plansicht dar ergänzt um eine Referenz auf die
- * zugehörige Plansicht
+ * zugehörige Plansicht.
+ * Instanzen dieser Klasse werden durch im GUI Modus in der Tabellenansicht
+ * und durch den Outputmanager zur Erzeugung der Ausgabedateien verwendet
  * 
  * @author Meikel Bode
  */

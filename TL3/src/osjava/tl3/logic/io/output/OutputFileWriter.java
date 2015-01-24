@@ -20,7 +20,7 @@ import osjava.tl3.model.schedule.ScheduleView;
 public abstract class OutputFileWriter {
 
     /**
-     * Formatierung von Zeitstempeln im Dateinamen
+     * Formatierung von Zeitstempeln im Dateinamen (20150202-145959)
      */
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
@@ -127,28 +127,14 @@ public abstract class OutputFileWriter {
      */
     public void writeFile(String output, String outputPath) {
 
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-
-        try {
-            fos = new FileOutputStream(outputPath);
-            osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+        // Try-with-resouce zum automatischen Schließen der resourcen
+        try (OutputStreamWriter osw = new  OutputStreamWriter(new FileOutputStream(outputPath), Charset.forName("UTF-8").newEncoder())){
+           
             osw.append(output);
             osw.flush();
-            fos.flush();
 
         } catch (IOException ex) {
             Logger.getLogger(OutputFileWriter.class.getName()).log(Level.SEVERE, "Fehler bei der Dateiausgabe", ex);
-        } finally {
-            try {
-                osw.close();
-            } catch (Exception e) {
-            }
-            try {
-                fos.close();
-            } catch (Exception e) {
-            }
-
         }
     }
 

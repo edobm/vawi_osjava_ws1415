@@ -40,7 +40,8 @@ public class RoomReader extends InputFileReader {
 
                 Protocol.log("Fehler in Raumdatei: " + fileName + " auf Zeile " + (i + 1) + ": Zeile wird ignoriert");
             }
-
+            
+            // Zeilenweise die Datei verarbeiten
             try {
                 dataController.getRooms().add(getRoom(i + 1, roomDataRecord, dataController));
             } catch (InputFileReaderException e) {
@@ -79,7 +80,7 @@ public class RoomReader extends InputFileReader {
                 }
             }
         } else {
-            Protocol.log("In Raum " + removeQuotationMarks(roomData[0]) + " kein Equipment vorhanden!");
+            Protocol.log("In Raum " + room.getName() + " kein Equipment vorhanden!");
         }
 
         //Typ setzen
@@ -97,6 +98,8 @@ public class RoomReader extends InputFileReader {
      * @return Die Spalten der Zeile
      * @throws InputFileReaderException Wenn ein Validierungsfehler aufgetreten
      * sein sollte
+     * 
+     * @see InputFileReader#validateRecord(int, java.lang.String) 
      */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {

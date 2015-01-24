@@ -14,7 +14,7 @@ import javax.swing.JDialog;
  * @author Meikel Bode
  */
 public class InputFileDialog extends JDialog implements ComponentListener {
-
+  
     /**
      * Das JPanel zur Anzeige und Auswahl selektierter Dateien/Verzeichnisse
      */
@@ -30,7 +30,7 @@ public class InputFileDialog extends JDialog implements ComponentListener {
      */
     public InputFileDialog(Frame owner, String title, InputFileType inputFileType) {
         super(owner, title);
-
+        
         /**
          * Grundlegende Einstellungen festlegen
          */

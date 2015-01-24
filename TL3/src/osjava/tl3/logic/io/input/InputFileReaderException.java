@@ -19,6 +19,7 @@ public class InputFileReaderException extends Exception {
      * @param message Die Fehlermeldung
      * @param cause Ein möglicherweise aufgetretener Fehler
      * @param value Der fehlerhafte Wert
+     * @param row Der Zeilenindex
      */
     public InputFileReaderException(String message, Throwable cause, String value, int row) {
         super(message, cause);

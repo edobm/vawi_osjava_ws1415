@@ -2,7 +2,6 @@ package osjava.tl3.logic.io.output;
 
 import osjava.tl3.model.schedule.ScheduleView;
 import osjava.tl3.model.schedule.ScheduleViewSemester;
-import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 
 /**
  * Diese Klasse erzeugt die Pläne für ein Fachsemester
@@ -12,6 +11,14 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
  */
 public class SemesterScheduleWriter extends OutputFileWriter {
 
+   /**
+     * Erzeugt eine Semesterplandatei auf Basis der übergebenen Plansicht im
+     * angegebenen Format im angegebenen Pfad.
+     *
+     * @param scheduleView Die Plansicht
+     * @param outputFormat Das Ausgabeformat
+     * @param outputPath Der Ausgabepfad
+     */
     @Override
     public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
         
@@ -24,7 +31,7 @@ public class SemesterScheduleWriter extends OutputFileWriter {
          * Prüfung der Eingabe
          */
         if (scheduleView == null) {
-            throw new IllegalArgumentException("Given instance of ScheduleView must not be null!");
+            throw new IllegalArgumentException("Die übergebene Plansicht darf nicht null sein!");
         }
       
         /**

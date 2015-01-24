@@ -28,7 +28,29 @@ import osjava.tl3.model.schedule.Schedule;
  * denen der Kurs angeboten wird mehr einen freien Termin hat, wird der Kurs in
  * die Liste der nicht einplanbaren Kurse eingetragen.
  *
- *
+ * Hinweis:
+ * Zur Vereinfachung wird eine Veranstaltung nur dann eingeplant, wenn in allen
+ * Fachsemestern, die diesen Kurs enthalten ein gemeinsamer, freier Termin 
+ * gefunden werden kann. Andersfalls wird angenommen, dass dieser Kurs nicht 
+ * einplanbar ist.
+ * 
+ * Weiterhin besteht ein Problem im Datenmaterial hinsichtlich der Erkennung von
+ * Abhängigkeiten zwischen Veranstaltungen:
+ * Dieses Problem ließe sich lösen, wenn inhaltlich zusammenhängende Veranstaltungen
+ * (Vorlesungen und Übungen) über ein Merkmal verfügen würden, dass sie gruppiert. 
+ * Dies könnte der Name der Veranstaltung sein, wenn dieser eindeutig wäre.
+ * Andernfalls müsste die Gruppierung über eins spezfisches Attribut erfolgen.
+ * Die vorliegenden Testdaten lassen eine eindeutige Gruppierung über den Namen 
+ * nur bedingt zu: Gehören die Vorlesung "Einführung in die BWL und VWL" und 
+ * "Fallstudienseminar BWL" zusammen oder nicht?
+ * Über eine solche Gruppierung ließe sich sicherstellen, dass die Vorlesung und
+ * zumindest eine Übung einer Veranstaltungsgruppe pro Fachsemester eingeplant
+ * würde. So ist es theoretisch möglich, dass die Einplanung eines Kurses 
+ * für ein Fachsemester zu Terminkollisionen führt.
+ * Die Klasse ScheduleAppointment müsste neben Kurs und Raum noch die Fachsemester
+ * speichern, für die dieser Termin gültig wäre. (Verbesserungpotential für die
+ * nächste Version :) ) 
+ * 
  * @author Meikel Bode
  *
  * @see Strategy

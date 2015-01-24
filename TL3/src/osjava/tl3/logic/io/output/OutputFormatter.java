@@ -3,8 +3,8 @@ package osjava.tl3.logic.io.output;
 import osjava.tl3.model.schedule.ScheduleView;
 
 /**
- *
- * @author meikelbode
+ * Stelle eine abstrakte Klasse für Ausgabeformatierer bereit
+ * @author Fabian Simon
  */
 public abstract class OutputFormatter {
     

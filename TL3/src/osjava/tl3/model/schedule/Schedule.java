@@ -261,5 +261,14 @@ public class Schedule extends ScheduleBasis {
 
         return views;
     }
+    
+    /**
+     * Liefert die Stringrepräsentation des Plans
+     * @return Der Name des Plans
+     */
+    @Override
+    public String toString() {
+        return "Gesamtplan";
+    }
 
 }

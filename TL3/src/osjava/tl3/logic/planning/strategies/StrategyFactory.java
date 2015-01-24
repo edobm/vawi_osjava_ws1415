@@ -25,7 +25,7 @@ public class StrategyFactory {
 
         try {
             /**
-             * Die Klasse laden
+             * Die Klasse mittels Classload laden
              */
             Class<?> cls = Class.forName(packagePath + "." + className);
 

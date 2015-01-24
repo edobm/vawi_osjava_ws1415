@@ -71,9 +71,7 @@ public class InputValidator {
         String[] columns = value.split(delimiter);
 
         for (String column : columns) {
-
-            validateEmpty(colName, value, recordLine, rowNumber);
-
+           validateEmpty(colName, column, recordLine, rowNumber);
         }
     }
 

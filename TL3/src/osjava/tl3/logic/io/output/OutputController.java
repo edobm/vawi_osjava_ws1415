@@ -1,7 +1,5 @@
 package osjava.tl3.logic.io.output;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.schedule.ScheduleView;

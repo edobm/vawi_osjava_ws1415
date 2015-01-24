@@ -5,9 +5,11 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,6 +22,12 @@ import osjava.tl3.logging.Protocol;
  * @author Meikel Bode
  */
 public class InputFilePanel extends JPanel {
+
+    /**
+     * Hält alle Instanzen dieses Panels. Damit kann über alle Instanzen eine
+     * Mehrfachauswahl der selben Datei erkannt werden.
+     */
+    public static List<InputFilePanel> instances = new ArrayList<>();
 
     /**
      * Der akzeptierte Dateityp dieser Instanz. Der Wert bestimmt den
@@ -61,8 +69,21 @@ public class InputFilePanel extends JPanel {
      * @param parentDialog
      */
     public InputFilePanel(InputFileType acceptedType, JDialog parentDialog) {
+
+        /**
+         * Zur Liste der bekannten Instanzen hinzufügen
+         */
+        instances.add(InputFilePanel.this);
+
+        /**
+         * Einstellungen vornehmen
+         */
         this.acceptedInputFileType = acceptedType;
         this.parentDialog = parentDialog;
+
+        /**
+         * Layout erzeugen
+         */
         initLayout();
     }
 
@@ -151,7 +172,7 @@ public class InputFilePanel extends JPanel {
          * Dialogrückgabe behandeln
          */
         if (result == JFileChooser.APPROVE_OPTION) {
-            
+
             /**
              * Je nach akzeptiertem Eingabedateityp reagieren
              */
@@ -167,12 +188,32 @@ public class InputFilePanel extends JPanel {
                 Protocol.log("Ausgabeverzeichnis selektiert: " + fileDescriptor.getFile().getAbsolutePath());
             } else {
                 /**
+                 * Flag falls bei einer oder mehreren Dateien ein Fehler
+                 * aufgetreten ist
+                 */
+                boolean error = false;
+
+                /**
                  * Modus: Daitei(n) wählen
                  */
                 for (File file : fileChooser.getSelectedFiles()) {
                     fileDescriptor = new InputFileDescriptor(acceptedInputFileType, file);
-                    inputFileTableModel.addInputFile(fileDescriptor);
-                    Protocol.log("Eingabedatei [Typ = " + acceptedInputFileType+"] selektiert: " + fileDescriptor.getFile().getName());
+                    if (validateFile(fileDescriptor)) {
+                        inputFileTableModel.addInputFile(fileDescriptor);
+                        Protocol.log("Eingabedatei [Typ = " + acceptedInputFileType + "] akzeptiert: " + fileDescriptor.getFile().getName());
+                    } else {
+                        if (!error) {
+                            error = true;
+                        }
+                    }
+                }
+
+                /**
+                 * Im Fehlerfalls Meldung ausgeben
+                 */
+                if (error) {
+                    JOptionPane.showMessageDialog(this, "Eine oder mehrere Dateien konnten nicht akzeptiert werden.\nBitte Logausgabe beachten.",
+                            "Mehrfachselektion entdeckt", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -208,6 +249,26 @@ public class InputFilePanel extends JPanel {
      */
     public ArrayList<InputFileDescriptor> getSelectedFiles() {
         return inputFileTableModel.getSelectedFiles();
+    }
+
+    /**
+     * Prüft ob eine Datei bereits in einem anderen Dateiselektionsdialog
+     * ausgewählt wurde.
+     *
+     * @param fileDescriptor Die zu überprüfende Datei
+     * @return Ob die Datei bereits hinzugefügt wurde oder nicht
+     */
+    private static boolean validateFile(InputFileDescriptor fileDescriptor) {
+        for (InputFilePanel panel : instances) {
+            for (InputFileDescriptor fd : panel.getSelectedFiles()) {
+                if (fd.getFile().equals(fileDescriptor.getFile())) {
+                    Protocol.log("Eingabedatei als Type [" + fileDescriptor.getFileType()
+                            + "] nicht akzeptiert. Sie wurde bereits als Typ [" + fd.getFileType() + "] selektiert: " + fileDescriptor.getFile().getName());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

@@ -11,6 +11,14 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
  */
 public class StudyProgramScheduleWriter extends OutputFileWriter {
 
+    /**
+     * Erzeugt eine Studiengangsplandatei auf Basis der übergebenen Plansicht im
+     * angegebenen Format im angegebenen Pfad.
+     *
+     * @param scheduleView Die Plansicht
+     * @param outputFormat Das Ausgabeformat
+     * @param outputPath Der Ausgabepfad
+     */
     @Override
     public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
         

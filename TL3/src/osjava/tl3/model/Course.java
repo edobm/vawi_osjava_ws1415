@@ -191,7 +191,7 @@ public class Course implements Comparable<Course> {
     }
 
     /**
-     * Berecht den HashCode diser Instanz
+     * Berechnet den HashCode dieser Instanz
      *
      * @return Der HashCode
      */

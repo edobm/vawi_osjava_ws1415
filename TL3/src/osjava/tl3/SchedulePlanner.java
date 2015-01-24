@@ -94,18 +94,18 @@ public final class SchedulePlanner implements Observer {
     private static void printExecutionHint() {
 
         Protocol.log("Parameter:");
-        Protocol.log(" -mode=<gui>|console - Laufmodus des Programms GUI oder Konsole");
+        Protocol.log(" -mode=<gui>|console\t\t\t- Laufmodus des Programms GUI oder Konsole");
         Protocol.log("");
         Protocol.log("GUI-Modus erfordert keine weiteren Parameter!");
         Protocol.log("");
         Protocol.log("Konsolenmodus erfordert folgende Parameter:");
-        Protocol.log(" -roomfiles=Datei1;Datei2;... - Die Raumdateien");
-        Protocol.log(" -coursefiles=Datei1;Datei2;... - Die Kursdateien");
-        Protocol.log(" -studyprogramfiles=Datei1;Datei2;... - Die Studiengangsdateien");
-        Protocol.log(" -out=Ausgabeverzeichnis - Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen");
-        Protocol.log(" -format=<csv_text>|html - Das Format in dem die Ausgabedateien erzeugt werden sollen");
-        Protocol.log(" -strategy=<CostOptimizedStrategy> - Die Planungsstrategie");
-        Protocol.log(" -seatcosts=<10> - Die Kosten für einen externen Sitzplatz (ganzzahlig)");
+        Protocol.log(" -roomfiles=Datei1,Datei2, ...\t\t- Die Raumdateien");
+        Protocol.log(" -coursefiles=Datei1,Datei2, ...\t\t- Die Kursdateien");
+        Protocol.log(" -studyprogramfiles=Datei1,Datei2, ...\t- Die Studiengangsdateien");
+        Protocol.log(" -out=Ausgabeverzeichnis\t\t\t- Das Verzeichnis in das die Ausgabedateien geschrieben werden sollen");
+        Protocol.log(" -format=<csv_text>|html\t\t\t- Das Format in dem die Ausgabedateien erzeugt werden sollen");
+        Protocol.log(" -strategy=<CostOptimizedStrategy>\t- Die Planungsstrategie");
+        Protocol.log(" -seatcosts=<10>\t\t\t\t- Die Kosten für einen externen Sitzplatz (ganzzahlig)");
         Protocol.log("");
         Protocol.log("Pfade und Dateinamen dürfen keine Leerzeichen enthalten.");
         Protocol.log("<Wert> ist der Standard falls der Parameter nicht angegeben wird.");
@@ -316,13 +316,14 @@ public final class SchedulePlanner implements Observer {
      * @return Alle Dateien existieren oder nicht
      */
     private static boolean validateFiles(String fileNames) {
-
+        final String delimiter = ",";
+        
         if (fileNames == null || fileNames.isEmpty()) {
             Protocol.log("Es wurden keine Dateinamen übergeben");
             return false;
         }
 
-        String[] records = fileNames.split(";");
+        String[] records = fileNames.split(delimiter);
 
         File file;
         for (String fileName : records) {

@@ -44,21 +44,6 @@ public class DataController {
     private List<Equipment> equipments = new ArrayList<>();
 
     /**
-     * Readerinstanz für Räume
-     */
-    private RoomReader roomReader;
-
-    /**
-     * Readerinstanz für Studiengänge
-     */
-    private StudyProgramReader studyProgrammReader;
-
-    /**
-     * Readerinstanz für Kurse
-     */
-    private CourseReader courseReader;
-
-    /**
      * Liefert den Raum mit der gegebenen Bezeichnung
      *
      * @param name Der Name des Raumes
@@ -179,7 +164,8 @@ public class DataController {
     public Room createExternalRoom() {
 
         /**
-         * Einen Raum erzeugen
+         * Einen Raum erzeugen mit genug Sitzen und der gesamten,
+         * bekannten Ausstattung
          */
         Room room = new Room();
         room.setType(RoomType.EXTERNAL);

@@ -24,21 +24,17 @@ public abstract class InputFileReader {
      * Pro Zeile werden die Daten als String in einer Liste abgelegt. Diese
      * Liste wird von der Methode zurückgegeben.
      *
-     * @param fileName
+     * @param fileName Der Dateiname
      * @return Die Liste mit Strings der eingelesenen Daten.
      */
     public ArrayList<String> readFile(String fileName) {
 
         ArrayList data = new ArrayList<>();
 
-        FileInputStream fis = null;
-        InputStreamReader inputReader = null;
-        BufferedReader bufferedReader = null;
-
-        try {
-            fis = new FileInputStream(fileName);
-            inputReader = new InputStreamReader(fis);
-            bufferedReader = new BufferedReader(inputReader);
+        /**
+         * Try with resources zum automatischen schließen
+         */
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)))) {
 
             while (bufferedReader.ready()) {
                 String value = bufferedReader.readLine().trim();
@@ -52,28 +48,17 @@ public abstract class InputFileReader {
             Logger.getLogger(InputFileReader.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(InputFileReader.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                bufferedReader.close();
-            } catch (Exception e) {
-            }
-            try {
-                inputReader.close();
-            } catch (Exception e) {
-            }
-            try {
-                fis.close();
-            } catch (Exception e) {
-            }
+
         }
 
         return data;
     }
 
     /**
-     *
-     * @param data
-     * @return
+     * Verarbeitet einen String von Ausstattungselementen und liefert 
+     * eine Liste von Equipement Instanzen
+     * @param data Der String mit den Ausstattungsgegenständen
+     * @return Die Liste der erzeugten Equipments
      */
     public List<Equipment> parseEquipments(String data) {
         List<Equipment> equipments = new ArrayList<>();
@@ -94,7 +79,7 @@ public abstract class InputFileReader {
     }
 
     /**
-     * Entfernt die Anführungszeichen eines String
+     * Entfernt die Anführungszeichen eines Strings
      *
      * @param inString Eingabestring mit Anführungszeichen
      * @return Eingabestring ohne Anführungszeichen
@@ -106,14 +91,15 @@ public abstract class InputFileReader {
             return "";
         }
     }
-    
+
     /**
      * Validatiert einen Datensatz des jeweiligen Implemntierungstyps
+     *
      * @param rowNumber Die aktuelle Zeilenzahl
      * @param recordLine Die aktuelle Zeile aus der Datei
      * @return Der Datensatz zerlegt in Spalten
      * @throws InputFileReaderException Wenn ein Validierungsfehler auftritt
      */
     protected abstract String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException;
-  
+
 }

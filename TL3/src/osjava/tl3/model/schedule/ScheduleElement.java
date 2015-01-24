@@ -6,7 +6,7 @@ import osjava.tl3.model.Course;
 import osjava.tl3.model.Room;
 
 /**
- * Stellt Methoden für den Zugriff auf Planelementdaten bereit
+ * Definiert Methoden für den Zugriff auf Planelementdaten
  *
  * @author Meikel Bode
  */

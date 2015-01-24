@@ -13,13 +13,13 @@ import osjava.tl3.model.schedule.ScheduleViewAcademic;
 public class AcademicScheduleWriter extends OutputFileWriter
 {
 
-    /**
-     * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe 
-     * eines Dozentenplanes im angegebenen Format in den angegebenen Pfad.
+   /**
+     * Erzeugt eine Dozentenplandatei auf Basis der übergebenen Plansicht im
+     * angegebenen Format im angegebenen Pfad.
      *
-     * @param scheduleView
-     * @param outputFormat
-     * @param outputPath
+     * @param scheduleView Die Plansicht
+     * @param outputFormat Das Ausgabeformat
+     * @param outputPath Der Ausgabepfad
      */
     @Override
     public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath){

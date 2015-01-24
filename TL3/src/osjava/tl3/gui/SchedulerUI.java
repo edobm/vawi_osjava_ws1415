@@ -62,6 +62,7 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
 import osjava.tl3.gui.components.fileselection.InputFileDescriptor;
 import osjava.tl3.gui.components.fileselection.InputFileDialog;
 import osjava.tl3.model.schedule.ScheduleElement;
+import osjava.tl3.model.schedule.ScheduleViewMasterPlan;
 
 /**
  * Diese Klasse stellt ein grafisches Benutzer Interface zur Steuerung der
@@ -89,7 +90,7 @@ public class SchedulerUI extends JFrame {
     private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     private final LoggingPanel loggingPanel = new LoggingPanel();
     private final JTree treeMasterSchedule = new JTree();
-    private final JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Plan Sie einsehen möchten", SwingConstants.CENTER);
+    private final JLabel lSelectNode = new JLabel("Bitte wählen Sie das Objekt in der Baumansicht, dessen Terminplan Sie einsehen möchten", SwingConstants.CENTER);
 
     /**
      * Swing Tabelle und Model für Plandarstellung
@@ -192,7 +193,7 @@ public class SchedulerUI extends JFrame {
          * Meldung ausgeben
          */
         Protocol.log("GUI-Modus initialisiert.");
-        Protocol.log("Bereit.");
+        Protocol.log("Bitte führen Sie die Schritte 1 bis 5 durch und nehmen Sie dabei die gewünschten Einstellungen vor.");
         
     }
 
@@ -306,6 +307,7 @@ public class SchedulerUI extends JFrame {
                 dialogAddOutputDirectory.setVisible(true);
                 if (dialogAddOutputDirectory.getSelectedFiles().size() == 1) {
                     labelOutputDirectory.setText(dialogAddOutputDirectory.getSelectedFiles().get(0).getFile().toString());
+                    btnSelectOutput.setToolTipText(dialogAddOutputDirectory.getSelectedFiles().get(0).getFile().toString());
                 }
             }
         });
@@ -374,6 +376,7 @@ public class SchedulerUI extends JFrame {
         treeMasterSchedule.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                
                 final int timeSlotWidth = 25;
 
                 /**
@@ -395,11 +398,22 @@ public class SchedulerUI extends JFrame {
                  * Spezifische Behandlung des Knotens für Benutzerobjekt
                  * festlegen
                  */
-                if (selectedNode.getUserObject() instanceof Room) {
+                 if (selectedNode.getUserObject() instanceof Schedule) {
+                     /**
+                     * Knoten hält eine Instanz von Schedule: Sicht für Gesamtplan erzeugen und an Tabellenmodell übergeben und
+                     * Tabelle anzeigen
+                     */
+                    ScheduleView scheduleView = new ScheduleViewMasterPlan(schedule);
+                    scheduleTableModel.setSchedule(scheduleView);
+                    scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(timeSlotWidth);
+                    scrollPaneTable.setViewportView(scheduleTable);
+
+                 }
+                 else if (selectedNode.getUserObject() instanceof Room) {
 
                     /**
                      * Knoten hält eine Instanz von Room: Passenden Plan aus dem
-                     * Masterschedule holen und an Tabellenmodell übergen und
+                     * Masterschedule holen und an Tabellenmodell übergeben und
                      * Tabelle anzeigen
                      */
                     ScheduleView scheduleView = new ScheduleViewRoom((Room) selectedNode.getUserObject(), schedule);
@@ -411,7 +425,7 @@ public class SchedulerUI extends JFrame {
 
                     /**
                      * Knoten hält eine Instanz von Academic: Passenden Plan aus
-                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * dem Masterschedule holen und an Tabellenmodell übergeben
                      * und Tabelle anzeigen
                      */
                     ScheduleView scheduleView = new ScheduleViewAcademic((Academic) selectedNode.getUserObject(), schedule);
@@ -423,7 +437,7 @@ public class SchedulerUI extends JFrame {
 
                     /**
                      * Knoten hält eine Instanz von Semester: Passenden Plan aus
-                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * dem Masterschedule holen und an Tabellenmodell übergeben
                      * und Tabelle anzeigen
                      */
                     ScheduleView scheduleView = new ScheduleViewStudyProgram((StudyProgram) selectedNode.getUserObject(), schedule);
@@ -434,7 +448,7 @@ public class SchedulerUI extends JFrame {
 
                     /**
                      * Knoten hält eine Instanz von Semester: Passenden Plan aus
-                     * dem Masterschedule holen und an Tabellenmodell übergen
+                     * dem Masterschedule holen und an Tabellenmodell übergeben
                      * und Tabelle anzeigen
                      */
                     ScheduleView scheduleView = new ScheduleViewSemester((Semester) selectedNode.getUserObject(), schedule);
@@ -561,7 +575,7 @@ public class SchedulerUI extends JFrame {
         Protocol.log("Anzahl Termine: " + schedule.getAppointmentCount());
         Protocol.log("Sitzplätze benötigt: " + (int) (schedule.getStudentsCount(RoomType.INTERNAL) + schedule.getStudentsCount(RoomType.EXTERNAL)));
         Protocol.log("Sitzplätze intern besetzt: " + schedule.getStudentsCount(RoomType.INTERNAL));
-        Protocol.log("Sitzplätze extnern besetzt: " + schedule.getStudentsCount(RoomType.EXTERNAL));
+        Protocol.log("Sitzplätze extern besetzt: " + schedule.getStudentsCount(RoomType.EXTERNAL));
         Protocol.log("Gesamtkosten: " + (int) (schedule.getStudentsCount(RoomType.EXTERNAL) * Integer.parseInt(textFieldCosts.getText())) + " EUR");
 
         Protocol.log("Gesamtplanberechnung beendet");
@@ -634,9 +648,10 @@ public class SchedulerUI extends JFrame {
     private TreeNode buildTreeModel() {
 
         /**
-         * Root-Knoten erzeugen
+         * Root-Knoten erzeugen und Gesamtplan anhängen
          */
-        DefaultMutableTreeNode rMasterSchedule = new DefaultMutableTreeNode("Gesamtplan");
+        DefaultMutableTreeNode rMasterSchedule = new DefaultMutableTreeNode("Plansichten");
+        rMasterSchedule.add(new DefaultMutableTreeNode(schedule));
 
         /**
          * Knoten für Raumpläne erzeugen und an Root-Knoten anhängen

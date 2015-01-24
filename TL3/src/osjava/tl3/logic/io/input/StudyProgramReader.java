@@ -86,6 +86,13 @@ public class StudyProgramReader extends InputFileReader {
         }
     }
 
+    
+    /**
+     * Nicht verwendet
+     * @return 
+     * @throws osjava.tl3.logic.io.input.InputFileReaderException
+     * @see InputFileReader#validateRecord(int, java.lang.String) 
+     */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
        /**

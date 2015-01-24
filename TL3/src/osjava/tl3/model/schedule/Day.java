@@ -6,7 +6,6 @@ package osjava.tl3.model.schedule;
  * möglich.
  *
  * @author Meikel Bode
- * @version 1.0
  */
 public enum Day {
 

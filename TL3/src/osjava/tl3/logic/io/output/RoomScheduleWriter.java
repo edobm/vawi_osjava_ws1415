@@ -12,12 +12,12 @@ import osjava.tl3.model.schedule.ScheduleViewRoom;
 public class RoomScheduleWriter extends OutputFileWriter {
 
     /**
-     * Umwandeln des gegebenen Schedules in eine Liste aus Strings und Ausgabe
-     * eines Raumplanes im angegebenen Format in den angegebenen Pfad.
+     * Erzeugt eine Raumplandatei auf Basis der übergebenen Plansicht im
+     * angegebenen Format im angegebenen Pfad.
      *
-     * @param scheduleView
-     * @param outputFormat
-     * @param outputPath
+     * @param scheduleView Die Plansicht
+     * @param outputFormat Das Ausgabeformat
+     * @param outputPath Der Ausgabepfad
      */
     @Override
     public void writeSchedule(ScheduleView scheduleView, OutputFormat outputFormat, String outputPath) {
@@ -31,7 +31,7 @@ public class RoomScheduleWriter extends OutputFileWriter {
          * Prüfung der Eingabe
          */
         if (scheduleView == null) {
-            throw new IllegalArgumentException("Given instance of Schedule must not be null!");
+            throw new IllegalArgumentException("Die übergebene Plansicht darf nicht null sein!");
         }
         
 

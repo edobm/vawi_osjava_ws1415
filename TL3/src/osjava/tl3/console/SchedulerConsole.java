@@ -78,12 +78,13 @@ public class SchedulerConsole implements Observer {
      * @param dataController Der DataController der die Eingabedaten puffert
      */
     private void loadInputData(DataController dataController) {
+        final String delimiter = ",";
 
         /**
          * Raumdateien einlesen
          */
         RoomReader roomReader = new RoomReader();
-        String[] fileNames = parameters.get("roomfiles").split(";");
+        String[] fileNames = parameters.get("roomfiles").split(delimiter);
         for (String fileName : fileNames) {
             roomReader.readRooms(fileName, dataController);
         }
@@ -92,7 +93,7 @@ public class SchedulerConsole implements Observer {
          * Kursdateien einlesen
          */
         CourseReader courseReader = new CourseReader();
-        fileNames = parameters.get("coursefiles").split(";");
+        fileNames = parameters.get("coursefiles").split(delimiter);
         for (String fileName : fileNames) {
             courseReader.readCourses(fileName, dataController);
         }
@@ -101,7 +102,7 @@ public class SchedulerConsole implements Observer {
          * Studiengangsdateien einlesen
          */
         StudyProgramReader studyProgramReader = new StudyProgramReader();
-        fileNames = parameters.get("studyprogramfiles").split(";");
+        fileNames = parameters.get("studyprogramfiles").split(delimiter);
         for (String fileName : fileNames) {
             studyProgramReader.readStudyPrograms(fileName, dataController);
         }
