@@ -14,7 +14,6 @@ import java.util.Objects;
  * Austattung (Beamer, Lautsprecher...) eines Raumes.
  *
  * @author Christoph Lurz
- * @version 1.0
  */
 public class Course implements Comparable<Course> {
 

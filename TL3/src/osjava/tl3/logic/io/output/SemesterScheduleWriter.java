@@ -7,7 +7,6 @@ import osjava.tl3.model.schedule.ScheduleViewSemester;
  * Diese Klasse erzeugt die Pläne für ein Fachsemester
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class SemesterScheduleWriter extends OutputFileWriter {
 

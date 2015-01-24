@@ -14,7 +14,6 @@ import osjava.tl3.model.controller.DataController;
  * Kurse und erzeugt Instanzen der Modellklassen Course.
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class CourseReader extends InputFileReader {
 

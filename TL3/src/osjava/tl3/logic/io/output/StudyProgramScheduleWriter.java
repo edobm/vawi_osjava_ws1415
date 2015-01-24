@@ -7,7 +7,6 @@ import osjava.tl3.model.schedule.ScheduleViewStudyProgram;
  * Diese Klasse erzeugt die Pläne für einen Studiengang
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class StudyProgramScheduleWriter extends OutputFileWriter {
 

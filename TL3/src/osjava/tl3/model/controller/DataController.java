@@ -16,7 +16,6 @@ import osjava.tl3.model.StudyProgram;
  * die spätere Nutzung der Klasse Scheduler.
  *
  * @author Christoph Lurz
- * @version 1.0
  */
 public class DataController {
 

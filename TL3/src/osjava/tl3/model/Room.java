@@ -15,7 +15,6 @@ import java.util.Objects;
  * und welche Kosten dadurch entstehen.
  *
  * @author Christoph Lurz
- * @version 1.0
  */
 public class Room implements Comparable<Room> {
 

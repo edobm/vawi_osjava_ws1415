@@ -6,7 +6,6 @@ import java.util.Objects;
  * Diese Klasse repräsentiert die Entität Dozent.
  *
  * @author Christoph Lurz
- * @version 1.0
  */
 public class Academic implements Comparable<Academic> {
 

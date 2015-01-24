@@ -22,7 +22,6 @@ import osjava.tl3.logging.Protocol;
  * da diese Aufgabe durch den Konsolenmodus übernommen wird.
  * 
  * @author Christian Müller
- * @version 1.0
  */
 public final class SchedulePlanner implements Observer {
 

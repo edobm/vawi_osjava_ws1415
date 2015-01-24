@@ -15,7 +15,6 @@ import osjava.tl3.model.schedule.ScheduleView;
  * Diese Klasse stellt die Dateischreiboperationen bereit.
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public abstract class OutputFileWriter {
 

@@ -15,7 +15,6 @@ import osjava.tl3.model.controller.DataController;
  * durch die Klasse CourseReader ergänzt.
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class StudyProgramReader extends InputFileReader {
 

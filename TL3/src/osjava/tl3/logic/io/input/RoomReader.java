@@ -13,7 +13,6 @@ import osjava.tl3.model.controller.DataController;
  * und erzeugt Instanzen der Modellklasse "Room".
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class RoomReader extends InputFileReader {
 

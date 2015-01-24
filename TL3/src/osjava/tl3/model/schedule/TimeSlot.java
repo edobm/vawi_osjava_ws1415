@@ -6,7 +6,6 @@ package osjava.tl3.model.schedule;
  * pro Tag mit einer jeweiligen Dauer von 2 Stunden.
  *
  * @author Meikel Bode
- * @version 1.0
  */
 public enum TimeSlot {
 

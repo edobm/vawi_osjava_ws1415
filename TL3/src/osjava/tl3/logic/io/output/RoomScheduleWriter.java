@@ -7,7 +7,6 @@ import osjava.tl3.model.schedule.ScheduleViewRoom;
  * Diese Klasse erzeugt die Ausgabe für die Raumpläne
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public class RoomScheduleWriter extends OutputFileWriter {
 

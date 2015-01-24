@@ -15,7 +15,6 @@ import osjava.tl3.model.Equipment;
  * Diese Klasse realisiert die Funktionalität Dateien einlesen zu können.
  *
  * @author Fabian Simon
- * @version 1.0
  */
 public abstract class InputFileReader {
 

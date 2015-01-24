@@ -10,7 +10,6 @@ import java.util.List;
  * Fachsemester werden bestimmte Lehrveranstaltungen angeboten.
  *
  * @author Christian Müller
- * @version 1.0
  */
 public class StudyProgram implements Comparable<StudyProgram> {
 

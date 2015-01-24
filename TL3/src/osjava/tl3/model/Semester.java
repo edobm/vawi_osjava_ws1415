@@ -11,7 +11,6 @@ import java.util.Objects;
  * Lehrveranstaltungen angeboten.
  *
  * @author Christoph Lurz
- * @version 1.0
  */
 public class Semester {
 
