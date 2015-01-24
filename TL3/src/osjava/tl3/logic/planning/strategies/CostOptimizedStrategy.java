@@ -18,20 +18,19 @@ import osjava.tl3.model.schedule.Schedule;
  * Eine konkrete Implementierung einer Planungstrategie mit dem Ziel optimierter
  * Kosten. Die Strategie versucht dabei priorisiert Kurse mit vielen Teilnehmern
  * auf interne Räume zu verteilen, falls benötigtes und vorhandenes Equipment
- * passen. Kann kein passender interner Raum gefunden werden, wird zunächst geprüft,
- * ob ggf. bereits ein externer Raum mit noch freier Kapazität bekannt ist, 
- * in den dieser Kurs eingeplant werden kann. 
- * Ist der externe Raum bereits voll oder passt der Raum nicht
- * zum Plan des Dozenten, wird einer weiterer externer Raum angemietet (erzeugt)
- * und der Kurs dort eingeplant, passend zum Dozetenplan. Kann der Kurs nicht
- * eingeplant werden, da der Dozent keinen freien Termin mehr hat oder
- * keines der Fachsemester der Studiengänge, in denen der Kurs angeboten wird
- * mehr einen freien Termin hat, wird der Kurs in die Liste der nicht
- * einplanbaren Kurse eingetragen.
- * 
+ * passen. Kann kein passender interner Raum gefunden werden, wird zunächst
+ * geprüft, ob ggf. bereits ein externer Raum mit noch freier Kapazität bekannt
+ * ist, in den dieser Kurs eingeplant werden kann. Ist der externe Raum bereits
+ * voll oder passt der Raum nicht zum Plan des Dozenten, wird einer weiterer
+ * externer Raum angemietet (erzeugt) und der Kurs dort eingeplant, passend zum
+ * Dozetenplan. Kann der Kurs nicht eingeplant werden, da der Dozent keinen
+ * freien Termin mehr hat oder keines der Fachsemester der Studiengänge, in
+ * denen der Kurs angeboten wird mehr einen freien Termin hat, wird der Kurs in
+ * die Liste der nicht einplanbaren Kurse eingetragen.
+ *
  *
  * @author Meikel Bode
- * 
+ *
  * @see Strategy
  */
 public class CostOptimizedStrategy extends Strategy {
@@ -50,8 +49,8 @@ public class CostOptimizedStrategy extends Strategy {
      *
      * @see Strategy
      * @return Der erzeugte Gesamplan
-     * 
-     * @see Strategy#execute(osjava.tl3.model.controller.DataController) 
+     *
+     * @see Strategy#execute(osjava.tl3.model.controller.DataController)
      */
     @Override
     public Schedule execute(DataController dataController) {
@@ -128,6 +127,15 @@ public class CostOptimizedStrategy extends Strategy {
              * Protokoll fortschreiben
              */
             Protocol.log("Plane: [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName() + "', Teilnehmer='" + course.getStudents() + "']");
+
+            /**
+             * Prüfen ob es einen Studiengang gibt, der diesen Kurs anbietet
+             */
+            if (dataController.getStudyProgramsByCourse(course).isEmpty()) {
+                Protocol.log("\tIgnoriert: Der Kurs wird von keinen Studiengang angeboten: [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "', Dozent='" + course.getAcademic().getName() + "']");
+                coursesNotPlanned.add(course);
+                continue;
+            }
 
             /**
              * Prüfen ob der Dozent noch freie Termine hat un wenn nicht, den
@@ -226,7 +234,7 @@ public class CostOptimizedStrategy extends Strategy {
                  */
                 matchingRooms = getMatchingRooms(course, RoomType.EXTERNAL);
                 Protocol.log("\tPassende Räume (extern): " + matchingRooms);
-                
+
                 /**
                  * Alle passenden, externen Räume prüfen
                  */
@@ -290,7 +298,7 @@ public class CostOptimizedStrategy extends Strategy {
                  */
                 Room room = dataController.createExternalRoom();
                 Protocol.log("\tErzeuge neuen Raum (extern): " + room);
-                
+
                 /**
                  * Schnittmenge über alle freien Plankoordinaten des Raums, des
                  * Dozenten und aller Fachsemester erzeugen

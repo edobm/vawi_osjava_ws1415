@@ -1,6 +1,9 @@
 package osjava.tl3.logic.io.output;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.schedule.ScheduleView;
 
 /**
@@ -41,8 +44,12 @@ public class OutputController {
      * @param outputPath der Ausgabepfad
      */
     public void outputSchedules(List<ScheduleView> scheduleViews, OutputFormat outputFormat, String outputPath) {
+        
         for (ScheduleView schedule : scheduleViews) {
             outputSchedule(schedule, outputFormat, outputPath);
         }
+        
+        Protocol.log("Pläne exportiert: " + scheduleViews.size());
     }
+    
 }

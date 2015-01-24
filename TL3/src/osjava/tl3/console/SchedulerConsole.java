@@ -199,7 +199,7 @@ public class SchedulerConsole implements Observer {
         Protocol.log("Anzahl Termine: " + schedule.getAppointmentCount());
         Protocol.log("Sitzplätze benötigt: " + (int) (schedule.getStudentsCount(RoomType.INTERNAL) + schedule.getStudentsCount(RoomType.EXTERNAL)));
         Protocol.log("Sitzplätze intern besetzt: " + schedule.getStudentsCount(RoomType.INTERNAL));
-        Protocol.log("Sitzplätze extnern besetzt: " + schedule.getStudentsCount(RoomType.EXTERNAL));
+        Protocol.log("Sitzplätze extern besetzt: " + schedule.getStudentsCount(RoomType.EXTERNAL));
         Protocol.log("Gesamtkosten: " + (int) (schedule.getStudentsCount(RoomType.EXTERNAL) * 10) + " EUR");
 
     }

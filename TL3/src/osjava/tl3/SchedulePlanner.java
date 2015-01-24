@@ -122,7 +122,11 @@ public final class SchedulePlanner implements Observer {
 
         try {
             for (String parameter : argv) {
-                if (!parameter.startsWith("-") && !parameter.contains("=")) {
+                if (parameter.equalsIgnoreCase("-help")) {
+                   printExecutionHint();
+                   System.exit(0);
+                }
+                else if (!parameter.startsWith("-") && !parameter.contains("=")) {
                     printExecutionHint();
                     System.exit(2);
                 } else {
@@ -187,6 +191,7 @@ public final class SchedulePlanner implements Observer {
                             System.exit(100);
                         }
 
+                        Protocol.log("Prüfe Ausgabeverzeichnis: " + parameters.get(key));
                         // Existiert das angegebenen Verzeichnis?
                         File file = new File(parameters.get(key));
                         if (!file.exists()) {
@@ -199,6 +204,7 @@ public final class SchedulePlanner implements Observer {
                             Protocol.log("Ausgabeverzeichnis ist kein Verzeichnis: " + parameters.get(key));
                             System.exit(101);
                         }
+                       
                     }
 
                     /**
@@ -208,11 +214,10 @@ public final class SchedulePlanner implements Observer {
                         if (!parameters.containsKey(key)) {
                             Protocol.log("Kein Ausgabeformat angegeben. Setze Default-Format: csv_text");
                             parameters.put("format", "CSV_TEXT");
-                            System.exit(200);
                         }
                         if (!parameters.get(key).equalsIgnoreCase("csv_text") && !parameters.get(key).equalsIgnoreCase("html")) {
                             Protocol.log("Ausgabeformat unbekannt: " + parameters.get(key));
-                            System.exit(201);
+                            System.exit(200);
                         }
                     }
 
@@ -246,7 +251,7 @@ public final class SchedulePlanner implements Observer {
                     /**
                      * Kursdateien validieren
                      */
-                    if (key.equals("studyprogramfiles")) {
+                    if (key.equals("coursefiles")) {
                         if (!parameters.containsKey(key)) {
                             Protocol.log("Kursdateien wurden nicht übergeben!");
                             System.exit(500);
