@@ -77,7 +77,11 @@ public class StudyProgramReader extends InputFileReader {
 
             }
 
-            dataController.getStudyPrograms().add(studyProgram);
+            if (dataController.getStudyProgramByName(studyProgram.getName()) != null) {
+                  Protocol.log("Fehler in Studiengangsdatei: " + fileName + ": Der Studiengang mit der Bezeichnung '" + studyProgram.getName() + "' wurde bereits eingelesen. Datei ignoriert.");
+            } else {
+                dataController.getStudyPrograms().add(studyProgram);
+            }
 
         } catch (InputFileReaderException ex) {
             Protocol.log("Fehler in Studiengangsdatei: " + fileName + " auf Zeile " + ex.getRow() + ": " + ex.getMessage() + ": Datei wird ignoriert");

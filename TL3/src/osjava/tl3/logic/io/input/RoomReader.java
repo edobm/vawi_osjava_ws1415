@@ -42,7 +42,12 @@ public class RoomReader extends InputFileReader {
             
             // Zeilenweise die Datei verarbeiten
             try {
-                dataController.getRooms().add(getRoom(i + 1, roomDataRecord, dataController));
+                Room room = getRoom(i + 1, roomDataRecord, dataController);
+                if (dataController.getRoomByName(room.getName()) != null) {
+                    Protocol.log("Fehler in Raumdatei: " + fileName + " auf Zeile " + (i + 1) + ": Der Raum mit der Bezeichnung '" + room.getName() + "' wurde bereits eingelesen. Zeile ignoriert.");
+                } else {
+                    dataController.getRooms().add(room);
+                }
             } catch (InputFileReaderException e) {
                 Protocol.log("Fehler in Raumdatei: " + fileName + " auf Zeile " + (i + 1) + ":" + e.getMessage() + ": Zeile wird ignoriert");
             }

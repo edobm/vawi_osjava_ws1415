@@ -40,7 +40,12 @@ public class CourseReader extends InputFileReader {
 
             // Zeilenweise die Kurse erzeugen
             try {
-                dataController.getCourses().add(getCourse(i + 1, courseRecord, dataController));
+                Course course = getCourse(i + 1, courseRecord, dataController);
+                if (dataController.getCourseByID(course.getNumber()) != null) {
+                    Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ": Der Kurs mit der Bezeichnung '" +course.getName() + "' und ID '" + course.getNumber() + "' wurde bereits eingelesen. Zeile ignoriert.");   
+                } else {
+                    dataController.getCourses().add(course);
+                }
             } catch (InputFileReaderException e) {
                 Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ":" + e.getMessage() + ": Zeile wird ignoriert");
             }
@@ -60,7 +65,7 @@ public class CourseReader extends InputFileReader {
 
         // 1;"Mathematik 1";"Vorlesung";"Frey";800;"Tafel, Mikrofonanlage";
         String[] courseData = validateRecord(rowNumber, courseDataRecord);
-        
+
         //Setzen von Kursnummer und Kursname 
         course.setNumber(courseData[0]);
         course.setName(removeQuotationMarks(courseData[1]));
@@ -93,7 +98,7 @@ public class CourseReader extends InputFileReader {
                 }
             }
         } else {
-            Protocol.log("Die Veranstaltung [KursID='" + course.getNumber()+ "', Kurs='" + course.getName() + "'] benötigt kein Equipment!");
+            Protocol.log("Die Veranstaltung [KursID='" + course.getNumber() + "', Kurs='" + course.getName() + "'] benötigt kein Equipment!");
         }
 
         return course;
@@ -101,12 +106,13 @@ public class CourseReader extends InputFileReader {
 
     /**
      * Validiert die Zeile aus der Importdatei auf dem gegebenen Zeilenindex
+     *
      * @param rowNumber Der Zeilenindex
      * @param recordLine Die Zeile aus der Importdatei
      * @return Die in Spalten zerlegte Zeile
-     * @throws InputFileReaderException 
-     * 
-     * @see InputFileReader#validateRecord(int, java.lang.String) 
+     * @throws InputFileReaderException
+     *
+     * @see InputFileReader#validateRecord(int, java.lang.String)
      */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
@@ -120,10 +126,10 @@ public class CourseReader extends InputFileReader {
          * Zeile zerlegen
          */
         String[] record = recordLine.split(delimiter);
-       
+
         /**
-         * Beispielzeilen 
-         * 78;"Projektilphysik";"Vorlesung";"Voss";50;"Beamer,DozentenPC"; 
+         * Beispielzeilen
+         * 78;"Projektilphysik";"Vorlesung";"Voss";50;"Beamer,DozentenPC";
          * 79;"Diplomatie";"Uebung";"Westerwelle";60;;
          */
         /**

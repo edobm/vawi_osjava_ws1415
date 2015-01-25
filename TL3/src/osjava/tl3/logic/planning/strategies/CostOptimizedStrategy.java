@@ -32,7 +32,8 @@ import osjava.tl3.model.schedule.ScheduleCoordinate;
  * Zur Vereinfachung wird eine Veranstaltung nur dann eingeplant, wenn in allen
  * Fachsemestern, die diesen Kurs enthalten ein gemeinsamer, freier Termin 
  * gefunden werden kann. Andersfalls wird angenommen, dass dieser Kurs nicht 
- * einplanbar ist.
+ * einplanbar ist. Hier kann weiter optimiert werden, indem pro Fachsemester
+ * nach freien Terminen gesucht wird.
  * 
  * Weiterhin besteht ein Problem im Datenmaterial hinsichtlich der Erkennung von
  * Abhängigkeiten zwischen Veranstaltungen:
@@ -45,11 +46,10 @@ import osjava.tl3.model.schedule.ScheduleCoordinate;
  * "Fallstudienseminar BWL" zusammen oder nicht?
  * Über eine solche Gruppierung ließe sich sicherstellen, dass die Vorlesung und
  * zumindest eine Übung einer Veranstaltungsgruppe pro Fachsemester eingeplant
- * würde. So ist es theoretisch möglich, dass die Einplanung eines Kurses 
+ * würden. So ist es theoretisch möglich, dass die Einplanung eines Kurses 
  * für ein Fachsemester zu Terminkollisionen führt.
  * Die Klasse ScheduleAppointment müsste neben Kurs und Raum noch die Fachsemester
- * speichern, für die dieser Termin gültig wäre. (Verbesserungpotential für die
- * nächste Version :) ) 
+ * speichern, für die dieser Termin gültig wäre. 
  * 
  * @author Meikel Bode
  *
