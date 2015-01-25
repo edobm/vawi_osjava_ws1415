@@ -36,8 +36,8 @@ public class RoomReader extends InputFileReader {
             roomDataRecord = roomData.get(i);
 
             if (roomDataRecord == null || roomDataRecord.length() == 0) {
-
                 Protocol.log("Fehler in Raumdatei: " + fileName + " auf Zeile " + (i + 1) + ": Zeile wird ignoriert");
+                continue;
             }
             
             // Zeilenweise die Datei verarbeiten
@@ -61,7 +61,11 @@ public class RoomReader extends InputFileReader {
         Room room = new Room();
 
         //Zerlegen des Eingabe-String
+        // "Audimax";900;"Beamer, Lautsprecher, Projektor, Mikrofonanlage, Tafel"
         String[] roomData = validateRecord(rowNumber, roomDataRecord);
+        
+        // Prüfen ob Spaltenzahl passt
+        InputValidator.validateColumnCount(3, roomData.length, roomDataRecord, rowNumber);
 
         //Name setzen
         room.setName(removeQuotationMarks(roomData[0]));

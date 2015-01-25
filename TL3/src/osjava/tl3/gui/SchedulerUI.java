@@ -568,9 +568,16 @@ public class SchedulerUI extends JFrame {
         DefaultTreeModel treeModel = new DefaultTreeModel(buildTreeModel());
         treeMasterSchedule.setModel(treeModel);
 
+        /**
+         * Statistiken ausgeben. Ermitteln welche Räume nicht belegt wurden
+         */
+        List<Room> unusedRooms = new ArrayList<>(dataController.getRooms());
+        unusedRooms.removeAll(schedule.getPlannedRooms());
+
         Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
         Protocol.log("Räume intern: " + dataController.getRooms(RoomType.INTERNAL).size());
         Protocol.log("Räume extern: " + dataController.getRooms(RoomType.EXTERNAL).size());
+        Protocol.log("Räume ohne Termin: " + unusedRooms);
         Protocol.log("Anzahl Termine: " + schedule.getAppointmentCount());
         Protocol.log("Sitzplätze benötigt: " + (int) (schedule.getStudentsCount(RoomType.INTERNAL) + schedule.getStudentsCount(RoomType.EXTERNAL)));
         Protocol.log("Sitzplätze intern besetzt: " + schedule.getStudentsCount(RoomType.INTERNAL));

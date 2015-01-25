@@ -1,6 +1,5 @@
 package osjava.tl3.logic.io.input;
 
-
 import java.util.ArrayList;
 import osjava.tl3.logging.Protocol;
 import osjava.tl3.model.Course;
@@ -39,7 +38,7 @@ public class StudyProgramReader extends InputFileReader {
                 record = studyProgramDataRecords.get(i);
 
                 String[] columns = record.split(";");
-                
+
                 if (firstRecord) {
                     InputValidator.validateEmpty("Studiengangsname", columns[0], record, i);
                     InputValidator.validateStardEndsWithBraces("Studiengangsname", columns[0], record, i);
@@ -47,7 +46,7 @@ public class StudyProgramReader extends InputFileReader {
                     firstRecord = false;
                     studyProgram.setName(removeQuotationMarks(columns[0]));
                 } else {
-
+                    
                     if (columns.length < 2) {
                         InputValidator.validateInteger("Dem Fachsemester sind keine Kurse zugeordnet", columns[0], record, i);
                     }
@@ -67,7 +66,7 @@ public class StudyProgramReader extends InputFileReader {
                             }
                         }
                         if (!added) {
-                            throw new InputFileReaderException("Der Studiegang " + studyProgram.getName()
+                            throw new InputFileReaderException("Der Studiengang " + studyProgram.getName()
                                     + " bezieht sich in " + semester.getName() + " auf den unbekannten Kurs " + courseName, null, record, i);
                         }
                     }
@@ -85,22 +84,21 @@ public class StudyProgramReader extends InputFileReader {
         }
     }
 
-    
     /**
      * Nicht verwendet
-     * @return 
+     *
+     * @return
      * @throws osjava.tl3.logic.io.input.InputFileReaderException
-     * @see InputFileReader#validateRecord(int, java.lang.String) 
+     * @see InputFileReader#validateRecord(int, java.lang.String)
      */
     @Override
     protected String[] validateRecord(int rowNumber, String recordLine) throws InputFileReaderException {
-       /**
-        * Die Methode wird nicht verwendet!!
-        * Die Validierung findet aufgrund des Dateaufbaus innerhalb der Methode readStudyProgramm statt
-        */
-        
+        /**
+         * Die Methode wird nicht verwendet!! Die Validierung findet aufgrund
+         * des Dateaufbaus innerhalb der Methode readStudyProgramm statt
+         */
+
         return null;
     }
 
-   
 }

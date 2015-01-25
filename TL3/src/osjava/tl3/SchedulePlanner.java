@@ -380,10 +380,9 @@ public final class SchedulePlanner implements Observer {
     }
 
     /**
-     * Startet den GUI Modus
+     * Startet den GUI Modus im eigenen Thread
      */
     private void executeGUI() {
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -395,13 +394,12 @@ public final class SchedulePlanner implements Observer {
     /**
      * Protokollausgaben auf der Konsole ausgeben
      *
-     * @param o Das observierbare Objekt
-     * @param arg Die letzte Änderung
-     * @see Observer
+     * @param observable Das observierbare Objekt
+     * @param lastChange Die letzte Änderung
      */
     @Override
-    public void update(Observable o, Object arg) {
-        System.out.println(arg);
+    public void update(Observable observable, Object lastChange) {
+        System.out.println(lastChange);
     }
 
 }

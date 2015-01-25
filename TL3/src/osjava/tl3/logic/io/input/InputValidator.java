@@ -11,6 +11,7 @@ public class InputValidator {
 
     /**
      * Prüft den gegebenen Wert auf das Vorhandenseins eines Wertes
+     *
      * @param colName Der Name der Spalte
      * @param value Der zu prüfende Wert
      * @param recordLine Die aktuelle Dateizeile
@@ -24,8 +25,9 @@ public class InputValidator {
     }
 
     /**
-     * Prüft den gegebenen Wert auf das Vorhandensein von einschließenden, 
+     * Prüft den gegebenen Wert auf das Vorhandensein von einschließenden,
      * doppelten Anführungsszeichen
+     *
      * @param colName Der Name der Spalte
      * @param value Der zu prüfende Wert
      * @param recordLine Die aktuelle Dateizeile
@@ -33,13 +35,15 @@ public class InputValidator {
      * @throws InputFileReaderException Wenn ein Validierungsfehler auftritt
      */
     public static void validateStardEndsWithBraces(String colName, String value, String recordLine, int rowNumber) throws InputFileReaderException {
-        if (!(value.startsWith("\"") && value.endsWith("\"")) ){
+        if (!(value.startsWith("\"") && value.endsWith("\""))) {
             throw new InputFileReaderException("Ungültiger Wert für Spalte '" + colName + "'. Der Spaltenwert muss von Anführungszeichen (\") eingefasst sein", null, recordLine, rowNumber);
         }
     }
 
     /**
-     * Prüft ob der angegebene Wert in eine Ganzzahl konvertieren lässt (Integer)
+     * Prüft ob der angegebene Wert in eine Ganzzahl konvertieren lässt
+     * (Integer)
+     *
      * @param colName Der Name der Spalte
      * @param value Der zu prüfende Wert
      * @param recordLine Die aktuelle Dateizeile
@@ -57,6 +61,7 @@ public class InputValidator {
 
     /**
      * Prüft den angegebenen Wert auf Verwendbarkeit als Equipment
+     *
      * @param colName Der Name der Spalte
      * @param value Der zu prüfende Wert
      * @param recordLine Die aktuelle Dateizeile
@@ -71,18 +76,36 @@ public class InputValidator {
         String[] columns = value.split(delimiter);
 
         for (String column : columns) {
-           validateEmpty(colName, column, recordLine, rowNumber);
+            validateEmpty(colName, column, recordLine, rowNumber);
         }
     }
 
     /**
      * Prüft ob die Datei Daten enthalten hat
+     *
      * @param fileContents Die eingelesenen Zeilen
-     * @throws InputFileReaderException InputFileReaderException Wenn ein Validierungsfehler auftritt
+     * @throws InputFileReaderException InputFileReaderException Wenn ein
+     * Validierungsfehler auftritt
      */
     public static void validateLineCount(List<String> fileContents) throws InputFileReaderException {
         if (fileContents == null || fileContents.isEmpty()) {
-             throw new InputFileReaderException("Die Dateigabedatei ist leer", null, "", 0);
+            throw new InputFileReaderException("Die Dateigabedatei ist leer", null, "", 0);
+        }
+    }
+
+    /**
+     * Prüft erwartete und vorhandene Spaltenzahl gleich sind
+     *
+     * @param columnCountExpected Erwartete Anzahl Spalten
+     * @param columnCountCurrent Ist Anzahl Spalten
+     * @param recordLine Der Wert der Zeule
+     * @param rowNumber Die Zeilennummer
+     * @throws InputFileReaderException Wenn ein Validierungsfehler auftritt
+     */
+    public static void validateColumnCount(int columnCountExpected, int columnCountCurrent, String recordLine, int rowNumber) throws InputFileReaderException {
+        if (columnCountExpected != columnCountCurrent) {
+            throw new InputFileReaderException("Ungültiger Wert für Zeile '" + rowNumber + "'. Spalten erwartet " 
+                    + columnCountExpected + ", Spalten ist " + columnCountCurrent, null, recordLine, rowNumber);
         }
     }
 }

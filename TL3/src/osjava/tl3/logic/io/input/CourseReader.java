@@ -34,8 +34,8 @@ public class CourseReader extends InputFileReader {
             courseRecord = courseRecords.get(i);
 
             if (courseRecord == null || courseRecord.length() == 0) {
-
                 Protocol.log("Fehler in Kursdatei: " + fileName + " auf Zeile " + (i + 1) + ": Zeile wird ignoriert");
+                continue;
             }
 
             // Zeilenweise die Kurse erzeugen
@@ -60,7 +60,7 @@ public class CourseReader extends InputFileReader {
 
         // 1;"Mathematik 1";"Vorlesung";"Frey";800;"Tafel, Mikrofonanlage";
         String[] courseData = validateRecord(rowNumber, courseDataRecord);
-
+        
         //Setzen von Kursnummer und Kursname 
         course.setNumber(courseData[0]);
         course.setName(removeQuotationMarks(courseData[1]));
@@ -120,10 +120,11 @@ public class CourseReader extends InputFileReader {
          * Zeile zerlegen
          */
         String[] record = recordLine.split(delimiter);
-
+       
         /**
-         * Beispielzeilen 78;"Projektilphysik";"Vorlesung";"Voss";50;"Beamer,
-         * DozentenPC"; 79;"Diplomatie";"Uebung";"Westerwelle";60;;
+         * Beispielzeilen 
+         * 78;"Projektilphysik";"Vorlesung";"Voss";50;"Beamer,DozentenPC"; 
+         * 79;"Diplomatie";"Uebung";"Westerwelle";60;;
          */
         /**
          * Es werden 2 oder 3 Spalten pro Raumdatensatz erwartet:
@@ -132,8 +133,8 @@ public class CourseReader extends InputFileReader {
          * Wie 2 und zusätzlich Equipment
          *
          */
-        if (record.length > 7) {
-            throw new InputFileReaderException("Ungültige Spaltenanzahl für Datensatz. Erwartet: 7, Ist: " + record.length, null, recordLine, rowNumber);
+        if (record.length != 5 && record.length != 6 && record.length != 7) {
+            throw new InputFileReaderException("Ungültige Spaltenanzahl für Datensatz. Erwartet: 5, 6 oder 7, Ist: " + record.length, null, recordLine, rowNumber);
         }
 
         /**

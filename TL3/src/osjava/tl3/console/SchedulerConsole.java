@@ -1,5 +1,6 @@
 package osjava.tl3.console;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
@@ -15,6 +16,7 @@ import static osjava.tl3.logic.io.output.OutputFormat.HTML;
 import osjava.tl3.logic.planning.Scheduler;
 import osjava.tl3.logic.planning.strategies.Strategy;
 import osjava.tl3.logic.planning.strategies.StrategyFactory;
+import osjava.tl3.model.Room;
 import osjava.tl3.model.RoomType;
 import osjava.tl3.model.controller.DataController;
 import osjava.tl3.model.schedule.Schedule;
@@ -33,8 +35,7 @@ public class SchedulerConsole implements Observer {
     private final HashMap<String, String> parameters;
 
     /**
-     * Konstruktor
-     * Erzeugt eine neue Instanz des Konsolen-Modus und übergibt die
+     * Konstruktor Erzeugt eine neue Instanz des Konsolen-Modus und übergibt die
      * Laufzeitparameter
      *
      * @param parameters Die Laufzeitparameter
@@ -155,27 +156,41 @@ public class SchedulerConsole implements Observer {
      */
     private void writeOutput(DataController dataController, Schedule schedule) {
 
+        /**
+         * Das Ausgabeformat aus der Parameterliste lesen
+         */
         OutputFormat outputFormat = mapOutputFormat(parameters.get("format"));
         Protocol.log("Ausgabeformat: " + outputFormat);
 
+        /**
+         * Das Ausgabeverzeichnis aus der Parameterliste lesen
+         */
         String outputDirectory = parameters.get("out");
         Protocol.log("Ausgabeverzeichnis: " + outputDirectory);
 
+        /**
+         * Einen OutputController erzeugen
+         */
         OutputController outputController = new OutputController();
 
+        /**
+         * Die Ausgabedateien erzeugen für Dozenten, Räume, Studiengänge
+         * und Fachsemester
+         */
         List<ScheduleView> scheduleViews = schedule.getAllScheduleViews(dataController.getRooms(), dataController.getAcademics(), dataController.getStudyPrograms());
         outputController.outputSchedules(scheduleViews, outputFormat, outputDirectory);
 
     }
 
     /**
-     *
-     * @param parameterName
-     * @return
+     * Setzt den Eingabewert für das Ausgabeformat in seine Enum-Entsprechung
+     * um
+     * @param outputFormatText Das Ausgabeformat als Textwert
+     * @return Das Ausgabeformat als Enum-Entsprechung
      */
-    private OutputFormat mapOutputFormat(String parameterName) {
+    private OutputFormat mapOutputFormat(String outputFormatText) {
 
-        switch (parameterName.toLowerCase()) {
+        switch (outputFormatText.toLowerCase()) {
             case "html":
                 return HTML;
             case "csv_text":
@@ -194,9 +209,16 @@ public class SchedulerConsole implements Observer {
      */
     private void printCoreStats(DataController dataController, Schedule schedule) {
 
+        /**
+         * Ermitteln welche Räume nicht belegt wurden
+         */
+        List<Room> unusedRooms = new ArrayList<>(dataController.getRooms());
+        unusedRooms.removeAll(schedule.getPlannedRooms());
+
         Protocol.log("Räume insgesamt: " + dataController.getRooms().size());
         Protocol.log("Räume intern: " + dataController.getRooms(RoomType.INTERNAL).size());
         Protocol.log("Räume extern: " + dataController.getRooms(RoomType.EXTERNAL).size());
+        Protocol.log("Räume ohne Termin: " + unusedRooms);
         Protocol.log("Anzahl Termine: " + schedule.getAppointmentCount());
         Protocol.log("Sitzplätze benötigt: " + (int) (schedule.getStudentsCount(RoomType.INTERNAL) + schedule.getStudentsCount(RoomType.EXTERNAL)));
         Protocol.log("Sitzplätze intern besetzt: " + schedule.getStudentsCount(RoomType.INTERNAL));
@@ -208,12 +230,12 @@ public class SchedulerConsole implements Observer {
     /**
      * Protokollausgaben auf der Konsole ausgeben
      *
-     * @param o Das observierbare Objekt
-     * @param arg Die letzte Änderung
+     * @param observable Das observierbare Objekt
+     * @param lastChange Die letzte Änderung
      */
     @Override
-    public void update(Observable o, Object arg) {
-        System.out.println(arg);
+    public void update(Observable observable, Object lastChange) {
+        System.out.println(lastChange);
     }
-    
+
 }

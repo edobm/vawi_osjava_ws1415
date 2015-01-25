@@ -58,18 +58,18 @@ public class LoggingPanel extends JPanel implements Observer {
     /**
      * Implementierung des Interfaces Obeserver
      *
-     * @param o Das Observable (Protocol)
-     * @param arg Die letzte Logmeldung
+     * @param observable Das Observable (Protocol)
+     * @param lastChange Die letzte Logmeldung
      * 
      * @see Observer#update(java.util.Observable, java.lang.Object) 
      */
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable observable, Object lastChange) {
 
         /**
          * Die letzte Logmeldung an TextArea anhängen
          */
-        textArea.append(arg.toString() + "\n");
+        textArea.append(lastChange.toString() + "\n");
 
     }
 

@@ -12,7 +12,7 @@ import osjava.tl3.model.StudyProgram;
 /**
  * Der Gesamtplan für alle Räume, Kurse, Dozenten und Fachsemester der
  * Studiengengänge
- * 
+ *
  * @author Meikel Bode
  */
 public class Schedule extends ScheduleBasis {
@@ -136,7 +136,7 @@ public class Schedule extends ScheduleBasis {
      * @param room Der Raum
      * @param course Der Kurs
      */
-    public void createAppointment(ScheduleCoordinate scheduleCoordinate, Room room, Course course){
+    public void createAppointment(ScheduleCoordinate scheduleCoordinate, Room room, Course course) {
         getScheduleElement(scheduleCoordinate).createAppointment(room, course);
     }
 
@@ -261,9 +261,29 @@ public class Schedule extends ScheduleBasis {
 
         return views;
     }
-    
+
+    /**
+     * Liefert die Liste der Räume für die ein Termin vorliegt
+     *
+     * @return Die Liste der Räume mit einem Termin 
+     */
+    public List<Room> getPlannedRooms() {
+        List<Room> plannedRooms = new ArrayList<>();
+        for (ScheduleElementImpl scheduleElement : scheduleElements) {
+            for (ScheduleAppointment appointment : scheduleElement.getAppointments()) {
+                if (appointment.getRoom() != null && !plannedRooms.contains(appointment.getRoom())) {
+                    plannedRooms.add(appointment.getRoom());
+                }
+            }
+        }
+        
+        return plannedRooms;
+                
+    }
+
     /**
      * Liefert die Stringrepräsentation des Plans
+     *
      * @return Der Name des Plans
      */
     @Override
